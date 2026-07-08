@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>御見積書</title>
+<style>
+  @page { size: A4; margin: 16mm 18mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
+    font-size: 10.5pt; line-height: 1.7; color: #1a1a1a;
+  }
+  h1 { font-size: 20pt; text-align: center; letter-spacing: 1em; text-indent: 1em; margin-bottom: 10mm; }
+  h2 {
+    font-size: 11.5pt; margin: 7mm 0 2.5mm; padding: 1mm 3mm;
+    background: #f0f2f5; border-left: 3.5px solid #2b4a6f;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  section, .no-break { break-inside: avoid; }
+
+  .meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6mm; }
+  .client { font-size: 13pt; border-bottom: 1.5px solid #1a1a1a; padding: 0 8mm 1mm 1mm; }
+  .client small { font-size: 9.5pt; }
+  .issuer { text-align: left; font-size: 9.5pt; line-height: 1.6; }
+  .issuer .issuer-name { font-size: 11pt; font-weight: 600; }
+  .docinfo { font-size: 9.5pt; text-align: right; margin-bottom: 2mm; color: #444; }
+
+  .total-box {
+    display: flex; align-items: baseline; gap: 6mm;
+    border: 2px solid #2b4a6f; padding: 3mm 6mm; margin: 4mm 0 2mm; width: fit-content;
+  }
+  .total-box .label { font-size: 11pt; font-weight: 600; }
+  .total-box .amount { font-size: 17pt; font-weight: 700; }
+  .total-box .tax { font-size: 9.5pt; color: #444; }
+
+  .items th, .items td { border: 1px solid #b9c0c9; padding: 1.6mm 2.5mm; }
+  .items th { background: #eef1f5; font-weight: 600; text-align: left; }
+  .items td.num { text-align: right; white-space: nowrap; }
+  .items tr.sum td { font-weight: 700; background: #fafbfc; }
+
+  ul { padding-left: 5mm; }
+  li { margin-bottom: 0.5mm; }
+  .sched th, .sched td { border: 1px solid #b9c0c9; padding: 1.4mm 2.5mm; }
+  .sched th { background: #eef1f5; font-weight: 600; text-align: left; }
+  .note { font-size: 9pt; color: #555; margin-top: 1mm; }
+  footer { margin-top: 8mm; font-size: 9pt; color: #666; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>御見積書</h1>
+
+<div class="docinfo">
+  発行日: {{ISSUE_DATE}}<br>
+  有効期限: {{VALID_UNTIL}}
+</div>
+
+<div class="meta">
+  <div class="client">{{CLIENT_NAME}} <small>御中</small></div>
+  <div class="issuer">
+    <div class="issuer-name">{{ISSUER_NAME}}</div>
+    {{ISSUER_ADDRESS}}<br>
+    {{ISSUER_EMAIL}}
+  </div>
+</div>
+
+<p>件名「<strong>{{PROJECT_TITLE}}</strong>」につきまして、下記の通りお見積もり申し上げます。</p>
+
+<div class="total-box no-break">
+  <span class="label">御見積金額</span>
+  <span class="amount">¥{{TOTAL_INCL}}-</span>
+  <span class="tax">（税込）</span>
+</div>
+
+<section>
+<h2>1. 案件概要</h2>
+<p>{{OVERVIEW}}</p>
+</section>
+
+<section>
+<h2>2. 成果物と金額（{{TAX_NOTE}}）</h2>
+<table class="items">
+  <tr><th style="width:8mm">#</th><th style="width:42mm">成果物</th><th>内容</th><th style="width:28mm">金額</th></tr>
+  {{ITEM_ROWS}}
+  <tr><td></td><td>小計（{{TAX_NOTE}}）</td><td></td><td class="num">¥{{SUBTOTAL}}</td></tr>
+  <tr><td></td><td>消費税（{{TAX_RATE}}%）</td><td></td><td class="num">¥{{TAX_AMOUNT}}</td></tr>
+  <tr class="sum"><td></td><td>合計（税込）</td><td></td><td class="num">¥{{TOTAL_INCL}}</td></tr>
+</table>
+</section>
+
+<section>
+<h2>3. 前提条件・スコープ外</h2>
+<ul>
+  {{ASSUMPTION_ITEMS}}
+</ul>
+</section>
+
+<section>
+<h2>4. スケジュール</h2>
+<table class="sched">
+  <tr><th>マイルストーン</th><th style="width:30mm">期間</th><th>備考</th></tr>
+  {{SCHEDULE_ROWS}}
+</table>
+<p class="note">※ ご確認・ご承認の遅延は納期に順延で反映されます。</p>
+</section>
+
+<section>
+<h2>5. 検収条件</h2>
+<ul>
+  {{ACCEPTANCE_ITEMS}}
+</ul>
+</section>
+
+<section>
+<h2>6. 支払条件</h2>
+<ul>
+  <li>{{PAYMENT_TERMS}}</li>
+  <li>振込手数料は貴社ご負担にてお願いいたします。</li>
+</ul>
+</section>
+
+<section>
+<h2>7. 変更管理</h2>
+<ul>
+  <li>納品前の軽微な修正は {{REVISION_INCLUDED}} 回まで本見積もりに含みます。</li>
+  <li>仕様追加・大幅な変更は都度お見積もりのうえ対応いたします。</li>
+</ul>
+</section>
+
+<section>
+<h2>8. 納品後の保守・運用（オプション）</h2>
+<ul>
+  {{MAINTENANCE_ITEMS}}
+</ul>
+</section>
+
+<footer>本見積書の有効期限は発行日より{{VALID_DAYS}}日です。記載のない事項は双方協議のうえ決定するものとします。</footer>
+
+</body>
+</html>

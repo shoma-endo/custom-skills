@@ -1,0 +1,77 @@
+# 見積もりレートカード（サンプル） — このファイルを rate-card.yaml にコピーして自分の値に書き換える
+#   cp rate-card.example.yaml rate-card.yaml
+# rate-card.yaml は .gitignore 済み（単価は内部計算専用。顧客には成果物単位の固定額のみ提示する）。
+# SKILL.md 側には数値を書かない（焼き込み禁止）。
+
+classes:
+  light:
+    label: ライト開発
+    examples: GAS・ノーコード・スクリプト・小規模ツール
+    base_rate: 5000 # 円/h。実装工程の基準単価（要変更）
+    anchor_phase: 実装 # 工数見積もりの起点となる工程（effort_ratio: 1.0 の工程）
+    phases:
+      - { name: 要件整理, effort_ratio: 0.20, rate_factor: 1.5 }
+      - { name: 実装, effort_ratio: 1.00, rate_factor: 1.0 }
+      - { name: テスト・調整, effort_ratio: 0.30, rate_factor: 1.0 }
+      - { name: 納品・引き継ぎ, effort_ratio: 0.10, rate_factor: 1.0 }
+  full:
+    label: フルスクラッチ開発
+    examples: TypeScript / Node.js 等によるWebアプリの受託開発
+    base_rate: 10000 # 円/h。開発工程の基準単価（要変更）
+    anchor_phase: 開発
+    phases:
+      - { name: 要求定義, effort_ratio: 0.15, rate_factor: 1.5 }
+      - { name: 要件定義, effort_ratio: 0.20, rate_factor: 1.5 }
+      - { name: 基本設計, effort_ratio: 0.25, rate_factor: 1.2 }
+      - { name: 詳細設計, effort_ratio: 0.25, rate_factor: 1.2 }
+      - { name: 開発, effort_ratio: 1.00, rate_factor: 1.0 }
+      - { name: テスト, effort_ratio: 0.40, rate_factor: 1.0 }
+      - { name: 納品・リリース, effort_ratio: 0.10, rate_factor: 1.0 }
+
+# PM・コミュニケーション工数（定例・チャット対応・報告）。全工程合計に対する割合で加算
+pm_overhead: 0.15
+
+# リスクバッファ。案件の不確実性でどれか1つ選び、工数全体に掛ける
+risk_buffer:
+  low: { factor: 1.2, when: 要件確定済み・実績のある技術・既存顧客 }
+  mid: { factor: 1.5, when: 要件に曖昧さが残る・新規顧客・外部API依存 }
+  high: { factor: 1.7, when: 探索的・未知の技術やAPI・要件が流動的 }
+
+# スケジュール算出の前提
+schedule:
+  effective_hours_per_day: 2.5 # 複数プロジェクト並走前提の実効稼働（h/日）。専念できる案件なら都度上書き
+  work_days_per_week: 5
+  client_review_days: 5 # 承認ゲート1回あたりの顧客レビュー営業日（要件承認・設計承認・検収など）
+
+# 見積書PDFの発行者情報（初回に実値を設定する）
+issuer:
+  name: 山田 太郎 # 屋号があれば「屋号（氏名）」に変更
+  address: "" # 任意。空なら見積書に行を出さない
+  email: you@example.com
+
+# 金額の出し方
+pricing:
+  rounding: 10000 # 成果物単位の提示額はこの単位で切り上げ（円）
+  tax_note: 税別
+  tax_rate: 10 # 消費税率%。見積書には小計（税別）・消費税額・合計（税込）を並記する
+  estimate_valid_days: 30
+  payment_terms: 着手金 50% / 検収後 50%
+  revision_included: 2 # 無償修正回数。超過は別途見積もり
+
+# 開発顧問（月額リテイナー・開発案件とは別契約）
+advisory:
+  monthly_fee: 150000 # 円/月（税別・要変更）
+  hours_guide_per_month: 10 # 稼働目安。超過が常態化したら増額改定を提案する
+  includes: 技術相談・コードレビュー・アーキテクチャ助言・技術選定・ベンダーやり取りの同席
+  excludes: 実装作業（発生時はクラス単価で別途見積もり）
+  term: 月次更新
+
+# 納品後の保守メニュー（提案用の初期値）
+maintenance:
+  monthly_rate_pct: 8 # 月額保守 = 開発費の n%（軽微修正・監視・問い合わせ対応）
+  spot_factor: 1.2 # スポット対応 = クラス単価 × この係数
+
+# マーケ支援の扱い（開発見積もりに混ぜない）
+marketing:
+  policy: 開発とは別契約。最低固定費＋計測可能な指標に対するレベシェアで構成し、指標定義・計測方法・期間を必ず明文化する
+  min_monthly_fee: 50000 # 円。レベシェア併用時の最低固定費の初期値（案件ごとに調整）

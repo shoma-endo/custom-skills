@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROJECT_NAME}} 全体像</title>
+<style>
+  :root{
+    --ink:#14202e;
+    --ink-soft:#3b4756;
+    --paper:#eef1ee;
+    --card:#fbfcfa;
+    --navy:#1b3a63;
+    --navy-ink:#eef1ee;
+    --blue:#2158a6;
+    --teal:#1f8a82;
+    --teal-deep:#166b64;
+    --line:#d8ddd3;
+    --critical:#b23a2e;
+    --warning:#c1752a;
+    --good:#3f8f63;
+    --neutral:#6b7686;
+    --neutral-bg:#e7e9e3;
+    --shadow: 0 1px 2px rgba(20,32,46,.06), 0 6px 20px rgba(20,32,46,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    line-height:1.75; font-size:16px;
+  }
+  .serif{ font-family:"Hiragino Mincho ProN","Yu Mincho",ui-serif,Georgia,serif; }
+  .mono{ font-family:ui-monospace,"SF Mono",Menlo,monospace; font-variant-numeric:tabular-nums; }
+
+  /* ambient scroll progress — passive indicator, not a tab/nav control */
+  #scrollbar{ position:fixed; top:0; left:0; height:3px; width:100%; background:transparent; z-index:50; }
+  #scrollbar-fill{ height:100%; width:0%; background:var(--teal); transition:width .1s linear; }
+  @media (prefers-reduced-motion: reduce){ #scrollbar-fill{ transition:none } }
+
+  .col{ max-width:840px; margin:0 auto; padding:0 32px; }
+  .wide{ max-width:1440px; margin:0 auto; padding:0 40px; }
+
+  /* Hero */
+  header.hero{
+    background:var(--navy); color:var(--navy-ink);
+    padding:64px 0 48px; position:relative; overflow:hidden;
+  }
+  header.hero::after{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:28px 28px; pointer-events:none;
+  }
+  .hero-inner{ position:relative; z-index:1; }
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--teal); font-weight:600; margin:0 0 10px;
+  }
+  header.hero .eyebrow{ color:#7fd3cc; }
+  h1.title{ font-size:2.35rem; margin:0 0 14px; text-wrap:balance; font-weight:600; }
+  .tagline{ font-size:1.05rem; color:#c7d1de; max-width:56ch; margin:0 0 28px; }
+  .stamp{
+    display:inline-flex; gap:10px; align-items:center;
+    border:1px solid rgba(255,255,255,.35); border-radius:3px;
+    padding:7px 14px; font-size:.78rem; color:#dfe6ee;
+    transform:rotate(-1.2deg); background:rgba(255,255,255,.04);
+  }
+  .stamp b{ color:#fff; font-weight:600; }
+  .age-warn{
+    display:inline-block; margin-left:10px; font-size:.72rem; font-weight:600;
+    background:#f5e7d6; color:var(--warning); border-radius:99px; padding:3px 10px;
+    vertical-align:middle;
+  }
+
+  /* Status board — 現場到着時に最初に見る数字。各タイルは該当セクションへのアンカー */
+  .statboard{ display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+  .stat-tile{
+    flex:1 1 150px; min-width:150px; max-width:230px; display:block;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.22);
+    border-top:3px solid rgba(255,255,255,.35); border-radius:5px;
+    padding:12px 16px 10px; text-decoration:none; color:var(--navy-ink);
+  }
+  a.stat-tile:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.55); }
+  .stat-tile .num{ display:block; font-size:1.85rem; font-weight:700; line-height:1.25; color:#fff; }
+  .stat-tile .cap{ display:block; font-size:.74rem; color:#c7d1de; letter-spacing:.04em; margin-top:2px; }
+  a.stat-tile .cap::after{ content:" ↓"; color:#7fd3cc; }
+  .stat-tile.ok{ border-top-color:var(--teal); }
+  .stat-tile.warn{ border-top-color:var(--warning); }
+  .stat-tile.crit{ border-top-color:var(--critical); }
+  section{ scroll-margin-top:10px; }
+
+  /* Since-last card — 前回キャッチアップ（MD frontmatter の commit）からの変化 */
+  .since-card{ border-left:4px solid var(--navy); padding:20px 24px; }
+  .delta-row{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 10px; }
+  .delta{ font-size:.82rem; padding:3px 11px; border-radius:3px; border:1px solid var(--line); background:var(--paper); }
+  .delta b{ color:var(--teal-deep); font-weight:700; }
+  .since-note{ color:var(--ink-soft); font-size:.9rem; margin:0; }
+
+  /* Section rhythm */
+  section{ padding:32px 0; }
+  section + section{ border-top:1px solid var(--line); }
+  .section-head{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .section-head .icon{ color:var(--teal); flex:none; }
+  h2{
+    font-size:1.5rem; margin:0; font-weight:600; text-wrap:balance;
+  }
+  .section-sub{ color:var(--ink-soft); font-size:.95rem; margin:6px 0 24px; max-width:60ch; }
+
+  /* Key fact emphasis — the one thing in a paragraph the reader must not miss */
+  .key{ color:var(--blue); font-weight:700; font-size:1.12em; }
+
+  .icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Cards */
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:6px; box-shadow:var(--shadow); }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+
+  /* Resume card */
+  .resume-card{ border-left:4px solid var(--teal); padding:22px 26px; }
+  .resume-card pre{
+    background:var(--ink); color:#dcefee; border-top:3px solid var(--teal);
+    padding:16px 18px; border-radius:4px; overflow-x:auto; font-size:.86rem; line-height:1.65;
+  }
+  .resume-card code{ font-family:inherit; }
+  .resume-card p.note{ color:var(--ink-soft); font-size:.88rem; margin-top:10px; }
+
+  /* People */
+  .person{ display:flex; gap:14px; align-items:flex-start; padding:14px 0; }
+  .person + .person{ border-top:1px solid var(--line); }
+  .avatar{
+    width:38px; height:38px; border-radius:50%; background:var(--navy); color:var(--navy-ink);
+    display:flex; align-items:center; justify-content:center; font-weight:600; flex:none;
+    font-family:inherit;
+  }
+  .person-body{ flex:1; min-width:0; }
+  .person-name{ font-weight:600; }
+  .person-meta{ color:var(--ink-soft); font-size:.82rem; }
+  .share-bar{ height:5px; background:var(--neutral-bg); border-radius:3px; margin-top:8px; overflow:hidden; }
+  .share-fill{ height:100%; background:var(--teal); }
+  .pill{
+    display:inline-block; font-size:.72rem; padding:2px 9px; border-radius:99px;
+    background:var(--neutral-bg); color:var(--neutral); font-weight:600; white-space:nowrap;
+  }
+
+  /* Diagram sheets */
+  .sheet{ background:var(--card); border:1px solid var(--line); border-radius:6px; margin-bottom:20px; }
+  .sheet-head{
+    display:flex; align-items:baseline; gap:12px; padding:16px 22px;
+    border-bottom:1px solid var(--line); border-top:3px solid var(--teal); border-radius:6px 6px 0 0;
+  }
+  .sheet-num{ font-weight:700; color:var(--teal); font-size:.9rem; letter-spacing:.03em; }
+  .sheet-title{ font-weight:600; flex:1; }
+  .expand-btn{
+    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink-soft); font-size:.78rem; padding:5px 11px; border-radius:99px; cursor:pointer;
+    font-family:inherit;
+  }
+  .expand-btn:hover{ color:var(--teal-deep); border-color:var(--teal); }
+  .expand-btn .icon{ width:14px; height:14px; }
+  .sheet-body{ padding:20px 22px; overflow-x:auto; }
+  .sheet-body svg{ max-width:100%; max-height:560px; width:auto; height:auto; display:block; margin:0 auto; cursor:zoom-in; }
+  .sheet-src{ padding:10px 22px 16px; color:var(--ink-soft); font-size:.78rem; border-top:1px dashed var(--line); }
+  .sheet-omitted{ padding:20px 22px; color:var(--ink-soft); font-style:italic; }
+
+  /* Diagram lightbox — click-to-zoom for full detail */
+  .lightbox{
+    display:none; position:fixed; inset:0; background:rgba(20,32,46,.85); z-index:200;
+    align-items:center; justify-content:center; padding:36px;
+  }
+  .lightbox.open{ display:flex; }
+  .lightbox-inner{
+    background:var(--card); border-radius:8px; padding:28px; max-width:96vw; max-height:92vh;
+    overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.4); position:relative;
+  }
+  .lightbox-inner svg{ display:block; width:1400px; max-width:none; height:auto; }
+  .lightbox-close{
+    position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
+    border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:1rem; line-height:1;
+  }
+  .lightbox-close:hover{ color:var(--critical); border-color:var(--critical); }
+  .lightbox-hint{ text-align:center; color:var(--ink-soft); font-size:.78rem; margin-top:10px; }
+
+  /* Process / stack */
+  .process-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .process-list li{ display:flex; gap:12px; align-items:flex-start; }
+  .process-list .icon{ margin-top:2px; color:var(--navy); }
+  .chip-tray{ display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{
+    display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line);
+    border-radius:5px; padding:7px 12px; font-size:.85rem;
+  }
+  .chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--teal); flex:none; }
+  .chip .ver{ color:var(--ink-soft); }
+
+  /* Timeline */
+  .timeline{ position:relative; padding-left:24px; }
+  .timeline::before{ content:""; position:absolute; left:5px; top:4px; bottom:4px; width:1px; background:var(--line); }
+  .tl-item{ position:relative; padding-bottom:20px; }
+  .tl-item::before{
+    content:""; position:absolute; left:-24px; top:5px; width:10px; height:10px; border-radius:50%;
+    background:var(--card); border:2px solid var(--neutral);
+  }
+  .tl-item.now::before{ border-color:var(--teal); background:var(--teal); }
+  .tl-item.flag::before{ border-color:var(--warning); background:var(--warning); }
+  .tl-date{ font-size:.78rem; color:var(--ink-soft); }
+  .tl-msg{ margin-top:2px; }
+
+  /* Discovery cards */
+  .discovery{ border-left:4px solid var(--neutral); background:var(--card); border-radius:0 6px 6px 0; padding:14px 18px; margin-bottom:12px; border-top:1px solid var(--line); border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .discovery.sev-critical{ border-left-color:var(--critical); }
+  .discovery.sev-warning{ border-left-color:var(--warning); }
+  .discovery.sev-good{ border-left-color:var(--good); }
+  .sev-pill{ font-size:.7rem; font-weight:700; letter-spacing:.03em; padding:2px 8px; border-radius:99px; margin-right:8px; }
+  .sev-pill.sev-critical{ background:#f4e2df; color:var(--critical); }
+  .sev-pill.sev-warning{ background:#f5e7d6; color:var(--warning); }
+  .sev-pill.sev-good{ background:#dff0e6; color:var(--good); }
+  .sev-pill.sev-neutral{ background:var(--neutral-bg); color:var(--neutral); }
+  .discovery .evidence{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
+
+  /* Links */
+  .link-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .link-list li{ display:flex; gap:10px; align-items:flex-start; }
+  .link-list .icon{ color:var(--teal); margin-top:2px; }
+  a{ color:var(--teal-deep); text-decoration-color:rgba(31,138,130,.35); text-underline-offset:3px; }
+  a:hover{ text-decoration-color:var(--teal-deep); }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+
+  table{ border-collapse:collapse; width:100%; font-size:.88rem; }
+  th,td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
+  th{ background:var(--paper); font-weight:600; }
+  .tbd{ color:var(--warning); font-weight:600; }
+
+  footer{ text-align:center; padding:36px 24px 56px; color:var(--ink-soft); font-size:.82rem; }
+  footer code{ background:var(--neutral-bg); padding:1px 6px; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6z"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9" r="2.4"/><path d="M15.5 20c.3-2.6 2-4.6 4.5-4.9"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v6M15 3v6M6 9h12v3a6 6 0 01-6 6 6 6 0 01-6-6z"/><path d="M12 18v3"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M6 7.2V16.8"/><path d="M6 9c0 3.5 3 5.5 10 3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 9.5v5"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M9 15l6-6"/><path d="M11 6l1-1a4 4 0 015.7 5.7l-1.4 1.4"/><path d="M13 18l-1 1a4 4 0 01-5.7-5.7l1.4-1.4"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+</svg>
+
+<div id="scrollbar"><div id="scrollbar-fill"></div></div>
+
+<header class="hero">
+  <div class="col hero-inner">
+    <p class="eyebrow">案件キャッチアップ・レポート</p>
+    <h1 class="title serif">{{PROJECT_NAME}}</h1>
+    <p class="tagline">{{TAGLINE}}</p>
+    <span class="stamp mono" id="stamp" data-date="{{DATE}}"><b>GENERATED</b> {{DATE}} &nbsp;・&nbsp; <b>REV</b> {{SHA}}</span>
+    <div class="statboard">{{STATBOARD_HTML}}</div>
+  </div>
+</header>
+
+<section id="since-last">
+  <div class="col">
+    <div class="card since-card">
+      <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">前回キャッチアップからの変化</h2></div>
+      <div style="margin-top:12px">{{SINCE_LAST_HTML}}</div>
+    </div>
+  </div>
+</section>
+
+<section id="summary">
+  <div class="col">
+    <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">30秒サマリー</h2></div>
+    <div style="margin-top:14px">{{SUMMARY_HTML}}</div>
+  </div>
+</section>
+
+<section id="resume">
+  <div class="col">
+    <div class="card resume-card">
+      <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">再開手順</h2></div>
+      <div style="margin-top:18px">{{RESUME_HTML}}</div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="wide">
+    <div class="grid2">
+      <div>
+        <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">案件の概要</h2></div>
+        <div style="margin-top:14px">{{OVERVIEW_HTML}}</div>
+      </div>
+      <div>
+        <div class="section-head"><svg class="icon"><use href="#i-people"/></svg><h2 class="serif">登場人物</h2></div>
+        <div style="margin-top:14px">{{PEOPLE_HTML}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diagrams">
+  <div class="wide">
+    <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">構成図</h2></div>
+    <p class="section-sub">構造・依存関係 → 主要インターフェース → データ関係の順で、システムの理解を段階的に深める。</p>
+
+    <div class="sheet">
+      <div class="sheet-head">
+        <span class="sheet-num mono">DWG-01</span>
+        <svg class="icon" style="color:var(--ink-soft)"><use href="#i-layers"/></svg>
+        <span class="sheet-title">構造・依存関係</span>
+        <button class="expand-btn" type="button" data-zoom-target="dwg-01"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+      </div>
+      <div class="sheet-body" id="dwg-01">{{DIAGRAM_STRUCTURE_SVG}}</div>
+      <div class="sheet-src mono">{{DIAGRAM_STRUCTURE_SRC}}</div>
+    </div>
+
+    <div class="sheet">
+      <div class="sheet-head">
+        <span class="sheet-num mono">DWG-02</span>
+        <svg class="icon" style="color:var(--ink-soft)"><use href="#i-plug"/></svg>
+        <span class="sheet-title">主要インターフェース</span>
+        <button class="expand-btn" type="button" data-zoom-target="dwg-02"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+      </div>
+      <div class="sheet-body" id="dwg-02">{{DIAGRAM_INTERFACE_SVG}}</div>
+      <div class="sheet-src mono">{{DIAGRAM_INTERFACE_SRC}}</div>
+    </div>
+
+    <div class="sheet">
+      <div class="sheet-head">
+        <span class="sheet-num mono">DWG-03</span>
+        <svg class="icon" style="color:var(--ink-soft)"><use href="#i-db"/></svg>
+        <span class="sheet-title">データ関係</span>
+        <button class="expand-btn" type="button" data-zoom-target="dwg-03"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+      </div>
+      <div class="sheet-body" id="dwg-03">{{DIAGRAM_ERD_SVG}}</div>
+      <div class="sheet-src mono">{{DIAGRAM_ERD_SRC}}</div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wide">
+    <div class="grid2">
+      <div>
+        <div class="section-head"><svg class="icon"><use href="#i-branch"/></svg><h2 class="serif">開発・運用プロセス</h2></div>
+        <div style="margin-top:14px">{{PROCESS_HTML}}</div>
+      </div>
+      <div>
+        <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">技術スタック</h2></div>
+        <div class="chip-tray" style="margin-top:14px">{{STACK_HTML}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recent">
+  <div class="col">
+    <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">直近の状態とやりかけ</h2></div>
+    <div class="timeline" style="margin-top:18px">{{RECENT_HTML}}</div>
+
+    <div class="section-head" style="margin-top:36px"><svg class="icon"><use href="#i-warn"/></svg><h2 class="serif">発見事項</h2></div>
+    <div style="margin-top:14px">{{DISCOVERY_HTML}}</div>
+  </div>
+</section>
+
+<section id="links">
+  <div class="col">
+    <div class="section-head"><svg class="icon"><use href="#i-link"/></svg><h2 class="serif">関連リンク</h2></div>
+    <ul class="link-list" style="margin-top:14px">{{LINKS_HTML}}</ul>
+  </div>
+</section>
+
+<footer>
+  生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>
+</footer>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox-inner" id="lightbox-inner">
+    <button class="lightbox-close" type="button" aria-label="閉じる">&times;</button>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var fill = document.getElementById('scrollbar-fill');
+    function onScroll(){
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      var pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      fill.style.width = pct + '%';
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // Report age — 開いた時点で資料の経過日数を表示（生成日は data-date に焼き込み済み）。
+  // 静的HTMLは生成時点で止まるが、これだけは閲覧時に計算しないと意味がない。
+  (function(){
+    var stamp = document.getElementById('stamp');
+    if (!stamp) return;
+    var t = Date.parse(stamp.getAttribute('data-date'));
+    if (isNaN(t)) return;
+    var days = Math.floor((Date.now() - t) / 86400000);
+    if (days >= 1){
+      var b = document.createElement('b');
+      b.textContent = '（' + days + '日前）';
+      stamp.appendChild(b);
+    }
+    if (days >= 14){
+      var warn = document.createElement('span');
+      warn.className = 'age-warn';
+      warn.textContent = 'この資料は' + days + '日前のもの — /project-catchup で再生成推奨';
+      stamp.insertAdjacentElement('afterend', warn);
+    }
+  })();
+
+  // Diagram zoom lightbox — clones the inline SVG at full/native size for reading detail.
+  (function(){
+    var box = document.getElementById('lightbox');
+    var inner = document.getElementById('lightbox-inner');
+    var closeBtn = inner.querySelector('.lightbox-close');
+
+    function openWith(sourceSvg){
+      var html = sourceSvg.outerHTML.split('my-svg').join('my-svg-zoom');
+      inner.innerHTML = html;
+      var reinsertedClose = document.createElement('button');
+      reinsertedClose.className = 'lightbox-close';
+      reinsertedClose.type = 'button';
+      reinsertedClose.setAttribute('aria-label', '閉じる');
+      reinsertedClose.innerHTML = '&times;';
+      reinsertedClose.addEventListener('click', close);
+      inner.appendChild(reinsertedClose);
+      var hint = document.createElement('p');
+      hint.className = 'lightbox-hint';
+      hint.textContent = 'スクロールで全体を確認できます（Escで閉じる）';
+      inner.appendChild(hint);
+      box.classList.add('open');
+      box.setAttribute('aria-hidden', 'false');
+    }
+    function close(){
+      box.classList.remove('open');
+      box.setAttribute('aria-hidden', 'true');
+      inner.innerHTML = '';
+    }
+
+    document.querySelectorAll('[data-zoom-target]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var target = document.getElementById(btn.getAttribute('data-zoom-target'));
+        var svg = target && target.querySelector('svg');
+        if (svg) openWith(svg);
+      });
+    });
+    document.querySelectorAll('.sheet-body svg').forEach(function(svg){
+      svg.addEventListener('click', function(){ openWith(svg); });
+    });
+    box.addEventListener('click', function(e){ if (e.target === box) close(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+  })();
+</script>
+</body>
+</html>

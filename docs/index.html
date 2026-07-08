@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Assets ダッシュボード</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗺️</text></svg>">
+<style>
+:root {
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --hairline: #e1e0d9;
+  --ring: rgba(11, 11, 11, 0.10);
+  --blue: #2a78d6;
+  --blue-tint: rgba(42, 120, 214, 0.09);
+  --amber: #c98500;
+  --amber-tint: rgba(201, 133, 0, 0.10);
+  --red: #d03b3b;
+  --red-tint: rgba(208, 59, 59, 0.09);
+  --bar: #2a78d6;
+  --bar-alt: #86b6ef;
+  --shadow: rgba(11, 11, 11, 0.18);
+  --st-good: #0ca30c;
+  --st-good-tint: rgba(12, 163, 12, 0.10);
+  --st-crit: #d03b3b;
+  --st-crit-tint: rgba(208, 59, 59, 0.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --hairline: #2c2c2a;
+    --ring: rgba(255, 255, 255, 0.10);
+    --blue: #3987e5;
+    --blue-tint: rgba(57, 135, 229, 0.16);
+    --amber: #fab219;
+    --amber-tint: rgba(250, 178, 25, 0.14);
+    --red: #e66767;
+    --red-tint: rgba(230, 103, 103, 0.14);
+    --bar: #3987e5;
+    --bar-alt: #1c5cab;
+    --shadow: rgba(0, 0, 0, 0.55);
+    --st-good: #0ca30c;
+    --st-good-tint: rgba(12, 163, 12, 0.16);
+    --st-crit: #d03b3b;
+    --st-crit-tint: rgba(230, 103, 103, 0.14);
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.65;
+  min-width: 1480px;
+  display: grid;
+  grid-template-columns: var(--side-width, 276px) minmax(0, 1fr) var(--detail-width, 340px);
+  transition: grid-template-columns 0.16s ease;
+}
+code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+body.side-collapsed { --side-width: 0px; }
+body.detail-collapsed { --detail-width: 0px; }
+.pane-toggle {
+  appearance: none;
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  color: var(--ink-2);
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1rem;
+  line-height: 1;
+  display: block;
+  flex-shrink: 0;
+  position: fixed;
+  top: 12px;
+  z-index: 40;
+  box-shadow: 0 2px 10px var(--ring);
+}
+.pane-toggle:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-tint); }
+
+/* ================= サイドバー ================= */
+#side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+}
+#toggle-side { left: 260px; }
+body.side-collapsed #side {
+  overflow: visible;
+  background: transparent;
+  border-right: 0;
+}
+body.side-collapsed #side { visibility: hidden; }
+body.side-collapsed #toggle-side { left: 12px; }
+.brand {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.32rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 26px 22px 18px;
+  border-bottom: 3px solid var(--ink);
+  line-height: 1.3;
+}
+.brand .x { color: var(--blue); }
+.brand .sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.24em;
+  margin-top: 4px;
+}
+#nav { padding: 14px 0; }
+.nav-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  padding: 8px 22px 6px;
+}
+button.nav-item {
+  appearance: none;
+  border: none;
+  background: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 22px;
+  cursor: pointer;
+  color: var(--ink-2);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.9rem;
+  text-align: left;
+  border-left: 3px solid transparent;
+}
+button.nav-item:hover { background: var(--page); color: var(--ink); }
+button.nav-item.active {
+  background: var(--blue-tint);
+  border-left-color: var(--blue);
+  color: var(--ink);
+  font-weight: 700;
+}
+.nav-item .nav-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.nav-item .dot { width: 8px; height: 8px; border-radius: 50%; }
+.nav-item .dot.amber { background: var(--amber); }
+.nav-item .dot.red { background: var(--red); }
+.nav-item .nav-cnt { font-size: 0.78rem; color: var(--muted); }
+.side-legend {
+  border-top: 1px solid var(--hairline);
+  padding: 16px 22px;
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+.side-legend .lg-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.side-legend .key { display: flex; align-items: center; gap: 9px; padding: 3px 0; }
+.side-legend .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--ring); flex-shrink: 0; }
+.side-legend .swatch.normal { background: var(--surface); }
+.side-legend .swatch.link { background: var(--blue); }
+.side-legend .swatch.amber { background: var(--amber); }
+.side-legend .swatch.red { background: var(--red); }
+.side-meta {
+  margin-top: auto;
+  border-top: 1px solid var(--hairline);
+  padding: 14px 22px 18px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 2;
+}
+.side-meta code { border: 1px solid var(--hairline); padding: 1px 6px; border-radius: 3px; color: var(--ink-2); }
+
+/* ================= メイン ================= */
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--page);
+  border-bottom: 1px solid var(--hairline);
+  padding: 16px 30px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+#topbar .vt { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
+#topbar h2 { font-size: 1.4rem; letter-spacing: 0.02em; white-space: nowrap; }
+#topbar .vt .root {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#topbar .tb-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+#topbar input.search {
+  width: 340px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  color: var(--ink);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.92rem;
+  padding: 9px 14px;
+}
+#topbar input.search:focus { outline: 2px solid var(--blue); outline-offset: -1px; }
+#topbar select.sortsel {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  color: var(--ink);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.86rem;
+  padding: 9px 10px;
+  cursor: pointer;
+}
+#topbar select.sortsel:focus { outline: 2px solid var(--blue); outline-offset: -1px; }
+main { padding: 22px 30px 90px; max-width: 1720px; }
+
+/* ---- KPIタイル ---- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 16px 20px 14px;
+}
+.tile .value { font-size: 2.5rem; font-weight: 700; line-height: 1.15; }
+.tile .value.zero { color: var(--muted); font-weight: 400; }
+.tile .label { font-size: 0.82rem; color: var(--ink-2); letter-spacing: 0.04em; margin-top: 2px; }
+.tile.accent-blue { border-top: 4px solid var(--blue); }
+.tile.accent-amber { border-top: 4px solid var(--amber); }
+.tile.accent-red { border-top: 4px solid var(--red); }
+.tile[data-jump] { cursor: pointer; transition: box-shadow 0.12s ease, border-color 0.12s ease; }
+.tile[data-jump]:hover { border-color: var(--blue); box-shadow: 0 4px 16px var(--ring); }
+.tile[data-jump] .label::after { content: " ↓"; color: var(--muted); }
+.panel, .tree-sec { scroll-margin-top: 76px; }
+
+/* ---- 前回比diffストリップ ---- */
+.diff-strip {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 11px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+}
+.diff-strip.none { color: var(--muted); }
+.diff-strip .dhead {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.dchip {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.74rem;
+  padding: 2px 9px;
+  border-radius: 3px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.dchip.add { color: var(--st-good); border-color: var(--st-good); background: var(--st-good-tint); }
+.dchip.del { color: var(--st-crit); border-color: var(--st-crit); background: var(--st-crit-tint); }
+
+/* ---- パネル ---- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+.panel-head .ph-title {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.panel-head .ph-sub { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.76rem; color: var(--muted); }
+.panel-body { padding: 18px 20px; }
+.panel-row { display: grid; grid-template-columns: 2fr 3fr; gap: 20px; align-items: start; }
+.panel-row .panel { margin-bottom: 0; }
+.panel-row { margin-bottom: 20px; }
+
+/* ---- 分布バー（積み上げ / 実体＋リンク） ---- */
+.dist .lg { display: flex; gap: 18px; justify-content: flex-end; font-size: 0.78rem; color: var(--ink-2); margin-bottom: 10px; }
+.dist .lg .key { display: flex; align-items: center; gap: 6px; }
+.dist .lg .sw { width: 12px; height: 12px; border-radius: 3px; }
+.dist .lg .sw.real { background: var(--bar); }
+.dist .lg .sw.alt { background: var(--bar-alt); }
+.dist .row { display: grid; grid-template-columns: 200px 1fr 96px; align-items: center; gap: 14px; margin: 9px 0; }
+.dist .name {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dist .track { height: 18px; display: flex; }
+.dist .seg { height: 100%; min-width: 2px; }
+.dist .seg.real { background: var(--bar); border-radius: 3px 0 0 3px; }
+.dist .seg.alt { background: var(--bar-alt); border-radius: 0 4px 4px 0; margin-left: 2px; }
+.dist .seg.alt:first-child { border-radius: 4px; margin-left: 0; }
+.dist .count { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.84rem; color: var(--ink); white-space: nowrap; }
+.dist .count .lnk { color: var(--muted); }
+
+/* ---- スキルカード ---- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
+.card {
+  background: var(--page);
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--hairline);
+  border-radius: 5px;
+  padding: 13px 15px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: box-shadow 0.12s ease, transform 0.12s ease;
+  cursor: default;
+}
+.card:hover { box-shadow: 0 4px 16px var(--ring); transform: translateY(-1px); }
+.card.sel { box-shadow: 0 0 0 2px var(--blue); }
+table.jobs tr.sel td { background: var(--blue-tint); }
+.card.role-link { border-left-color: var(--blue); }
+.card.role-amber { border-left-color: var(--amber); background: linear-gradient(var(--amber-tint), var(--amber-tint)) var(--page); }
+.card.role-red { border-left-color: var(--red); background: linear-gradient(var(--red-tint), var(--red-tint)) var(--page); }
+.card .name { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 1.02rem; font-weight: 700; word-break: break-all; }
+.card .fm { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.76rem; color: var(--muted); }
+.card .badges { display: flex; flex-wrap: wrap; gap: 5px; }
+.badge {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.badge.b-link { color: var(--blue); border-color: var(--blue); background: var(--blue-tint); }
+.badge.b-amber { color: var(--amber); border-color: var(--amber); background: var(--amber-tint); }
+.badge.b-red { color: var(--red); border-color: var(--red); background: var(--red-tint); }
+.badge.b-mute { color: var(--muted); border-color: var(--hairline); }
+.card .desc {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card .desc:empty { display: none; }
+.card .path { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.72rem; color: var(--muted); margin-top: auto; word-break: break-all; }
+.card .meta-row { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.76rem; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ---- ツリーセクション ---- */
+.tree-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 20px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tree-sec:first-child .tree-head { margin-top: 0; }
+.tree-head .cnt { color: var(--muted); font-weight: 400; font-size: 0.8rem; }
+.notice {
+  background: var(--blue-tint);
+  border: 1px solid var(--blue);
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  margin: 0 0 14px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.empty-note { color: var(--muted); font-size: 0.85rem; padding: 14px; background: var(--page); border: 1px dashed var(--hairline); border-radius: 5px; }
+
+/* ---- 重複マトリクス ---- */
+table.matrix { border-collapse: collapse; width: 100%; }
+table.matrix th, table.matrix td {
+  border: 1px solid var(--hairline);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  text-align: center;
+  white-space: nowrap;
+}
+table.matrix th {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.76rem;
+  color: var(--ink-2);
+  background: var(--page);
+  font-weight: 700;
+}
+table.matrix td.name { text-align: left; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 700; font-size: 0.9rem; }
+table.matrix .mark { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.76rem; padding: 2px 7px; border-radius: 3px; display: inline-block; margin: 1px; }
+table.matrix .mark.real-amber { background: var(--amber-tint); color: var(--amber); border: 1px solid var(--amber); }
+table.matrix .mark.real-red { background: var(--red-tint); color: var(--red); border: 1px solid var(--red); }
+table.matrix .mark.alias { background: var(--blue-tint); color: var(--blue); border: 1px solid var(--blue); }
+
+/* ---- リンク一覧 ---- */
+details.links summary {
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+details.links ul { list-style: none; padding: 12px 0 0; columns: 2; }
+details.links li { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.76rem; color: var(--muted); padding: 2px 0; }
+details.links li .from { color: var(--ink-2); }
+details.links li .arrow { color: var(--blue); }
+
+/* ---- takt ---- */
+.takt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; }
+.chip {
+  display: inline-block;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.76rem;
+  padding: 2px 10px;
+  border-radius: 11px;
+  border: 1px solid var(--ink-2);
+  color: var(--ink-2);
+  margin: 3px 3px 0 0;
+}
+.chip.missing { border-style: dashed; color: var(--muted); border-color: var(--muted); }
+.chip.wf { border-color: var(--blue); color: var(--blue); border-radius: 3px; }
+
+/* ---- launchd ジョブ表 ---- */
+table.jobs { border-collapse: collapse; width: 100%; }
+table.jobs th, table.jobs td {
+  border-bottom: 1px solid var(--hairline);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  text-align: left;
+  vertical-align: top;
+}
+table.jobs th {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+table.jobs tr[data-pop] { cursor: default; }
+table.jobs tr[data-pop]:hover td { background: var(--blue-tint); }
+table.jobs td.job-label { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
+table.jobs td.job-desc { max-width: 480px; }
+table.jobs td.job-desc .cmd { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.76rem; color: var(--muted); }
+table.jobs td.mono-cell { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8rem; color: var(--ink-2); white-space: nowrap; }
+table.jobs td.mono-cell .ago { color: var(--muted); }
+.stbadge {
+  display: inline-block;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.stbadge.st-run { color: var(--blue); border-color: var(--blue); background: var(--blue-tint); }
+.stbadge.st-ok { color: var(--st-good); border-color: var(--st-good); background: var(--st-good-tint); }
+.stbadge.st-err { color: var(--st-crit); border-color: var(--st-crit); background: var(--st-crit-tint); }
+.stbadge.st-off { color: var(--muted); border-color: var(--hairline); background: var(--page); }
+button.runbtn {
+  appearance: none;
+  cursor: pointer;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  background: var(--blue-tint);
+  white-space: nowrap;
+}
+button.runbtn:hover { background: var(--blue); color: var(--surface); }
+button.runbtn.confirm { border-color: var(--amber); color: var(--amber); background: var(--amber-tint); }
+button.runbtn.confirm:hover { background: var(--amber); color: var(--surface); }
+button.runbtn:disabled { border-color: var(--hairline); color: var(--muted); background: var(--page); cursor: not-allowed; }
+#detail pre.pop-err {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.76rem;
+  color: var(--st-crit);
+  background: var(--st-crit-tint);
+  border: 1px solid var(--st-crit);
+  border-radius: 5px;
+  padding: 10px 12px;
+  margin-top: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ---- 右固定詳細ペイン ---- */
+#detail {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-left: 1px solid var(--hairline);
+  padding: 0;
+}
+#toggle-detail { right: 324px; }
+body.detail-collapsed #detail {
+  overflow: visible;
+  background: transparent;
+  border-left: 0;
+}
+body.detail-collapsed #detail { visibility: hidden; }
+body.detail-collapsed #toggle-detail { right: 12px; }
+#detail .detail-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding: 26px 20px 12px;
+  border-bottom: 1px solid var(--hairline);
+}
+#detail #detail-body {
+  padding: 16px 20px 40px;
+  border-left: 4px solid transparent;
+  min-height: 40vh;
+}
+#detail #detail-body.pop-link { border-left-color: var(--blue); }
+#detail #detail-body.pop-amber { border-left-color: var(--amber); }
+#detail #detail-body.pop-red { border-left-color: var(--red); }
+#detail .detail-empty { color: var(--muted); font-size: 0.82rem; padding: 8px 0; }
+#detail .pop-title { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 1rem; font-weight: 700; margin-bottom: 6px; word-break: break-all; }
+#detail .pop-meta {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.8;
+  word-break: break-all;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+}
+#detail .pop-meta b { color: var(--ink-2); font-weight: 400; }
+#detail .pop-desc { font-size: 0.82rem; color: var(--ink-2); line-height: 1.65; }
+#detail .pop-sec {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin: 10px 0 3px;
+  text-transform: uppercase;
+}
+#detail ol.pop-steps { margin: 2px 0 0 20px; font-size: 0.78rem; color: var(--ink-2); }
+#detail ol.pop-steps li { font-family: ui-monospace, "SF Mono", Menlo, monospace; padding: 1px 0; }
+
+/* クリックで開ける要素（カード・行・ツリー見出し） */
+[data-open] { cursor: pointer; }
+.tree-head[data-open]:hover { color: var(--blue); }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<button id="toggle-side" class="pane-toggle" type="button" aria-label="左パネルを閉じる" title="左パネルを開閉">‹</button>
+<button id="toggle-detail" class="pane-toggle" type="button" aria-label="右パネルを閉じる" title="右パネルを開閉">›</button>
+<aside id="side">
+  <div class="brand">AGENT <span class="x">ASSETS</span><span class="sub">DASHBOARD</span></div>
+  <div id="nav"></div>
+  <div class="side-legend">
+    <div class="lg-head">凡例</div>
+    <div class="key"><span class="swatch normal"></span>通常（実体・重複なし）</div>
+    <div class="key"><span class="swatch link"></span>リンク（同一実体のエイリアス）</div>
+    <div class="key"><span class="swatch amber"></span>スコープ内重複</div>
+    <div class="key"><span class="swatch red"></span>スコープ間重複</div>
+  </div>
+  <div class="side-meta">
+    <div id="meta-generated"></div>
+    <div id="meta-mode">モード: 静的スナップショット</div>
+    <div>再生成: <code id="meta-command"></code></div>
+    <div>ホバーで詳細・クリックで開く</div>
+  </div>
+</aside>
+<div id="wrap">
+  <div id="topbar">
+    <div class="vt"><h2 id="view-title"></h2><span class="root" id="view-root"></span></div>
+    <div class="tb-right">
+      <select id="sort" class="sortsel" title="スキルカードの並び順">
+        <option value="name">名前順</option>
+        <option value="oldest">更新が古い順</option>
+        <option value="newest">更新が新しい順</option>
+      </select>
+      <input type="search" class="search" id="search" placeholder="名前・説明で絞り込み…">
+    </div>
+  </div>
+  <main id="app"></main>
+</div>
+<aside id="detail">
+  <div class="detail-head">詳細（ホバーで更新）</div>
+  <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
+</aside>
+<script>
+const DATA = {"generatedAt":"2026/7/8 15:13:47","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[]},{"dir":"capture","fmName":null,"desc":"URL・記事・動画メモ・思いつき・学びを要約してObsidian Vaultの正しい場所に保存し、MOCを更新する。「Vaultに保存」「キャプチャして」「この記事まとめて保存」「/capture」で起動。「受信箱を整理して」「/capture inbox」で受信箱トリアージモード。分類は出典でなく本質（適用範囲・抽象レベル）で行う。不負責：日誌（Journal）の作成、プロジェクトノートの本文編集、Larkドキュメントへの保存（lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/capture","real":"~/.agents/skills/capture","link":"~/.agents/skills/capture","broken":false,"mtimeMs":1783342668647.0928,"dupSame":false,"dupCross":[]},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[]},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[]},{"dir":"formatting-llm-context","fmName":null,"desc":"Chooses token-efficient formats for structured data passed to LLM prompts or agent context. Use when preparing JSON, CSV, tables, records, API responses, logs, or datasets for model consumption, especially when deciding between TOON, CSV, compact JSON, pretty JSON, YAML, Markdown tables, or prose.","tools":null,"tree":"claude","path":"~/.claude/skills/formatting-llm-context","real":"~/.agents/skills/formatting-llm-context","link":"~/.agents/skills/formatting-llm-context","broken":false,"mtimeMs":1783342668645.9507,"dupSame":false,"dupCross":[]},{"dir":"karpathy-guidelines","fmName":null,"desc":"Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.","tools":null,"tree":"claude","path":"~/.claude/skills/karpathy-guidelines","real":"~/.agents/skills/karpathy-guidelines","link":"~/.agents/skills/karpathy-guidelines","broken":false,"mtimeMs":1783342668649.8164,"dupSame":false,"dupCross":[]},{"dir":"lark-approval","fmName":null,"desc":"飞书审批：查询和处理审批待办/已办/实例，搜索可发起审批定义、查看定义详情并发起原生审批实例。当用户要处理审批任务、查看审批实例、搜索或发起审批时使用。审批待办不是飞书任务；非审批类待办走 lark-task。不负责创建审批定义；三方审批定义不走原生提单。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-approval","real":"~/.agents/skills/lark-approval","link":"~/.agents/skills/lark-approval","broken":false,"mtimeMs":1783469463894.8677,"dupSame":false,"dupCross":[]},{"dir":"lark-apps","fmName":null,"desc":"妙搭（Spark/Miaoda）应用开发与托管：应用创建、HTML静态站点发布、本地全栈开发、云端生成迭代、AI相关能力和飞书平台能力或者其他外部能力集成、日志/Trace/监控指标/PV/UV 查询、环境变量管理。当用户要开发/新建一个系统·工具·平台·应用，或要本地开发 / 云端开发 / 修改 / 部署 / 发布 / 上线 / 拿可分享链接，或用 HTML 做页面·网站·部署到妙搭，或提到妙搭/Spark/Miaoda（应用运行时域名形如 *.aiforce.cloud）、应用数据库、应用文件存储、开放 API Key、可见范围、线上日志、接口请求量、错误量、延迟、访问量、环境变量时使用。不负责普通云盘文件上传（lark-drive）、飞书文档编辑（lark-doc）、原生幻灯片创建（lark-slides）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-apps","real":"~/.agents/skills/lark-apps","link":"~/.agents/skills/lark-apps","broken":false,"mtimeMs":1783469464027.515,"dupSame":false,"dupCross":[]},{"dir":"lark-attendance","fmName":null,"desc":"飞书考勤打卡：查询自己的考勤打卡记录","tools":null,"tree":"claude","path":"~/.claude/skills/lark-attendance","real":"~/.agents/skills/lark-attendance","link":"~/.agents/skills/lark-attendance","broken":false,"mtimeMs":1783469464050.177,"dupSame":false,"dupCross":[]},{"dir":"lark-base","fmName":null,"desc":"飞书多维表格（Base）操作：建表、字段、记录、视图、统计、公式/lookup、表单、仪表盘、workflow、角色权限；遇到 Base/多维表格/bitable 或 /base/ 链接时使用。文件导入转 lark-drive，认证/授权转 lark-shared。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-base","real":"~/.agents/skills/lark-base","link":"~/.agents/skills/lark-base","broken":false,"mtimeMs":1783469464212.2349,"dupSame":false,"dupCross":[]},{"dir":"lark-calendar","fmName":null,"desc":"飞书日历：管理日历日程和会议室。查看/搜索日程、创建/更新日程、管理参会人、查询忙闲和推荐时段、预定会议室。当用户需要查看日程安排、创建/修改会议、查询/预定会议室时使用。不负责：查询过去的视频会议记录（走 lark-vc）、待办任务（走 lark-task）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-calendar","real":"~/.agents/skills/lark-calendar","link":"~/.agents/skills/lark-calendar","broken":false,"mtimeMs":1783469464296.5178,"dupSame":false,"dupCross":[]},{"dir":"lark-contact","fmName":null,"desc":"飞书 / Lark 通讯录:按姓名 / 邮箱解析成 open_id,或按 open_id 反查姓名 / 部门 / 邮箱 / 联系方式 / 个人状态 / 签名。当用户提到某人姓名要下一步发消息 / 排日程,或拿到 open_id 想查具体信息时使用。不负责部门树遍历、按部门列员工、组织架构图,这类需求走原生 OpenAPI。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-contact","real":"~/.agents/skills/lark-contact","link":"~/.agents/skills/lark-contact","broken":false,"mtimeMs":1783469464335.4312,"dupSame":false,"dupCross":[]},{"dir":"lark-doc","fmName":null,"desc":"飞书云文档（Docx / Wiki 文档）：读取和编辑飞书文档内容。当用户给出文档 URL 或 token，或需要查看、创建、编辑文档、插入或下载文档图片附件时使用。文档中嵌入的电子表格、多维表格、画板，先用本 skill 提取 token 再切到对应 skill。当用户给出 doubao.com 的 /docx/ 或 /wiki/ URL/token 时，也应直接使用本 skill；路由依据是 URL 路径模式和 token，而不是域名。不负责文档评论管理，也不负责表格或 Base 的数据操作。当用户明确要操作飞书思维笔记时，也使用本 skill。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-doc","real":"~/.agents/skills/lark-doc","link":"~/.agents/skills/lark-doc","broken":false,"mtimeMs":1783469464451.8096,"dupSame":false,"dupCross":[]},{"dir":"lark-drive","fmName":null,"desc":"飞书云空间（云盘/云存储）：管理 Drive 文件和文件夹，包含上传/下载、创建文件夹、复制/移动/删除、查看元数据、评论/权限/订阅、标题、版本和本地文件导入。用户需要整理云盘目录、处理云空间资源 URL/token，或导入 Word/Markdown/Excel/CSV/PPTX/.base 为 docx/sheet/bitable/slides 时使用；doubao.com 云空间 URL/token 也按资源路径和 token 路由，不回退 WebFetch。不负责：文档内容编辑（走 lark-doc）、表格/Base 表内数据操作（走 lark-sheets/lark-base）、知识空间节点/成员管理（走 lark-wiki）、原生 Markdown 文件读写/patch/diff（走 lark-markdown）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-drive","real":"~/.agents/skills/lark-drive","link":"~/.agents/skills/lark-drive","broken":false,"mtimeMs":1783469464689.1846,"dupSame":false,"dupCross":[]},{"dir":"lark-event","fmName":null,"desc":"Lark/Feishu real-time event listening / subscribing / consuming: stream events as NDJSON via `lark-cli event consume \u003cEventKey>` (covers IM messages/reactions/chat changes, Task updates, VC meeting started/joined/ended, Minutes generated, Whiteboard updated, etc.). Use for Lark bots, real-time message processing, long-running subscribers, streaming webhook/push handlers. Supports `--max-events` / `--timeout` bounded runs and a stderr ready-marker contract — designed for AI agents running as subprocesses.","tools":null,"tree":"claude","path":"~/.claude/skills/lark-event","real":"~/.agents/skills/lark-event","link":"~/.agents/skills/lark-event","broken":false,"mtimeMs":1783469464745.4778,"dupSame":false,"dupCross":[]},{"dir":"lark-flag-to-vault","fmName":null,"desc":"Larkでフラグ（ブックマーク）を付けたメッセージをObsidian Vaultに知識として取り込む。通常は平日18:07の自動ジョブ（com.shoma.claude-flag-import）が受信箱へ自動取り込みするため手動起動は不要。「フラグを今すぐ取り込んで」「Larkのブックマーク整理して」と言われたときに手動実行する。不負責：URL・記事・テキストの直接保存（capture）、メッセージの検索・送信（lark-im）。","tools":8,"tree":"claude","path":"~/.claude/skills/lark-flag-to-vault","real":"~/.agents/skills/lark-flag-to-vault","link":"~/.agents/skills/lark-flag-to-vault","broken":false,"mtimeMs":1783380913834.1196,"dupSame":false,"dupCross":[]},{"dir":"lark-im","fmName":null,"desc":"飞书即时通讯：收发消息和管理群聊。发送和回复消息、搜索聊天记录、管理群聊成员、上传下载图片和文件（支持大文件分片下载）、管理表情回复、发送应用内/短信/电话加急、发送和处理交互卡片（Interactive Card）、监听卡片按钮回调（card.action.trigger）。当用户需要发消息、查看或搜索聊天记录、下载聊天中的文件、查看群成员、搜索群、创建群聊或话题群、管理标记数据、管理 Feed 置顶（添加/移除/查询置顶会话）、管理标签数据、处理卡片回调时使用。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-im","real":"~/.agents/skills/lark-im","link":"~/.agents/skills/lark-im","broken":false,"mtimeMs":1783469465099.3132,"dupSame":false,"dupCross":[]},{"dir":"lark-mail","fmName":null,"desc":"飞书邮箱：Use when user mentions 起草邮件、写邮件、草稿、发送/回复/转发邮件、查阅邮件、看邮件、搜索邮件、邮件文件夹、邮件标签、邮件联系人、监听新邮件、邮件收信规则等；use for mail/email intent only. Do not use for docs/sheets/calendar/auth setup/pure contact lookup/IM chat tasks.","tools":null,"tree":"claude","path":"~/.claude/skills/lark-mail","real":"~/.agents/skills/lark-mail","link":"~/.agents/skills/lark-mail","broken":false,"mtimeMs":1783469465334.8748,"dupSame":false,"dupCross":[]},{"dir":"lark-markdown","fmName":null,"desc":"飞书 Markdown：查看、创建、上传、编辑和比较 Markdown 文件。当用户需要创建或编辑 Markdown 文件、读取、修改、局部 patch 或比较差异时使用。不负责将 Markdown 导入为飞书在线文档，也不负责文件搜索、权限、评论、移动、删除等云空间管理操作。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-markdown","real":"~/.agents/skills/lark-markdown","link":"~/.agents/skills/lark-markdown","broken":false,"mtimeMs":1783469465408.5732,"dupSame":false,"dupCross":[]},{"dir":"lark-minutes","fmName":null,"desc":"飞书妙记：搜索妙记、查看妙记基础信息、下载/上传音视频、读取或编辑妙记的产物内容、改标题、替换说话人/关键词。当给出minute_token、本地音视频文件，要查/改/转妙记产物时使用；本地音视频转纪要/逐字稿优先走本 skill，不要用 ffmpeg/whisper 本地转写。不负责：获取会议关联妙记，或仅按自然语言标题定位纪要","tools":null,"tree":"claude","path":"~/.claude/skills/lark-minutes","real":"~/.agents/skills/lark-minutes","link":"~/.agents/skills/lark-minutes","broken":false,"mtimeMs":1783469465507.2664,"dupSame":false,"dupCross":[]},{"dir":"lark-note","fmName":null,"desc":"飞书会议纪要（Note）直查：已知 note_id 时查询纪要详情、展示类型、关联文档 token，并读取 unified 原始逐字记录。当用户已持有 note_id，或从文档显式 vc-node-id 获得 note_id 时使用。不负责会议/日程/妙记定位、文档标题搜索或 Docx 正文读取。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-note","real":"~/.agents/skills/lark-note","link":"~/.agents/skills/lark-note","broken":false,"mtimeMs":1783469465548.644,"dupSame":false,"dupCross":[]},{"dir":"lark-okr","fmName":null,"desc":"飞书 OKR：管理目标与关键结果。查看和编辑 OKR 周期、目标、关键结果、对齐关系、量化指标和进展记录。当用户需要查看或创建 OKR、管理目标和关键结果、查看对齐关系时使用。不负责：待办任务管理（lark-task）、日程/会议安排（lark-calendar）、绩效评估","tools":null,"tree":"claude","path":"~/.claude/skills/lark-okr","real":"~/.agents/skills/lark-okr","link":"~/.agents/skills/lark-okr","broken":false,"mtimeMs":1783469465652.8364,"dupSame":false,"dupCross":[]},{"dir":"lark-openapi-explorer","fmName":null,"desc":"飞书/Lark 原生 OpenAPI 探索：从官方文档库中挖掘未经 CLI 封装的原生 OpenAPI 接口。当用户的需求无法被现有 lark-* skill 或 lark-cli 已注册命令满足，需要查找并调用原生飞书 OpenAPI 时使用。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-openapi-explorer","real":"~/.agents/skills/lark-openapi-explorer","link":"~/.agents/skills/lark-openapi-explorer","broken":false,"mtimeMs":1783469465674.9573,"dupSame":false,"dupCross":[]},{"dir":"lark-shared","fmName":null,"desc":"Use for lark-cli setup/auth tasks: auth login/status/logout, user vs bot identity, business-domain permissions (--domain, including all/docs/drive), missing scopes, revoking authorization, or handling _notice JSON.","tools":null,"tree":"claude","path":"~/.claude/skills/lark-shared","real":"~/.agents/skills/lark-shared","link":"~/.agents/skills/lark-shared","broken":false,"mtimeMs":1783469465717.1968,"dupSame":false,"dupCross":[]},{"dir":"lark-sheets","fmName":null,"desc":"飞书电子表格：创建和操作电子表格。支持创建表格、管理工作表与行列结构（增删/合并/调整尺寸/隐藏/冻结）、读写单元格（值/公式/样式/批注/单元格图片）、查找替换、多操作原子批量更新，以及图表、透视表、条件格式、筛选器、迷你图、浮动图片等对象的创建与维护。当用户需要创建电子表格、管理工作表、批量读写或编辑数据、统计汇总与可视化、表格美化、公式计算（含 Excel 公式迁移）、金融/财务建模（DCF、三张表、预算、Sensitivity 等）等任务时使用。若用户是想按名称或关键词搜索云空间（云盘/云存储）里的表格文件，请改用 lark-drive 的 drive +search 先定位资源。当用户给出 doubao.com 的 /sheets/ URL/token 时，也应直接使用本 skill，不要因为域名不是飞书而回退到 WebFetch；路由依据是 URL 路径模式和 token，而不是域名。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-sheets","real":"~/.agents/skills/lark-sheets","link":"~/.agents/skills/lark-sheets","broken":false,"mtimeMs":1783469465842.1636,"dupSame":false,"dupCross":[]},{"dir":"lark-skill-maker","fmName":null,"desc":"创建 lark-cli 的自定义 Skill。当用户需要把飞书 API 操作封装成可复用的 Skill（包装原子 API 或编排多步流程）时使用。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-skill-maker","real":"~/.agents/skills/lark-skill-maker","link":"~/.agents/skills/lark-skill-maker","broken":false,"mtimeMs":1783469465861.9724,"dupSame":false,"dupCross":[]},{"dir":"lark-slides","fmName":null,"desc":"飞书幻灯片：创建和编辑幻灯片。创建演示文稿、读取幻灯片内容、管理幻灯片页面（创建、删除、读取、局部替换）。当用户需要创建或编辑幻灯片、读取或修改单个页面时使用。当用户给出 doubao.com 的 /slides/ URL/token 时，也应直接使用本 skill，不要因为域名不是飞书而回退到 WebFetch；路由依据是 URL 路径模式和 token，而不是域名。不负责：云文档内容编辑（走 lark-doc）、云文档里的独立画板对象（走 lark-whiteboard，注意 slide 内嵌的流程图/架构图仍属本 skill）、上传或下载普通文件（走 lark-drive）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-slides","real":"~/.agents/skills/lark-slides","link":"~/.agents/skills/lark-slides","broken":false,"mtimeMs":1783469466050.8386,"dupSame":false,"dupCross":[]},{"dir":"lark-task","fmName":null,"desc":"飞书任务：管理任务、清单和任务智能体。创建待办任务、查看和更新任务状态、拆分子任务、组织任务清单、分配协作成员、上传任务附件、注册或注销任务智能体、更新任务智能体的主页数据、写入智能体任务记录。当用户需要创建待办事项、查看任务列表、跟踪任务进度、管理项目清单或给他人分配任务、为任务上传附件文件、注册注销任务智能体、更新智能体主页数据、写入任务记录时使用。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-task","real":"~/.agents/skills/lark-task","link":"~/.agents/skills/lark-task","broken":false,"mtimeMs":1783469466157.2222,"dupSame":false,"dupCross":[]},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/.agents/skills/lark-translate","link":"~/.agents/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[]},{"dir":"lark-vc","fmName":null,"desc":"飞书视频会议：搜索历史会议记录、查询会议纪要（总结/待办/章节/逐字稿）、查询参会人快照。当用户查询已结束的会议、获取会议产物（纪要/妙记）、查看参会人时使用；查询未来日程走 lark-calendar。不负责：Agent 真实入会/离会、会中实时事件（走 lark-vc-agent）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-vc","real":"~/.agents/skills/lark-vc","link":"~/.agents/skills/lark-vc","broken":false,"mtimeMs":1783469466207.654,"dupSame":false,"dupCross":[]},{"dir":"lark-vc-agent","fmName":null,"desc":"飞书视频会议会中能力：用于让应用机器人真实加入或离开正在进行的会议，并读取当前身份可见的会中事件、发送会中文本消息或会中表情。适用于用户询问正在开的会议发生了什么、谁在发言、是否共享内容，或需要发现当前可读的进行中会议 ID。不负责已结束会议搜索、参会人快照、纪要、逐字稿或录制查询，这些使用 lark-vc 技能。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-vc-agent","real":"~/.agents/skills/lark-vc-agent","link":"~/.agents/skills/lark-vc-agent","broken":false,"mtimeMs":1783469466252.3792,"dupSame":false,"dupCross":[]},{"dir":"lark-whiteboard","fmName":null,"desc":"飞书画板：查询和编辑飞书云文档中的画板。支持导出画板为预览图片、导出原始节点结构、使用多种格式更新画板内容。 当用户需要查看画板内容、导出画板图片、编辑画板时使用此 skill。不负责：飞书云文档内容编辑（lark-doc）、文档内嵌电子表格/Base（lark-sheets / lark-base）。\n","tools":null,"tree":"claude","path":"~/.claude/skills/lark-whiteboard","real":"~/.agents/skills/lark-whiteboard","link":"~/.agents/skills/lark-whiteboard","broken":false,"mtimeMs":1783469466441.749,"dupSame":false,"dupCross":[]},{"dir":"lark-whiteboard-cli","fmName":null,"desc":"当用户要求或使用飞书画板绘制架构图、流程图、思维导图、时序图或其他可视化图表时使用此 skill，作为使用 whiteboard-cli 设计图表布局的指南\n","tools":null,"tree":"claude","path":"~/.claude/skills/lark-whiteboard-cli","real":"~/.agents/skills/lark-whiteboard-cli","link":"~/.agents/skills/lark-whiteboard-cli","broken":false,"mtimeMs":1781587882051.6614,"dupSame":false,"dupCross":[]},{"dir":"lark-wiki","fmName":null,"desc":"飞书知识库：管理知识空间、空间成员和文档节点。创建和查询知识空间、查看和管理空间成员、管理节点层级结构、在知识库中组织文档和快捷方式。当用户需要在知识库中查找或创建文档、浏览知识空间结构、查看或管理空间成员、移动或复制节点时使用。当用户给出 doubao.com 的 /wiki/ URL/token 时，也应直接使用本 skill，不要因为域名不是飞书而回退到 WebFetch；路由依据是 URL 路径模式和 token，而不是域名。不负责：上传文件到知识库节点下（走 lark-drive）、编辑文档/表格/Base 内容（走 lark-doc / lark-sheets / lark-base）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-wiki","real":"~/.agents/skills/lark-wiki","link":"~/.agents/skills/lark-wiki","broken":false,"mtimeMs":1783469466561.7583,"dupSame":false,"dupCross":[]},{"dir":"lark-workflow-meeting-summary","fmName":null,"desc":"会议纪要整理工作流：汇总指定时间范围内的会议纪要并生成结构化报告。当用户需要整理会议纪要、生成会议周报、回顾一段时间内的会议内容时使用。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-workflow-meeting-summary","real":"~/.agents/skills/lark-workflow-meeting-summary","link":"~/.agents/skills/lark-workflow-meeting-summary","broken":false,"mtimeMs":1783469466607.3281,"dupSame":false,"dupCross":[]},{"dir":"lark-workflow-standup-report","fmName":null,"desc":"日程待办摘要：编排 calendar +agenda 和 task +get-my-tasks，生成指定日期的日程与未完成任务摘要。适用于了解今天/明天/本周的安排。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-workflow-standup-report","real":"~/.agents/skills/lark-workflow-standup-report","link":"~/.agents/skills/lark-workflow-standup-report","broken":false,"mtimeMs":1783469466633.4446,"dupSame":false,"dupCross":[]},{"dir":"lecture-builder","fmName":null,"desc":"講義・研修資料を一気通貫で作成する（インテーク→構成案→Marpスライド→講師ノート→QAチェック）。講師業全般向け（対象講座は固定しない）。「講義資料つくって」「研修スライド」「来月の定例講義の準備」「/lecture-builder」で起動。不負責：Lark Slidesの直接編集（lark-slides）、Canvaデザイン制作、講義の配信・告知。","tools":12,"tree":"claude","path":"~/.claude/skills/lecture-builder","real":"~/.agents/skills/lecture-builder","link":"~/.agents/skills/lecture-builder","broken":false,"mtimeMs":1783380913848.5298,"dupSame":false,"dupCross":[]},{"dir":"lecture-scout","fmName":null,"desc":"講義・研修・講座で使えるAI最新ニュースを収集し、講義ネタとしてObsidian Vaultに蓄積する。「講義ネタ集めて」「今週のAIニュース収集」「/lecture-scout」で起動。定期実行（週1）を想定した無人完走設計。不負責：講義資料の作成（lecture-builder）、ニュース以外の知識保存（capture）。","tools":8,"tree":"claude","path":"~/.claude/skills/lecture-scout","real":"~/.agents/skills/lecture-scout","link":"~/.agents/skills/lecture-scout","broken":false,"mtimeMs":1783380913861.7297,"dupSame":false,"dupCross":[]},{"dir":"meeting-followup","fmName":null,"desc":"my-agentが自動生成した議事録（Bitable）を読み、Vault会議ノート化＋深掘り分析（タスク登録漏れの照合・プロジェクト文脈への接続）を行う。「さっきの会議まとめて」「会議のフォローして」「/meeting-followup」「/meeting-followup 会議名や日付」で起動。不負責：議事録の生成・Larkタスクの自動登録（my-agent auto-meeting-workflowが10分毎に自動実行）、週次の一括まとめ（weekly-report）、会議への参加（lark-vc-agent）。","tools":13,"tree":"claude","path":"~/.claude/skills/meeting-followup","real":"~/.agents/skills/meeting-followup","link":"~/.agents/skills/meeting-followup","broken":false,"mtimeMs":1783342668649.4604,"dupSame":false,"dupCross":[]},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[]},{"dir":"mobile-design","fmName":null,"desc":"Mobile-first UI/UX design system for building or reviewing mobile app and mobile web interfaces. Use when designing or implementing mobile UI (iOS / Android / React Native / Flutter / PWA / responsive web on phones), touch interactions, navigation patterns, mobile forms, or when the user mentions モバイル・スマホUI・アプリ画面. Covers platform conventions, touch targets, battery / offline constraints. Not for desktop-only layouts.","tools":null,"tree":"claude","path":"~/.claude/skills/mobile-design","real":"~/.agents/skills/mobile-design","link":"~/.agents/skills/mobile-design","broken":false,"mtimeMs":1782984958161.617,"dupSame":false,"dupCross":[]},{"dir":"playwright-cli","fmName":null,"desc":"Automate browser interactions, test web pages and work with Playwright tests.","tools":null,"tree":"claude","path":"~/.claude/skills/playwright-cli","real":"~/.agents/skills/playwright-cli","link":"~/.agents/skills/playwright-cli","broken":false,"mtimeMs":1783342668645.6758,"dupSame":false,"dupCross":[]},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783353394704.038,"dupSame":false,"dupCross":[]},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[]},{"dir":"security-scanner","fmName":null,"desc":"PCにインストールされたパッケージやツールのセキュリティチェックを行うスキル。 npm/node_modules、pip/Pythonパッケージ、Homebrewなど主要パッケージマネージャの インストール済みソフトウェアを対象に、難読化コード、外部通信、不審な依存関係、 ライフサイクルスクリプト悪用、認証情報窃取、暗号通貨マイナー、リバースシェル、 実行可能バイナリ、CI/CDサプライチェーン攻撃の兆候をスキャンする。 ユーザーが「セキュリティチェック」「パッケージスキャン」「マルウェア検出」 「依存関係の安全性」「npm audit」「pip安全性」「サプライチェーン」 「不審なパッケージ」「postinstall確認」と言及した場合や、 インストール済みツールの安全性について質問した場合にこのスキルを使用すること。 たとえ明示的に「セキュリティスキャン」と言わなくても、パッケージの安全性や 信頼性に関する懸念が読み取れる場合は積極的に使用する。\n","tools":null,"tree":"claude","path":"~/.claude/skills/security-scanner","real":"~/.agents/skills/security-scanner","link":"~/.agents/skills/security-scanner","broken":false,"mtimeMs":1783342668653.7861,"dupSame":false,"dupCross":[]},{"dir":"weekly-report","fmName":null,"desc":"直近1週間の週次サマリーを生成する。Claude Code / Codex / Cursor チャット履歴 + Lark Base チャット履歴 + Lark Calendar + Lark Tasks + Lark VC を組み合わせて構造化レポートを出力。「週次レビュー」「今週のまとめ」「weekly report」「/weekly-report」で起動。不負責：特定日の日程・タスク照会（lark-workflow-standup-report）、会議紀要のみの整理（lark-workflow-meeting-summary）。","tools":9,"tree":"claude","path":"~/.claude/skills/weekly-report","real":"~/.agents/skills/weekly-report","link":"~/.agents/skills/weekly-report","broken":false,"mtimeMs":1783381135628.2483,"dupSame":false,"dupCross":[]},{"dir":"a11y-debugging","fmName":null,"desc":"Uses Chrome DevTools MCP for accessibility (a11y) debugging and auditing based on web.dev guidelines. Use when testing semantic HTML, ARIA labels, focus states, keyboard navigation, tap targets, and color contrast.","tools":null,"tree":"agents","path":"~/.agents/skills/a11y-debugging","real":"~/.agents/skills/a11y-debugging","link":null,"broken":false,"mtimeMs":1783165294115.076,"dupSame":false,"dupCross":[]},{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"agents","path":"~/.agents/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[]},{"dir":"capture","fmName":null,"desc":"URL・記事・動画メモ・思いつき・学びを要約してObsidian Vaultの正しい場所に保存し、MOCを更新する。「Vaultに保存」「キャプチャして」「この記事まとめて保存」「/capture」で起動。「受信箱を整理して」「/capture inbox」で受信箱トリアージモード。分類は出典でなく本質（適用範囲・抽象レベル）で行う。不負責：日誌（Journal）の作成、プロジェクトノートの本文編集、Larkドキュメントへの保存（lark-doc）。","tools":8,"tree":"agents","path":"~/.agents/skills/capture","real":"~/.agents/skills/capture","link":null,"broken":false,"mtimeMs":1783342668647.0928,"dupSame":false,"dupCross":[]},{"dir":"daily-schedule-report","fmName":null,"desc":"毎日のスケジュールとタスクを指定されたフォーマットで出力するレポート生成ツール。\n\n**以下の状況でこのSkillを使用**:\n(1) ユーザーが「今日のスケジュール」「今日のタスク」「今日の予定」を尋ねた場合\n(2) デイリーレポートの生成が要求された場合\n(3) ユーザーが「毎日このフォーマットで」と指定したレポート形式での出力が必要な場合\n","tools":null,"tree":"agents","path":"~/.agents/skills/daily-schedule-report","real":"~/.agents/skills/daily-schedule-report","link":null,"broken":false,"mtimeMs":1782520858164.7546,"dupSame":false,"dupCross":[]},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"agents","path":"~/.agents/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[]},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"agents","path":"~/.agents/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[]},{"dir":"find-skills","fmName":null,"desc":"Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\", \"is there a skill that can...\", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill.","tools":null,"tree":"agents","path":"~/.agents/skills/find-skills","real":"~/.agents/skills/find-skills","link":null,"broken":false,"mtimeMs":1773057111656.161,"dupSame":false,"dupCross":[]},{"dir":"formatting-llm-context","fmName":null,"desc":"Chooses token-efficient formats for structured data passed to LLM prompts or agent context. Use when preparing JSON, CSV, tables, records, API responses, logs, or datasets for model consumption, especially when deciding between TOON, CSV, compact JSON, pretty JSON, YAML, Markdown tables, or prose.","tools":null,"tree":"agents","path":"~/.agents/skills/formatting-llm-context","real":"~/.agents/skills/formatting-llm-context","link":null,"broken":false,"mtimeMs":1783342668645.9507,"dupSame":false,"dupCross":[]},{"dir":"github-cli","fmName":null,"desc":"This skill should be used when users need to interact with GitHub via the gh CLI. It covers repository management (create, delete, clone, fork), CI/CD workflows (GitHub Actions), Issues, Pull Requests, Releases, and other GitHub operations. Triggers on requests mentioning GitHub, repos, PRs, issues, actions, or workflows.","tools":null,"tree":"agents","path":"~/.agents/skills/github-cli","real":"~/.agents/skills/github-cli","link":null,"broken":false,"mtimeMs":1769176200853.0193,"dupSame":false,"dupCross":[]},{"dir":"homepage-audit","fmName":null,"desc":"Full conversion audit for any homepage or landing page. Use when someone asks to \"review my homepage,\" \"audit my landing page,\" \"why isn't my page converting,\" \"check my website,\" or wants feedback on their marketing page. Requires URL or screenshot before proceeding.","tools":null,"tree":"agents","path":"~/.agents/skills/homepage-audit","real":"~/.agents/skills/homepage-audit","link":null,"broken":false,"mtimeMs":1782526995607.6875,"dupSame":false,"dupCross":[]},{"dir":"karpathy-guidelines","fmName":null,"desc":"Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.","tools":null,"tree":"agents","path":"~/.agents/skills/karpathy-guidelines","real":"~/.agents/skills/karpathy-guidelines","link":null,"broken":false,"mtimeMs":1783342668649.8164,"dupSame":false,"dupCross":[]},{"dir":"lark-approval","fmName":null,"desc":"飞书审批：查询和处理审批待办/已办/实例，搜索可发起审批定义、查看定义详情并发起原生审批实例。当用户要处理审批任务、查看审批实例、搜索或发起审批时使用。审批待办不是飞书任务；非审批类待办走 lark-task。不负责创建审批定义；三方审批定义不走原生提单。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-approval","real":"~/.agents/skills/lark-approval","link":null,"broken":false,"mtimeMs":1783469463894.8677,"dupSame":false,"dupCross":[]},{"dir":"lark-apps","fmName":null,"desc":"妙搭（Spark/Miaoda）应用开发与托管：应用创建、HTML静态站点发布、本地全栈开发、云端生成迭代、AI相关能力和飞书平台能力或者其他外部能力集成、日志/Trace/监控指标/PV/UV 查询、环境变量管理。当用户要开发/新建一个系统·工具·平台·应用，或要本地开发 / 云端开发 / 修改 / 部署 / 发布 / 上线 / 拿可分享链接，或用 HTML 做页面·网站·部署到妙搭，或提到妙搭/Spark/Miaoda（应用运行时域名形如 *.aiforce.cloud）、应用数据库、应用文件存储、开放 API Key、可见范围、线上日志、接口请求量、错误量、延迟、访问量、环境变量时使用。不负责普通云盘文件上传（lark-drive）、飞书文档编辑（lark-doc）、原生幻灯片创建（lark-slides）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-apps","real":"~/.agents/skills/lark-apps","link":null,"broken":false,"mtimeMs":1783469464027.515,"dupSame":false,"dupCross":[]},{"dir":"lark-attendance","fmName":null,"desc":"飞书考勤打卡：查询自己的考勤打卡记录","tools":null,"tree":"agents","path":"~/.agents/skills/lark-attendance","real":"~/.agents/skills/lark-attendance","link":null,"broken":false,"mtimeMs":1783469464050.177,"dupSame":false,"dupCross":[]},{"dir":"lark-base","fmName":null,"desc":"飞书多维表格（Base）操作：建表、字段、记录、视图、统计、公式/lookup、表单、仪表盘、workflow、角色权限；遇到 Base/多维表格/bitable 或 /base/ 链接时使用。文件导入转 lark-drive，认证/授权转 lark-shared。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-base","real":"~/.agents/skills/lark-base","link":null,"broken":false,"mtimeMs":1783469464212.2349,"dupSame":false,"dupCross":[]},{"dir":"lark-base-workspace","fmName":null,"desc":null,"tools":null,"tree":"agents","path":"~/.agents/skills/lark-base-workspace","real":"~/.agents/skills/lark-base-workspace","link":null,"broken":false,"mtimeMs":1781533079061.5715,"dupSame":false,"dupCross":[]},{"dir":"lark-calendar","fmName":null,"desc":"飞书日历：管理日历日程和会议室。查看/搜索日程、创建/更新日程、管理参会人、查询忙闲和推荐时段、预定会议室。当用户需要查看日程安排、创建/修改会议、查询/预定会议室时使用。不负责：查询过去的视频会议记录（走 lark-vc）、待办任务（走 lark-task）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-calendar","real":"~/.agents/skills/lark-calendar","link":null,"broken":false,"mtimeMs":1783469464296.5178,"dupSame":false,"dupCross":[]},{"dir":"lark-contact","fmName":null,"desc":"飞书 / Lark 通讯录:按姓名 / 邮箱解析成 open_id,或按 open_id 反查姓名 / 部门 / 邮箱 / 联系方式 / 个人状态 / 签名。当用户提到某人姓名要下一步发消息 / 排日程,或拿到 open_id 想查具体信息时使用。不负责部门树遍历、按部门列员工、组织架构图,这类需求走原生 OpenAPI。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-contact","real":"~/.agents/skills/lark-contact","link":null,"broken":false,"mtimeMs":1783469464335.4312,"dupSame":false,"dupCross":[]},{"dir":"lark-doc","fmName":null,"desc":"飞书云文档（Docx / Wiki 文档）：读取和编辑飞书文档内容。当用户给出文档 URL 或 token，或需要查看、创建、编辑文档、插入或下载文档图片附件时使用。文档中嵌入的电子表格、多维表格、画板，先用本 skill 提取 token 再切到对应 skill。当用户给出 doubao.com 的 /docx/ 或 /wiki/ URL/token 时，也应直接使用本 skill；路由依据是 URL 路径模式和 token，而不是域名。不负责文档评论管理，也不负责表格或 Base 的数据操作。当用户明确要操作飞书思维笔记时，也使用本 skill。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-doc","real":"~/.agents/skills/lark-doc","link":null,"broken":false,"mtimeMs":1783469464451.8096,"dupSame":false,"dupCross":[]},{"dir":"lark-drive","fmName":null,"desc":"飞书云空间（云盘/云存储）：管理 Drive 文件和文件夹，包含上传/下载、创建文件夹、复制/移动/删除、查看元数据、评论/权限/订阅、标题、版本和本地文件导入。用户需要整理云盘目录、处理云空间资源 URL/token，或导入 Word/Markdown/Excel/CSV/PPTX/.base 为 docx/sheet/bitable/slides 时使用；doubao.com 云空间 URL/token 也按资源路径和 token 路由，不回退 WebFetch。不负责：文档内容编辑（走 lark-doc）、表格/Base 表内数据操作（走 lark-sheets/lark-base）、知识空间节点/成员管理（走 lark-wiki）、原生 Markdown 文件读写/patch/diff（走 lark-markdown）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-drive","real":"~/.agents/skills/lark-drive","link":null,"broken":false,"mtimeMs":1783469464689.1846,"dupSame":false,"dupCross":[]},{"dir":"lark-er-diagram","fmName":null,"desc":"Create, redesign, and review accurate ER diagrams for Lark whiteboards. Use this skill whenever the user asks for an ER diagram, entity relationship diagram, database schema visualization, table relationship map, data model, cardinality review, or wants SQL, Prisma, Supabase, or other schema definitions turned into a readable diagram. This skill validates entities, attributes, primary keys, foreign keys, relationship cardinalities, and relational modeling risks before delegating final rendering and Lark whiteboard updates to lark-whiteboard.\n","tools":null,"tree":"agents","path":"~/.agents/skills/lark-er-diagram","real":"~/.agents/skills/lark-er-diagram","link":null,"broken":false,"mtimeMs":1781586971894.8955,"dupSame":false,"dupCross":[]},{"dir":"lark-event","fmName":null,"desc":"Lark/Feishu real-time event listening / subscribing / consuming: stream events as NDJSON via `lark-cli event consume \u003cEventKey>` (covers IM messages/reactions/chat changes, Task updates, VC meeting started/joined/ended, Minutes generated, Whiteboard updated, etc.). Use for Lark bots, real-time message processing, long-running subscribers, streaming webhook/push handlers. Supports `--max-events` / `--timeout` bounded runs and a stderr ready-marker contract — designed for AI agents running as subprocesses.","tools":null,"tree":"agents","path":"~/.agents/skills/lark-event","real":"~/.agents/skills/lark-event","link":null,"broken":false,"mtimeMs":1783469464745.4778,"dupSame":false,"dupCross":[]},{"dir":"lark-flag-to-vault","fmName":null,"desc":"Larkでフラグ（ブックマーク）を付けたメッセージをObsidian Vaultに知識として取り込む。通常は平日18:07の自動ジョブ（com.shoma.claude-flag-import）が受信箱へ自動取り込みするため手動起動は不要。「フラグを今すぐ取り込んで」「Larkのブックマーク整理して」と言われたときに手動実行する。不負責：URL・記事・テキストの直接保存（capture）、メッセージの検索・送信（lark-im）。","tools":8,"tree":"agents","path":"~/.agents/skills/lark-flag-to-vault","real":"~/.agents/skills/lark-flag-to-vault","link":null,"broken":false,"mtimeMs":1783380913834.1196,"dupSame":false,"dupCross":[]},{"dir":"lark-flowchart","fmName":null,"desc":"Create, redesign, and review readable flowcharts for Lark whiteboards. Use this skill whenever the user asks for a flowchart, business process, approval flow, program logic, decision flow, exception flow, state transition, or wants an existing process diagram made easier to follow. This skill specializes in information design, standard flowchart semantics, concise labels, branch completeness, and readability. It delegates final Lark whiteboard rendering and writing to lark-whiteboard.\n","tools":null,"tree":"agents","path":"~/.agents/skills/lark-flowchart","real":"~/.agents/skills/lark-flowchart","link":null,"broken":false,"mtimeMs":1781586999757.9277,"dupSame":false,"dupCross":[]},{"dir":"lark-im","fmName":null,"desc":"飞书即时通讯：收发消息和管理群聊。发送和回复消息、搜索聊天记录、管理群聊成员、上传下载图片和文件（支持大文件分片下载）、管理表情回复、发送应用内/短信/电话加急、发送和处理交互卡片（Interactive Card）、监听卡片按钮回调（card.action.trigger）。当用户需要发消息、查看或搜索聊天记录、下载聊天中的文件、查看群成员、搜索群、创建群聊或话题群、管理标记数据、管理 Feed 置顶（添加/移除/查询置顶会话）、管理标签数据、处理卡片回调时使用。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-im","real":"~/.agents/skills/lark-im","link":null,"broken":false,"mtimeMs":1783469465099.3132,"dupSame":false,"dupCross":[]},{"dir":"lark-mail","fmName":null,"desc":"飞书邮箱：Use when user mentions 起草邮件、写邮件、草稿、发送/回复/转发邮件、查阅邮件、看邮件、搜索邮件、邮件文件夹、邮件标签、邮件联系人、监听新邮件、邮件收信规则等；use for mail/email intent only. Do not use for docs/sheets/calendar/auth setup/pure contact lookup/IM chat tasks.","tools":null,"tree":"agents","path":"~/.agents/skills/lark-mail","real":"~/.agents/skills/lark-mail","link":null,"broken":false,"mtimeMs":1783469465334.8748,"dupSame":false,"dupCross":[]},{"dir":"lark-markdown","fmName":null,"desc":"飞书 Markdown：查看、创建、上传、编辑和比较 Markdown 文件。当用户需要创建或编辑 Markdown 文件、读取、修改、局部 patch 或比较差异时使用。不负责将 Markdown 导入为飞书在线文档，也不负责文件搜索、权限、评论、移动、删除等云空间管理操作。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-markdown","real":"~/.agents/skills/lark-markdown","link":null,"broken":false,"mtimeMs":1783469465408.5732,"dupSame":false,"dupCross":[]},{"dir":"lark-minutes","fmName":null,"desc":"飞书妙记：搜索妙记、查看妙记基础信息、下载/上传音视频、读取或编辑妙记的产物内容、改标题、替换说话人/关键词。当给出minute_token、本地音视频文件，要查/改/转妙记产物时使用；本地音视频转纪要/逐字稿优先走本 skill，不要用 ffmpeg/whisper 本地转写。不负责：获取会议关联妙记，或仅按自然语言标题定位纪要","tools":null,"tree":"agents","path":"~/.agents/skills/lark-minutes","real":"~/.agents/skills/lark-minutes","link":null,"broken":false,"mtimeMs":1783469465507.2664,"dupSame":false,"dupCross":[]},{"dir":"lark-note","fmName":null,"desc":"飞书会议纪要（Note）直查：已知 note_id 时查询纪要详情、展示类型、关联文档 token，并读取 unified 原始逐字记录。当用户已持有 note_id，或从文档显式 vc-node-id 获得 note_id 时使用。不负责会议/日程/妙记定位、文档标题搜索或 Docx 正文读取。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-note","real":"~/.agents/skills/lark-note","link":null,"broken":false,"mtimeMs":1783469465548.644,"dupSame":false,"dupCross":[]},{"dir":"lark-okr","fmName":null,"desc":"飞书 OKR：管理目标与关键结果。查看和编辑 OKR 周期、目标、关键结果、对齐关系、量化指标和进展记录。当用户需要查看或创建 OKR、管理目标和关键结果、查看对齐关系时使用。不负责：待办任务管理（lark-task）、日程/会议安排（lark-calendar）、绩效评估","tools":null,"tree":"agents","path":"~/.agents/skills/lark-okr","real":"~/.agents/skills/lark-okr","link":null,"broken":false,"mtimeMs":1783469465652.8364,"dupSame":false,"dupCross":[]},{"dir":"lark-openapi-explorer","fmName":null,"desc":"飞书/Lark 原生 OpenAPI 探索：从官方文档库中挖掘未经 CLI 封装的原生 OpenAPI 接口。当用户的需求无法被现有 lark-* skill 或 lark-cli 已注册命令满足，需要查找并调用原生飞书 OpenAPI 时使用。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-openapi-explorer","real":"~/.agents/skills/lark-openapi-explorer","link":null,"broken":false,"mtimeMs":1783469465674.9573,"dupSame":false,"dupCross":[]},{"dir":"lark-sequence-diagram","fmName":null,"desc":"Create, redesign, and review readable sequence diagrams for Lark whiteboards. Use this skill whenever the user asks about API interactions, authentication or payment flows, webhooks, asynchronous events, service-to-service communication, retries, timeouts, or wants a system interaction described in chronological order. This skill validates participants, messages, responses, activation, and alt/opt/loop/par/critical fragments before delegating rendering and Lark whiteboard updates to lark-whiteboard.\n","tools":null,"tree":"agents","path":"~/.agents/skills/lark-sequence-diagram","real":"~/.agents/skills/lark-sequence-diagram","link":null,"broken":false,"mtimeMs":1781586989829.3494,"dupSame":false,"dupCross":[]},{"dir":"lark-shared","fmName":null,"desc":"Use for lark-cli setup/auth tasks: auth login/status/logout, user vs bot identity, business-domain permissions (--domain, including all/docs/drive), missing scopes, revoking authorization, or handling _notice JSON.","tools":null,"tree":"agents","path":"~/.agents/skills/lark-shared","real":"~/.agents/skills/lark-shared","link":null,"broken":false,"mtimeMs":1783469465717.1968,"dupSame":false,"dupCross":[]},{"dir":"lark-sheets","fmName":null,"desc":"飞书电子表格：创建和操作电子表格。支持创建表格、管理工作表与行列结构（增删/合并/调整尺寸/隐藏/冻结）、读写单元格（值/公式/样式/批注/单元格图片）、查找替换、多操作原子批量更新，以及图表、透视表、条件格式、筛选器、迷你图、浮动图片等对象的创建与维护。当用户需要创建电子表格、管理工作表、批量读写或编辑数据、统计汇总与可视化、表格美化、公式计算（含 Excel 公式迁移）、金融/财务建模（DCF、三张表、预算、Sensitivity 等）等任务时使用。若用户是想按名称或关键词搜索云空间（云盘/云存储）里的表格文件，请改用 lark-drive 的 drive +search 先定位资源。当用户给出 doubao.com 的 /sheets/ URL/token 时，也应直接使用本 skill，不要因为域名不是飞书而回退到 WebFetch；路由依据是 URL 路径模式和 token，而不是域名。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-sheets","real":"~/.agents/skills/lark-sheets","link":null,"broken":false,"mtimeMs":1783469465842.1636,"dupSame":false,"dupCross":[]},{"dir":"lark-skill-maker","fmName":null,"desc":"创建 lark-cli 的自定义 Skill。当用户需要把飞书 API 操作封装成可复用的 Skill（包装原子 API 或编排多步流程）时使用。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-skill-maker","real":"~/.agents/skills/lark-skill-maker","link":null,"broken":false,"mtimeMs":1783469465861.9724,"dupSame":false,"dupCross":[]},{"dir":"lark-slides","fmName":null,"desc":"飞书幻灯片：创建和编辑幻灯片。创建演示文稿、读取幻灯片内容、管理幻灯片页面（创建、删除、读取、局部替换）。当用户需要创建或编辑幻灯片、读取或修改单个页面时使用。当用户给出 doubao.com 的 /slides/ URL/token 时，也应直接使用本 skill，不要因为域名不是飞书而回退到 WebFetch；路由依据是 URL 路径模式和 token，而不是域名。不负责：云文档内容编辑（走 lark-doc）、云文档里的独立画板对象（走 lark-whiteboard，注意 slide 内嵌的流程图/架构图仍属本 skill）、上传或下载普通文件（走 lark-drive）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-slides","real":"~/.agents/skills/lark-slides","link":null,"broken":false,"mtimeMs":1783469466050.8386,"dupSame":false,"dupCross":[]},{"dir":"lark-task","fmName":null,"desc":"飞书任务：管理任务、清单和任务智能体。创建待办任务、查看和更新任务状态、拆分子任务、组织任务清单、分配协作成员、上传任务附件、注册或注销任务智能体、更新任务智能体的主页数据、写入智能体任务记录。当用户需要创建待办事项、查看任务列表、跟踪任务进度、管理项目清单或给他人分配任务、为任务上传附件文件、注册注销任务智能体、更新智能体主页数据、写入任务记录时使用。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-task","real":"~/.agents/skills/lark-task","link":null,"broken":false,"mtimeMs":1783469466157.2222,"dupSame":false,"dupCross":[]},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-translate","real":"~/.agents/skills/lark-translate","link":null,"broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[]},{"dir":"lark-vc","fmName":null,"desc":"飞书视频会议：搜索历史会议记录、查询会议纪要（总结/待办/章节/逐字稿）、查询参会人快照。当用户查询已结束的会议、获取会议产物（纪要/妙记）、查看参会人时使用；查询未来日程走 lark-calendar。不负责：Agent 真实入会/离会、会中实时事件（走 lark-vc-agent）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-vc","real":"~/.agents/skills/lark-vc","link":null,"broken":false,"mtimeMs":1783469466207.654,"dupSame":false,"dupCross":[]},{"dir":"lark-vc-agent","fmName":null,"desc":"飞书视频会议会中能力：用于让应用机器人真实加入或离开正在进行的会议，并读取当前身份可见的会中事件、发送会中文本消息或会中表情。适用于用户询问正在开的会议发生了什么、谁在发言、是否共享内容，或需要发现当前可读的进行中会议 ID。不负责已结束会议搜索、参会人快照、纪要、逐字稿或录制查询，这些使用 lark-vc 技能。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-vc-agent","real":"~/.agents/skills/lark-vc-agent","link":null,"broken":false,"mtimeMs":1783469466252.3792,"dupSame":false,"dupCross":[]},{"dir":"lark-whiteboard","fmName":null,"desc":"飞书画板：查询和编辑飞书云文档中的画板。支持导出画板为预览图片、导出原始节点结构、使用多种格式更新画板内容。 当用户需要查看画板内容、导出画板图片、编辑画板时使用此 skill。不负责：飞书云文档内容编辑（lark-doc）、文档内嵌电子表格/Base（lark-sheets / lark-base）。\n","tools":null,"tree":"agents","path":"~/.agents/skills/lark-whiteboard","real":"~/.agents/skills/lark-whiteboard","link":null,"broken":false,"mtimeMs":1783469466441.749,"dupSame":false,"dupCross":[]},{"dir":"lark-whiteboard-cli","fmName":null,"desc":"当用户要求或使用飞书画板绘制架构图、流程图、思维导图、时序图或其他可视化图表时使用此 skill，作为使用 whiteboard-cli 设计图表布局的指南\n","tools":null,"tree":"agents","path":"~/.agents/skills/lark-whiteboard-cli","real":"~/.agents/skills/lark-whiteboard-cli","link":null,"broken":false,"mtimeMs":1781587882051.6614,"dupSame":false,"dupCross":[]},{"dir":"lark-wiki","fmName":null,"desc":"飞书知识库：管理知识空间、空间成员和文档节点。创建和查询知识空间、查看和管理空间成员、管理节点层级结构、在知识库中组织文档和快捷方式。当用户需要在知识库中查找或创建文档、浏览知识空间结构、查看或管理空间成员、移动或复制节点时使用。当用户给出 doubao.com 的 /wiki/ URL/token 时，也应直接使用本 skill，不要因为域名不是飞书而回退到 WebFetch；路由依据是 URL 路径模式和 token，而不是域名。不负责：上传文件到知识库节点下（走 lark-drive）、编辑文档/表格/Base 内容（走 lark-doc / lark-sheets / lark-base）。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-wiki","real":"~/.agents/skills/lark-wiki","link":null,"broken":false,"mtimeMs":1783469466561.7583,"dupSame":false,"dupCross":[]},{"dir":"lark-workflow-meeting-summary","fmName":null,"desc":"会议纪要整理工作流：汇总指定时间范围内的会议纪要并生成结构化报告。当用户需要整理会议纪要、生成会议周报、回顾一段时间内的会议内容时使用。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-workflow-meeting-summary","real":"~/.agents/skills/lark-workflow-meeting-summary","link":null,"broken":false,"mtimeMs":1783469466607.3281,"dupSame":false,"dupCross":[]},{"dir":"lark-workflow-standup-report","fmName":null,"desc":"日程待办摘要：编排 calendar +agenda 和 task +get-my-tasks，生成指定日期的日程与未完成任务摘要。适用于了解今天/明天/本周的安排。","tools":null,"tree":"agents","path":"~/.agents/skills/lark-workflow-standup-report","real":"~/.agents/skills/lark-workflow-standup-report","link":null,"broken":false,"mtimeMs":1783469466633.4446,"dupSame":false,"dupCross":[]},{"dir":"lecture-builder","fmName":null,"desc":"講義・研修資料を一気通貫で作成する（インテーク→構成案→Marpスライド→講師ノート→QAチェック）。講師業全般向け（対象講座は固定しない）。「講義資料つくって」「研修スライド」「来月の定例講義の準備」「/lecture-builder」で起動。不負責：Lark Slidesの直接編集（lark-slides）、Canvaデザイン制作、講義の配信・告知。","tools":12,"tree":"agents","path":"~/.agents/skills/lecture-builder","real":"~/.agents/skills/lecture-builder","link":null,"broken":false,"mtimeMs":1783380913848.5298,"dupSame":false,"dupCross":[]},{"dir":"lecture-scout","fmName":null,"desc":"講義・研修・講座で使えるAI最新ニュースを収集し、講義ネタとしてObsidian Vaultに蓄積する。「講義ネタ集めて」「今週のAIニュース収集」「/lecture-scout」で起動。定期実行（週1）を想定した無人完走設計。不負責：講義資料の作成（lecture-builder）、ニュース以外の知識保存（capture）。","tools":8,"tree":"agents","path":"~/.agents/skills/lecture-scout","real":"~/.agents/skills/lecture-scout","link":null,"broken":false,"mtimeMs":1783380913861.7297,"dupSame":false,"dupCross":[]},{"dir":"meeting-followup","fmName":null,"desc":"my-agentが自動生成した議事録（Bitable）を読み、Vault会議ノート化＋深掘り分析（タスク登録漏れの照合・プロジェクト文脈への接続）を行う。「さっきの会議まとめて」「会議のフォローして」「/meeting-followup」「/meeting-followup 会議名や日付」で起動。不負責：議事録の生成・Larkタスクの自動登録（my-agent auto-meeting-workflowが10分毎に自動実行）、週次の一括まとめ（weekly-report）、会議への参加（lark-vc-agent）。","tools":13,"tree":"agents","path":"~/.agents/skills/meeting-followup","real":"~/.agents/skills/meeting-followup","link":null,"broken":false,"mtimeMs":1783342668649.4604,"dupSame":false,"dupCross":[]},{"dir":"meeting-minutes","fmName":null,"desc":"Generate concise, actionable meeting minutes for internal meetings. Includes metadata, attendees, agenda, decisions, action items (owner + due date), and follow-up steps.","tools":null,"tree":"agents","path":"~/.agents/skills/meeting-minutes","real":"~/.agents/skills/meeting-minutes","link":null,"broken":false,"mtimeMs":1775355132932.1147,"dupSame":false,"dupCross":[]},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"agents","path":"~/.agents/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[]},{"dir":"mobile-design","fmName":null,"desc":"Mobile-first UI/UX design system for building or reviewing mobile app and mobile web interfaces. Use when designing or implementing mobile UI (iOS / Android / React Native / Flutter / PWA / responsive web on phones), touch interactions, navigation patterns, mobile forms, or when the user mentions モバイル・スマホUI・アプリ画面. Covers platform conventions, touch targets, battery / offline constraints. Not for desktop-only layouts.","tools":null,"tree":"agents","path":"~/.agents/skills/mobile-design","real":"~/.agents/skills/mobile-design","link":null,"broken":false,"mtimeMs":1782984958161.617,"dupSame":false,"dupCross":[]},{"dir":"orca-cli","fmName":null,"desc":"Use the public `orca` CLI to operate Orca-managed worktrees, folder contexts, terminals, repos, automations, worktree comments, and the browser embedded inside the Orca app. Use when the user says \"$orca-cli\", \"use orca cli\", \"Orca worktree\", \"child worktree\", \"cardStatus\", \"spawn codex/claude in a worktree\", \"read/wait/send Orca terminal\", \"terminal send\", \"Orca browser\", or \"control the browser inside Orca\". Prefer this over raw `git worktree`, ad hoc PTYs, Playwright, or Computer Use when the task touches Orca-managed state. Use Computer Use for browser windows, webviews, or desktop UI outside Orca's embedded browser.","tools":null,"tree":"agents","path":"~/.agents/skills/orca-cli","real":"~/.agents/skills/orca-cli","link":null,"broken":false,"mtimeMs":1782456016778.0088,"dupSame":false,"dupCross":[]},{"dir":"orchestration","fmName":null,"desc":"Use Orca orchestration for structured multi-agent coordination: threaded messages, blocking ask/reply flows, task dispatch, worker_done/escalation waits, task DAGs, decision gates, coordinator loops, or decomposing work across agents. Use `orca-cli` instead for full ownership handoffs, ordinary terminal control, lightweight terminal prompts, shell commands, Orca worktree management, reading or waiting on terminals, and automation of the browser embedded inside Orca. Use Computer Use for browser windows, webviews, Orca app UI, or desktop UI outside Orca's embedded browser.","tools":null,"tree":"agents","path":"~/.agents/skills/orchestration","real":"~/.agents/skills/orchestration","link":null,"broken":false,"mtimeMs":1782456016787.6584,"dupSame":false,"dupCross":[]},{"dir":"pdf","fmName":null,"desc":"Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rotating pages, adding watermarks, creating new PDFs, filling PDF forms, encrypting/decrypting PDFs, extracting images, and OCR on scanned PDFs to make them searchable. If the user mentions a .pdf file or asks to produce one, use this skill.","tools":null,"tree":"agents","path":"~/.agents/skills/pdf","real":"~/.agents/skills/pdf","link":null,"broken":false,"mtimeMs":1773788092525.0837,"dupSame":false,"dupCross":[]},{"dir":"playwright-cli","fmName":null,"desc":"Automate browser interactions, test web pages and work with Playwright tests.","tools":null,"tree":"agents","path":"~/.agents/skills/playwright-cli","real":"~/.agents/skills/playwright-cli","link":null,"broken":false,"mtimeMs":1783342668645.6758,"dupSame":false,"dupCross":[]},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"agents","path":"~/.agents/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783353394704.038,"dupSame":false,"dupCross":[]},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"agents","path":"~/.agents/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[]},{"dir":"requesting-code-review","fmName":null,"desc":"Use when completing tasks, implementing major features, or before merging to verify work meets requirements","tools":null,"tree":"agents","path":"~/.agents/skills/requesting-code-review","real":"~/.agents/skills/requesting-code-review","link":null,"broken":false,"mtimeMs":1774249794937.0593,"dupSame":false,"dupCross":[]},{"dir":"security-scanner","fmName":null,"desc":"PCにインストールされたパッケージやツールのセキュリティチェックを行うスキル。 npm/node_modules、pip/Pythonパッケージ、Homebrewなど主要パッケージマネージャの インストール済みソフトウェアを対象に、難読化コード、外部通信、不審な依存関係、 ライフサイクルスクリプト悪用、認証情報窃取、暗号通貨マイナー、リバースシェル、 実行可能バイナリ、CI/CDサプライチェーン攻撃の兆候をスキャンする。 ユーザーが「セキュリティチェック」「パッケージスキャン」「マルウェア検出」 「依存関係の安全性」「npm audit」「pip安全性」「サプライチェーン」 「不審なパッケージ」「postinstall確認」と言及した場合や、 インストール済みツールの安全性について質問した場合にこのスキルを使用すること。 たとえ明示的に「セキュリティスキャン」と言わなくても、パッケージの安全性や 信頼性に関する懸念が読み取れる場合は積極的に使用する。\n","tools":null,"tree":"agents","path":"~/.agents/skills/security-scanner","real":"~/.agents/skills/security-scanner","link":null,"broken":false,"mtimeMs":1783342668653.7861,"dupSame":false,"dupCross":[]},{"dir":"skill-creator","fmName":null,"desc":"Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.","tools":null,"tree":"agents","path":"~/.agents/skills/skill-creator","real":"~/.agents/skills/skill-creator","link":null,"broken":false,"mtimeMs":1773788594515.7712,"dupSame":false,"dupCross":[]},{"dir":"text-to-lottie","fmName":null,"desc":"Author a Lottie (Bodymovin) JSON animation that renders in a local skia player. Use whenever the user asks to create, generate, edit, or fix a Lottie animation, or asks for \"an animation\" to load.","tools":null,"tree":"agents","path":"~/.agents/skills/text-to-lottie","real":"~/.agents/skills/text-to-lottie","link":null,"broken":false,"mtimeMs":1781585586121.2253,"dupSame":false,"dupCross":[]},{"dir":"ui-ux-pro-max","fmName":null,"desc":"UI/UX design intelligence for web and mobile. Includes 50+ styles, 161 color palettes, 57 font pairings, 161 product types, 99 UX guidelines, and 25 chart types across 10 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and HTML/CSS). Actions: plan, build, create, design, implement, review, fix, improve, optimize, enhance, refactor, and check UI/UX code. Projects: website, landing page, dashboard, admin panel, e-commerce, SaaS, portfolio, blog, and mobile app. Elements: button, modal, navbar, sidebar, card, table, form, and chart. Styles: glassmorphism, claymorphism, minimalism, brutalism, neumorphism, bento grid, dark mode, responsive, skeuomorphism, and flat design. Topics: color systems, accessibility, animation, layout, typography, font pairing, spacing, interaction states, shadow, and gradient. Integrations: shadcn/ui MCP for component search and examples.","tools":null,"tree":"agents","path":"~/.agents/skills/ui-ux-pro-max","real":"~/.agents/skills/ui-ux-pro-max","link":null,"broken":false,"mtimeMs":1776293978076.3184,"dupSame":false,"dupCross":[]},{"dir":"understand","fmName":null,"desc":"Analyze a codebase to produce an interactive knowledge graph for understanding architecture, components, and relationships","tools":null,"tree":"agents","path":"~/.agents/skills/understand","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand","broken":false,"mtimeMs":1782176497547.8323,"dupSame":false,"dupCross":[]},{"dir":"understand-chat","fmName":null,"desc":"Use when you need to ask questions about a codebase or understand code using a knowledge graph","tools":null,"tree":"agents","path":"~/.agents/skills/understand-chat","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-chat","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-chat","broken":false,"mtimeMs":1782176497543.8264,"dupSame":false,"dupCross":[]},{"dir":"understand-dashboard","fmName":null,"desc":"Launch the interactive web dashboard to visualize a codebase's knowledge graph","tools":null,"tree":"agents","path":"~/.agents/skills/understand-dashboard","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-dashboard","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-dashboard","broken":false,"mtimeMs":1782176497543.911,"dupSame":false,"dupCross":[]},{"dir":"understand-diff","fmName":null,"desc":"Use when you need to analyze git diffs or pull requests to understand what changed, affected components, and risks","tools":null,"tree":"agents","path":"~/.agents/skills/understand-diff","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-diff","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-diff","broken":false,"mtimeMs":1782176497544.0078,"dupSame":false,"dupCross":[]},{"dir":"understand-domain","fmName":null,"desc":"Extract business domain knowledge from a codebase and generate an interactive domain flow graph. Works standalone (lightweight scan) or derives from an existing /understand knowledge graph.","tools":null,"tree":"agents","path":"~/.agents/skills/understand-domain","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-domain","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-domain","broken":false,"mtimeMs":1782176497544.1565,"dupSame":false,"dupCross":[]},{"dir":"understand-explain","fmName":null,"desc":"Use when you need a deep-dive explanation of a specific file, function, or module in the codebase","tools":null,"tree":"agents","path":"~/.agents/skills/understand-explain","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-explain","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-explain","broken":false,"mtimeMs":1782176497544.2341,"dupSame":false,"dupCross":[]},{"dir":"understand-knowledge","fmName":null,"desc":"Analyze a Karpathy-pattern LLM wiki knowledge base and generate an interactive knowledge graph with entity extraction, implicit relationships, and topic clustering.","tools":null,"tree":"agents","path":"~/.agents/skills/understand-knowledge","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-knowledge","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-knowledge","broken":false,"mtimeMs":1782176497544.4421,"dupSame":false,"dupCross":[]},{"dir":"understand-onboard","fmName":null,"desc":"Use when you need to generate an onboarding guide for new team members joining a project","tools":null,"tree":"agents","path":"~/.agents/skills/understand-onboard","real":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-onboard","link":"~/.understand-anything/repo/understand-anything-plugin/skills/understand-onboard","broken":false,"mtimeMs":1782176497544.5334,"dupSame":false,"dupCross":[]},{"dir":"weekly-report","fmName":null,"desc":"直近1週間の週次サマリーを生成する。Claude Code / Codex / Cursor チャット履歴 + Lark Base チャット履歴 + Lark Calendar + Lark Tasks + Lark VC を組み合わせて構造化レポートを出力。「週次レビュー」「今週のまとめ」「weekly report」「/weekly-report」で起動。不負責：特定日の日程・タスク照会（lark-workflow-standup-report）、会議紀要のみの整理（lark-workflow-meeting-summary）。","tools":9,"tree":"agents","path":"~/.agents/skills/weekly-report","real":"~/.agents/skills/weekly-report","link":null,"broken":false,"mtimeMs":1783381135628.2483,"dupSame":false,"dupCross":[]}],"takt":{"root":"~/.takt","workflows":[{"file":"task-to-pr.yaml","name":"task-to-pr","desc":"タスク投入から実装・PR作成・コードレビュー・修正反映・完了サマリーまでを自動化する。マージは人間が行う前提（自動マージは含まない）。手動起動専用。","steps":6,"stepNames":["plan","implement","create_pr","review","report","fix"],"maxSteps":12,"personas":["planner","coder","architecture-reviewer","reporter","supervisor"]},{"file":"weekly-report-emb.yaml","name":"weekly-report-emb","desc":"直近1週間の週次レポートを5ソースから生成し、EMB ペルソナが総括レビューと推奨度付きネクストアクションを提案、content-scout ペルソナが3ツール履歴からコンテンツ発信ネタを提案する。Lark 通知は scripts/run-weekly-report-emb-launchd.sh / weekly-report-emb.sh が workflow 完了後に実行。","steps":3,"stepNames":["generate","review","content-ideas"],"maxSteps":6,"personas":["reporter","emb","content-scout"]}],"personas":[{"file":"bookkeeper.md","title":"Bookkeeper","summary":"あなたは経理担当です。個人事業・小規模事業の記帳・月次・請求まわりの「記録と検査」を担当します。数字の正確性とコンプライアンス観点の検査に徹し、経営判断（値付け・投資・商流）には踏み込みません。","sizeKb":8.6,"usedBy":[]},{"file":"content-scout.md","title":"Content Scout","summary":"あなたはコンテンツ編集者（発信ネタ発掘担当）です。ユーザーの実作業ログ・週次レポートから「発信する価値のある一次情報」を見つけ、技術ブログ・SNS短文のネタとして根拠付きで提案します。ユーザーの事業ラインナップは変わりうる前提で、特定事業に依存しない目線を保ちます。","sizeKb":1.6,"usedBy":["weekly-report-emb"]},{"file":"contract-reviewer.md","title":"Contract Reviewer","summary":"あなたは契約レビュー担当です。業務委託契約・NDA・研修/コンサル契約などのドラフトを、依頼者の立場に立ってリスク検査します。弁護士ではないため、断定できない法的論点は必ず「弁護士確認事項」として分離します。","sizeKb":5.2,"usedBy":[]},{"file":"emb.md","title":"EMB Advisor","summary":"あなたは EMB（エンジニア×マーケ×ビジネス）領域のビジネスアドバイザーです。以下のナレッジは LINE グループ「EMB / やったこと報告」における平田晴弥さんの指導内容（2023.08〜2026.06）から抽出・構造化したものです。**回答・助言・レビューはこのナレッジを正本として適用する。**","sizeKb":24.4,"usedBy":["weekly-report-emb"]},{"file":"lecture-designer.md","title":"Lecture Designer","summary":"あなたは教育設計（インストラクショナルデザイン）の専門家です。講義・研修・講座資料を「受講者が翌日から使えるか」の一点で設計・レビューします。","sizeKb":3.6,"usedBy":[]},{"file":"marketer.md","title":"Marketer","summary":"あなたはマーケター兼コピーライターです。ユーザーの各事業（自社プロダクト・研修・講座など。ラインナップは変わりうる）の集客・訴求・コンテンツを担当します。ユーザーのObsidian Vaultに蓄積されたマーケティング知識を正本として適用します。","sizeKb":3.7,"usedBy":[]},{"file":"reporter.md","title":"Reporter","summary":"あなたは報告・整理担当です。実装やレビューの主役ではなく、情報を集め、要約し、次の担当者や人間が判断しやすい形で届けます。","sizeKb":3.1,"usedBy":["task-to-pr","weekly-report-emb"]},{"file":"security-reviewer.md","title":"Security Reviewer","summary":"あなたはWebアプリケーション・SaaSのセキュリティ専門レビュアーです。機能の正しさやコード品質ではなく、**悪用可能性**だけに集中します。主な対象スタックは Next.js / TypeScript / Supabase / Vercel の SaaS と Lark 連携アプリです（対象プロジェクトは固定しない。他スタックでも同じ観点で検査する）。","sizeKb":2.9,"usedBy":[]}],"hasPersonasDir":true}}],"launchd":[],"plugins":[]};
+const LAYOUT_KEY = 'agent-assets-layout-v1';
+
+// ---- 左右ペイン開閉 ----
+function loadLayoutState() {
+  try {
+    return JSON.parse(localStorage.getItem(LAYOUT_KEY) || '{}') || {};
+  } catch (e) {
+    return {};
+  }
+}
+function saveLayoutState(state) {
+  try {
+    localStorage.setItem(LAYOUT_KEY, JSON.stringify(state));
+  } catch (e) {
+    // file:// やプライベートモードで保存できない場合も表示は続行
+  }
+}
+function applyPaneState(state) {
+  document.body.classList.toggle('side-collapsed', !!state.sideCollapsed);
+  document.body.classList.toggle('detail-collapsed', !!state.detailCollapsed);
+  const sideBtn = document.getElementById('toggle-side');
+  const detailBtn = document.getElementById('toggle-detail');
+  sideBtn.textContent = state.sideCollapsed ? '›' : '‹';
+  sideBtn.setAttribute('aria-label', state.sideCollapsed ? '左パネルを開く' : '左パネルを閉じる');
+  detailBtn.textContent = state.detailCollapsed ? '‹' : '›';
+  detailBtn.setAttribute('aria-label', state.detailCollapsed ? '右パネルを開く' : '右パネルを閉じる');
+}
+const layoutState = loadLayoutState();
+applyPaneState(layoutState);
+document.getElementById('toggle-side').addEventListener('click', function () {
+  layoutState.sideCollapsed = !layoutState.sideCollapsed;
+  applyPaneState(layoutState);
+  saveLayoutState(layoutState);
+});
+document.getElementById('toggle-detail').addEventListener('click', function () {
+  layoutState.detailCollapsed = !layoutState.detailCollapsed;
+  applyPaneState(layoutState);
+  saveLayoutState(layoutState);
+});
+
+// ---- ヘルパー ----
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function uniqueReals(entries) {
+  const set = new Set();
+  entries.forEach(function (e) { if (!e.broken) set.add(e.real); });
+  return set.size;
+}
+function allSkills(scopes) {
+  return scopes.reduce(function (acc, s) { return acc.concat(s.skills); }, []);
+}
+
+// ---- ポップオーバー登録 ----
+var POP = [];
+function reg(role, html) { POP.push({ role: role, html: html }); return POP.length - 1; }
+
+// ライブモード（--serve 起動時のみ true になり、launchd の手動実行ボタンが有効化される）
+var serverMode = false;
+// スキルカードの並び順（name / oldest / newest）
+var sortMode = 'name';
+
+function skillRole(e) {
+  if (e.dupCross.length > 0) return 'red';
+  if (e.dupSame) return 'amber';
+  if (e.link) return 'link';
+  return '';
+}
+// ---- クリックで開く ----
+function absPath(p) { return p && p.charAt(0) === '~' && DATA.home ? DATA.home + p.slice(1) : p; }
+/** data-open 属性（共有用HTMLでは実パスを埋め込まないため無効化） */
+function openAttr(p) {
+  if (DATA.redacted || !p) return '';
+  return ' data-open="' + esc(absPath(p)) + '" title="クリックでファイル/フォルダを開く"';
+}
+function daysSince(ms) { return Math.floor((Date.now() - ms) / 86400000); }
+function isStale(e) { return !e.broken && e.mtimeMs != null && daysSince(e.mtimeMs) >= DATA.staleDays; }
+function fmtDate(ms) {
+  const d = new Date(ms);
+  const pad2 = function (n) { return n < 10 ? '0' + n : String(n); };
+  const days = daysSince(ms);
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) +
+    '（' + (days <= 0 ? '今日' : days + '日前') + '）';
+}
+function skillBadges(e) {
+  var b = '';
+  if (e.link) b += '<span class="badge b-link">↪ リンク → ' + esc(e.link) + '</span>';
+  if (e.dupSame) b += '<span class="badge b-amber">⚠ スコープ内重複（.claude＋.agents）</span>';
+  e.dupCross.forEach(function (l) { b += '<span class="badge b-red">✖ 重複 → ' + esc(l) + '</span>'; });
+  if (e.broken) b += '<span class="badge b-mute">リンク切れ</span>';
+  if (!e.desc && !e.broken) b += '<span class="badge b-mute">SKILL.md メタ情報なし</span>';
+  if (isStale(e)) b += '<span class="badge b-mute">⏳ ' + daysSince(e.mtimeMs) + '日未更新</span>';
+  if (e.tools !== null) b += '<span class="badge b-mute">tools: ' + e.tools + '</span>';
+  return b;
+}
+
+// ---- 統計 ----
+function computeStats(scopes) {
+  const skills = allSkills(scopes);
+  const dupSameNames = new Set();
+  const dupCrossNames = new Set();
+  skills.forEach(function (e) {
+    if (e.dupSame) dupSameNames.add(e.dir);
+    if (e.dupCross.length > 0) dupCrossNames.add(e.dir);
+  });
+  let wf = 0, ps = 0;
+  scopes.forEach(function (s) {
+    if (s.takt) { wf += s.takt.workflows.length; ps += s.takt.personas.length; }
+  });
+  const staleReals = new Set();
+  skills.forEach(function (e) { if (isStale(e)) staleReals.add(e.real); });
+  return {
+    real: uniqueReals(skills),
+    links: skills.filter(function (e) { return e.link !== null; }).length,
+    dupSame: dupSameNames.size,
+    dupCross: dupCrossNames.size,
+    stale: staleReals.size,
+    workflows: wf,
+    personas: ps,
+  };
+}
+
+function renderTiles(stats, withLaunchd) {
+  function tile(value, label, accent, alwaysInk, jump, sort) {
+    const zero = value === 0 && !alwaysInk;
+    return '<div class="tile ' + (accent || '') + '"' +
+      (jump ? ' data-jump="' + jump + '"' + (sort ? ' data-sort="' + sort + '"' : '') + ' title="クリックで一覧へ"' : '') + '>' +
+      '<div class="value' + (zero ? ' zero' : '') + '">' + value + '</div>' +
+      '<div class="label">' + esc(label) + '</div></div>';
+  }
+  let html = '<div class="tiles">' +
+    tile(stats.real, 'スキル実体（重複除外）', '', true, '.scope-panel') +
+    tile(stats.links, 'リンク（エイリアス）', 'accent-blue', true, '#sec-links') +
+    tile(stats.dupSame, 'スコープ内重複', stats.dupSame > 0 ? 'accent-amber' : '', false, '#sec-matrix') +
+    tile(stats.dupCross, 'スコープ間重複', stats.dupCross > 0 ? 'accent-red' : '', false, '#sec-matrix') +
+    tile(stats.stale, DATA.staleDays + '日以上未更新', stats.stale > 0 ? 'accent-amber' : '', false, '.scope-panel', 'oldest') +
+    tile(stats.workflows, 'takt ワークフロー', '', true, '.sec-takt-wf') +
+    tile(stats.personas, 'takt ペルソナ', '', true, '.sec-takt-ps');
+  if (withLaunchd && DATA.launchd && DATA.launchd.length > 0) {
+    const errs = DATA.launchd.filter(function (j) { return j.status === 'error'; }).length;
+    html += tile(DATA.launchd.length, errs > 0 ? 'launchd（エラー ' + errs + ' 件）' : 'launchd ジョブ', errs > 0 ? 'accent-red' : '', true, '#sec-launchd');
+  }
+  if (withLaunchd && DATA.plugins && DATA.plugins.length > 0) {
+    html += tile(DATA.plugins.length, 'プラグイン（Claude/Codex）', '', true, '#sec-plugins');
+  }
+  return html + '</div>';
+}
+
+// ---- 前回比diffストリップ（全体ビューのみ） ----
+function renderDiffStrip() {
+  const d = DATA.diff;
+  if (!d) return '';
+  if (d.added.length === 0 && d.removed.length === 0) {
+    return '<div class="diff-strip none">前回生成（' + esc(d.prevAt) + '）から増減なし</div>';
+  }
+  let chips = '';
+  d.added.forEach(function (k) { chips += '<span class="dchip add">＋ ' + esc(k) + '</span>'; });
+  d.removed.forEach(function (k) { chips += '<span class="dchip del">− ' + esc(k) + '</span>'; });
+  return '<div class="diff-strip"><span class="dhead">前回生成（' + esc(d.prevAt) + '）比: ＋' +
+    d.added.length + ' / −' + d.removed.length + '</span>' + chips + '</div>';
+}
+
+function panel(title, sub, bodyHtml, extraClass, id) {
+  return '<section class="panel ' + (extraClass || '') + '"' + (id ? ' id="' + id + '"' : '') + '>' +
+    '<div class="panel-head"><span class="ph-title">' + esc(title) + '</span>' +
+    (sub ? '<span class="ph-sub">' + esc(sub) + '</span>' : '') +
+    '</div><div class="panel-body">' + bodyHtml + '</div></section>';
+}
+
+// ---- 分布パネル（積み上げ: 実体エントリ＋リンク） ----
+function renderDistPanel(scopes) {
+  const rows = scopes.map(function (s) {
+    const real = s.skills.filter(function (e) { return !e.link; }).length;
+    const links = s.skills.filter(function (e) { return e.link; }).length;
+    return { label: s.label, real: real, links: links };
+  });
+  const max = Math.max.apply(null, rows.map(function (r) { return r.real + r.links; }).concat([1]));
+  let html = '<div class="dist">' +
+    '<div class="lg"><span class="key"><span class="sw real"></span>実体エントリ</span>' +
+    '<span class="key"><span class="sw alt"></span>リンク</span></div>';
+  rows.forEach(function (r) {
+    const wr = Math.round((r.real / max) * 100);
+    const wl = Math.round((r.links / max) * 100);
+    html += '<div class="row"><div class="name">' + esc(r.label) + '</div><div class="track">' +
+      (r.real > 0 ? '<div class="seg real" style="width:' + wr + '%"></div>' : '') +
+      (r.links > 0 ? '<div class="seg alt" style="width:' + wl + '%"></div>' : '') +
+      '</div><div class="count">' + r.real + (r.links > 0 ? ' <span class="lnk">+ ' + r.links + '</span>' : '') + '</div></div>';
+  });
+  return panel('スコープ別エントリ構成', '実体 + リンク', html + '</div>');
+}
+
+// ---- 重複マトリクスパネル ----
+function renderMatrixPanel(scopes) {
+  const byName = {};
+  allSkills(scopes).forEach(function (e) {
+    if (!e.dupSame && e.dupCross.length === 0) return;
+    (byName[e.dir] = byName[e.dir] || []).push(e);
+  });
+  const names = Object.keys(byName).sort();
+  if (names.length === 0) {
+    return panel('重複マトリクス', '', '<div class="empty-note">✓ 重複なし — 同名の別実体は存在しません（リンクによる同一実体の共有は重複に数えません）</div>', '', 'sec-matrix');
+  }
+  let html = '<div style="overflow-x:auto"><table class="matrix"><thead><tr><th style="text-align:left">スキル名</th>';
+  scopes.forEach(function (s) { html += '<th>' + esc(s.label) + '</th>'; });
+  html += '</tr></thead><tbody>';
+  names.forEach(function (name) {
+    html += '<tr><td class="name">' + esc(name) + '</td>';
+    scopes.forEach(function (s) {
+      const here = byName[name].filter(function (e) { return s.skills.indexOf(e) !== -1; });
+      html += '<td>';
+      here.forEach(function (e) {
+        const treeLabel = e.tree === 'claude' ? '.claude' : '.agents';
+        if (e.link) {
+          html += '<span class="mark alias">↪ ' + treeLabel + '</span>';
+        } else {
+          const cls = e.dupCross.length > 0 ? 'real-red' : 'real-amber';
+          html += '<span class="mark ' + cls + '">● ' + treeLabel + '</span>';
+        }
+      });
+      if (here.length === 0) html += '<span style="color:var(--muted)">—</span>';
+      html += '</td>';
+    });
+    html += '</tr>';
+  });
+  return panel('重複マトリクス', '同名の別実体がどこにあるか', html + '</tbody></table></div>', '', 'sec-matrix');
+}
+
+// ---- リンク一覧パネル ----
+function renderLinksPanel(scopes) {
+  const links = [];
+  scopes.forEach(function (s) {
+    s.skills.forEach(function (e) { if (e.link) links.push(e); });
+    if (s.claudeTreeLink) {
+      links.unshift({ path: (s.claudeDir || s.label + '/.claude/skills'), link: s.claudeTreeLink, dir: '(ディレクトリ丸ごと)' });
+    }
+  });
+  if (links.length === 0) return '';
+  let html = '<details class="links"><summary>↪ ' + links.length + ' 本のシンボリックリンク — クリックで展開</summary><ul>';
+  links.forEach(function (e) {
+    html += '<li><span class="from">' + esc(e.path) + '</span> <span class="arrow">→</span> ' + esc(e.link) + '</li>';
+  });
+  return panel('リンク（エイリアス）一覧', '', html + '</ul></details>', '', 'sec-links');
+}
+
+// ---- launchd ジョブパネル ----
+function fmtWhen(ms) {
+  if (ms == null) return '—';
+  const d = new Date(ms);
+  const pad2 = function (n) { return n < 10 ? '0' + n : String(n); };
+  const abs = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  const diff = Date.now() - ms;
+  let ago;
+  if (diff < 60000) ago = 'たった今';
+  else if (diff < 3600000) ago = Math.floor(diff / 60000) + '分前';
+  else if (diff < 86400000) ago = Math.floor(diff / 3600000) + '時間前';
+  else ago = Math.floor(diff / 86400000) + '日前';
+  return abs + '<span class="ago">（' + ago + '）</span>';
+}
+function jobBadge(j) {
+  if (j.status === 'running') return '<span class="stbadge st-run">● 実行中 (PID ' + j.pid + ')</span>';
+  if (j.status === 'error') return '<span class="stbadge st-err">✖ エラー (exit ' + j.lastExit + ')</span>';
+  if (j.status === 'unloaded') return '<span class="stbadge st-off">⏸ 未ロード</span>';
+  return '<span class="stbadge st-ok">✓ 正常待機</span>';
+}
+function runBtn(j) {
+  if (serverMode) {
+    if (!j.loaded) return '<button class="runbtn" disabled title="未ロードのジョブは実行できません">▶ 実行</button>';
+    const restart = j.status === 'running';
+    return '<button class="runbtn" data-label="' + esc(j.label) + '" data-restart="' + (restart ? '1' : '0') + '">' +
+      (restart ? '↻ 再起動' : '▶ 実行') + '</button>';
+  }
+  const cmd = 'launchctl kickstart ' + (j.status === 'running' ? '-k ' : '') + 'gui/' + DATA.uid + '/' + j.label;
+  return '<button class="runbtn" data-cmd="' + esc(cmd) + '" title="静的モード: クリックで実行コマンドをコピー（ライブ実行は npm run agent-assets:serve）">⧉ コピー</button>';
+}
+function renderLaunchdPanel() {
+  const jobs = DATA.launchd || [];
+  if (jobs.length === 0) return '';
+  const cnt = { running: 0, ok: 0, error: 0, unloaded: 0 };
+  jobs.forEach(function (j) { cnt[j.status]++; });
+  const sub = '実行中 ' + cnt.running + '　正常 ' + cnt.ok + '　エラー ' + cnt.error + '　未ロード ' + cnt.unloaded +
+    (serverMode ? '　（ライブ）' : '　（生成時点のスナップショット）');
+
+  let html = '<div style="overflow-x:auto"><table class="jobs"><thead><tr>' +
+    '<th>状態</th><th>操作</th><th>ジョブ</th><th>処理内容</th><th>スケジュール</th><th>最終実行</th><th>前回結果</th>' +
+    '</tr></thead><tbody>';
+  jobs.forEach(function (j) {
+    let popHtml = '<div class="pop-title">' + esc(j.label) + '</div>' +
+      (j.desc ? '<div class="pop-desc">' + esc(j.desc) + '</div>' : '') +
+      (j.errTail ? '<div class="pop-sec">stderr 末尾</div><pre class="pop-err">' + esc(j.errTail) + '</pre>' : '') +
+      '<div class="pop-meta">plist: <b>' + esc(j.plist) + '</b><br>' +
+      'コマンド: <b>' + esc(j.command) + '</b>' +
+      (j.logOut ? '<br>stdout: <b>' + esc(j.logOut) + '</b>' : '') +
+      (j.logErr ? '<br>stderr: <b>' + esc(j.logErr) + '</b>' : '') +
+      '</div>';
+    const popId = reg(j.status === 'error' ? 'red' : 'mute', popHtml);
+    const searchText = (j.label + ' ' + (j.desc || '') + ' ' + j.command).toLowerCase();
+
+    html += '<tr data-pop="' + popId + '" data-search="' + esc(searchText) + '"' + openAttr(j.plist) + '>' +
+      '<td>' + jobBadge(j) + '</td>' +
+      '<td>' + runBtn(j) + '</td>' +
+      '<td class="job-label">' + esc(j.label) + '</td>' +
+      '<td class="job-desc">' + (j.desc ? esc(j.desc) : '<span class="cmd">' + esc(j.command) + '</span>') + '</td>' +
+      '<td class="mono-cell">' + esc(j.schedule) + '</td>' +
+      '<td class="mono-cell">' + fmtWhen(j.lastRunMs) + '</td>' +
+      '<td class="mono-cell">' + (j.lastExit === null ? '—' : 'exit ' + j.lastExit) + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table></div>';
+  return panel('launchd ジョブ', sub, html, '', 'sec-launchd');
+}
+
+// ---- プラグイン（Claude Code / Codex）パネル ----
+function pluginBadges(p) {
+  var b = '';
+  if (p.inClaude && p.inCodex) b += '<span class="badge b-link">◈ 両ツール</span>';
+  if (p.inClaude) b += '<span class="badge b-mute">Claude Code' + (p.claudeVersion ? ' v' + esc(p.claudeVersion) : '') + '</span>';
+  if (p.inCodex) b += '<span class="badge b-mute">Codex' + (p.codexVersion ? ' v' + esc(p.codexVersion) : '') + '</span>';
+  if (p.inClaude && p.inCodex && p.claudeVersion && p.codexVersion && p.claudeVersion !== p.codexVersion) {
+    b += '<span class="badge b-amber">⚠ バージョン差</span>';
+  }
+  if (p.inClaude && !p.claudeEnabled) b += '<span class="badge b-amber">Claude Code で無効</span>';
+  if (p.inCodex && !p.codexEnabled) b += '<span class="badge b-amber">Codex で無効</span>';
+  return b;
+}
+function renderPluginCard(p) {
+  var popHtml = '<div class="pop-title">' + esc(p.key) + '</div>' +
+    (p.desc ? '<div class="pop-desc">' + esc(p.desc) + '</div>' : '') +
+    '<div class="pop-meta">marketplace: <b>' + esc(p.marketplace) + '</b>' +
+    (p.inClaude
+      ? '<br>Claude Code: <b>v' + esc(p.claudeVersion || '?') + (p.claudeEnabled ? '（有効）' : '（無効）') + '</b>' +
+        (p.claudeUpdatedMs != null ? '　更新: <b>' + fmtDate(p.claudeUpdatedMs) + '</b>' : '') +
+        (p.claudePath ? '<br>　<b>' + esc(p.claudePath) + '</b>' : '')
+      : '') +
+    (p.inCodex
+      ? '<br>Codex: <b>v' + esc(p.codexVersion || '?') + (p.codexEnabled ? '（有効）' : '（無効）') + '</b>' +
+        (p.codexPath ? '<br>　<b>' + esc(p.codexPath) + '</b>' : '')
+      : '') +
+    '</div>';
+  const popId = reg('mute', popHtml);
+  const searchText = (p.key + ' ' + (p.desc || '')).toLowerCase();
+  return '<article class="card" data-pop="' + popId + '" data-search="' + esc(searchText) + '"' + openAttr(p.claudePath || p.codexPath) + '>' +
+    '<div class="name">' + esc(p.name) + '</div>' +
+    '<div class="fm">@' + esc(p.marketplace) + '</div>' +
+    '<div class="badges">' + pluginBadges(p) + '</div>' +
+    (p.desc ? '<p class="desc">' + esc(p.desc) + '</p>' : '') +
+    '</article>';
+}
+function renderPluginsPanel() {
+  const plugins = DATA.plugins || [];
+  if (plugins.length === 0) return '';
+  const nClaude = plugins.filter(function (p) { return p.inClaude; }).length;
+  const nCodex = plugins.filter(function (p) { return p.inCodex; }).length;
+  const nBoth = plugins.filter(function (p) { return p.inClaude && p.inCodex; }).length;
+  const sub = 'Claude Code ' + nClaude + '　Codex ' + nCodex + '　両ツール ' + nBoth;
+  const html = '<div class="grid">' + plugins.map(renderPluginCard).join('') + '</div>';
+  return panel('プラグイン（Claude Code / Codex）', sub, html, 'plugins-panel', 'sec-plugins');
+}
+
+// ---- スキルカード ----
+// 実体が custom-skills リポジトリ配下のスキルは GitHub へリンクする
+const GH_SKILLS_REPO = 'https://github.com/shoma-endo/custom-skills';
+function ghLink(e) {
+  const m = String(e.real || '').match(/dev/custom-skills/skills/([^/]+)/);
+  return m ? GH_SKILLS_REPO + '/tree/main/skills/' + m[1] : null;
+}
+
+function renderSkillCard(e, scopeLabel) {
+  const role = skillRole(e);
+  const badges = skillBadges(e);
+  const gh = ghLink(e);
+
+  // カードと重複するバッジ類は出さず、全文説明＋フルパスに絞る
+  let popHtml = '<div class="pop-title">' + esc(e.dir) + '</div>' +
+    (e.desc ? '<div class="pop-desc">' + esc(e.desc) + '</div>' : '') +
+    '<div class="pop-meta">' +
+    (e.fmName ? 'name: <b>' + esc(e.fmName) + '</b><br>' : '') +
+    esc(scopeLabel) + ' / ' + (e.tree === 'claude' ? '.claude' : '.agents') + '　<b>' + esc(e.path) + '</b>' +
+    (e.link ? '<br>→ <b>' + esc(e.link) + '</b>' : '') +
+    (e.mtimeMs != null ? '<br>更新: <b>' + fmtDate(e.mtimeMs) + '</b>' : '') +
+    (e.tools !== null ? '<br>allowed-tools: <b>' + e.tools + ' 件</b>' : '') +
+    (gh ? '<br>GitHub: <b>' + esc(gh) + '</b>' : '') +
+    '</div>';
+  const popId = reg(role || 'mute', popHtml);
+
+  const searchText = (e.dir + ' ' + (e.fmName || '') + ' ' + (e.desc || '')).toLowerCase();
+  return '<article class="card ' + (role ? 'role-' + role : '') + '" data-pop="' + popId + '" data-search="' + esc(searchText) + '"' + openAttr(e.broken ? null : e.real) + '>' +
+    '<div class="name">' + esc(e.dir) + '</div>' +
+    (e.fmName ? '<div class="fm">name: ' + esc(e.fmName) + '</div>' : '') +
+    (badges ? '<div class="badges">' + badges + '</div>' : '') +
+    (e.desc ? '<p class="desc">' + esc(e.desc) + '</p>' : '') +
+    (sortMode !== 'name' && e.mtimeMs != null ? '<div class="fm">更新: ' + fmtDate(e.mtimeMs) + '</div>' : '') +
+    '<div class="path">' + esc(e.path) +
+    (gh ? ' <a class="gh-link" href="' + esc(gh) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">GitHub ↗</a>' : '') +
+    '</div></article>';
+}
+
+// ---- takt カード ----
+function renderWorkflowCard(w, personaFiles, scopeLabel, taktRoot) {
+  let chips = '';
+  w.personas.forEach(function (p) {
+    const exists = personaFiles.indexOf(p) !== -1;
+    chips += '<span class="chip' + (exists ? '' : ' missing') + '">' + esc(p) + (exists ? '' : ' (未定義/ビルトイン)') + '</span>';
+  });
+  let steps = '';
+  w.stepNames.forEach(function (n) { steps += '<li>' + esc(n) + '</li>'; });
+
+  const popHtml = '<div class="pop-title">' + esc(w.name) + '</div>' +
+    (w.desc ? '<div class="pop-desc">' + esc(w.desc) + '</div>' : '') +
+    (steps ? '<div class="pop-sec">ステップ</div><ol class="pop-steps">' + steps + '</ol>' : '') +
+    (chips ? '<div class="pop-sec">ペルソナ</div><div>' + chips + '</div>' : '') +
+    '<div class="pop-meta">' + esc(scopeLabel) + ' / <b>' + esc(w.file) + '</b>' +
+    (w.maxSteps !== null ? '　max_steps: <b>' + w.maxSteps + '</b>' : '') + '</div>';
+  const popId = reg('mute', popHtml);
+
+  const searchText = (w.name + ' ' + (w.desc || '')).toLowerCase();
+  return '<article class="card" data-pop="' + popId + '" data-search="' + esc(searchText) + '"' + openAttr(taktRoot + '/workflows/' + w.file) + '>' +
+    '<div class="name">' + esc(w.name) + '</div>' +
+    '<div class="meta-row"><span>steps: ' + w.steps + '</span>' +
+    (w.maxSteps !== null ? '<span>max_steps: ' + w.maxSteps + '</span>' : '') +
+    '<span>' + esc(w.file) + '</span></div>' +
+    (w.desc ? '<p class="desc">' + esc(w.desc) + '</p>' : '') +
+    (chips ? '<div>' + chips + '</div>' : '<div class="fm">ペルソナ参照なし</div>') +
+    '</article>';
+}
+function renderPersonaCard(p, scopeLabel, taktRoot) {
+  let chips = '';
+  p.usedBy.forEach(function (w) { chips += '<span class="chip wf">◀ ' + esc(w) + '</span>'; });
+
+  const popHtml = '<div class="pop-title">' + esc(p.title) + '</div>' +
+    (p.summary ? '<div class="pop-desc">' + esc(p.summary) + '</div>' : '') +
+    '<div class="pop-sec">参照元ワークフロー</div>' +
+    (chips ? '<div>' + chips + '</div>' : '<div class="pop-desc">どのワークフローからも未参照</div>') +
+    '<div class="pop-meta">' + esc(scopeLabel) + ' / <b>' + esc(p.file) + '</b>　' + p.sizeKb + ' KB</div>';
+  const popId = reg('mute', popHtml);
+
+  const searchText = (p.title + ' ' + p.file + ' ' + (p.summary || '')).toLowerCase();
+  return '<article class="card" data-pop="' + popId + '" data-search="' + esc(searchText) + '"' + openAttr(taktRoot + '/personas/' + p.file) + '>' +
+    '<div class="name">' + esc(p.title) + '</div>' +
+    '<div class="meta-row"><span>' + esc(p.file) + '</span><span>' + p.sizeKb + ' KB</span></div>' +
+    (p.summary ? '<p class="desc">' + esc(p.summary) + '</p>' : '') +
+    (chips ? '<div>' + chips + '</div>' : '<div class="fm">どのワークフローからも未参照</div>') +
+    '</article>';
+}
+
+// ---- スコープパネル ----
+function sortEntries(entries) {
+  if (sortMode === 'name') return entries; // スキャン時点で名前順
+  const arr = entries.slice();
+  if (sortMode === 'oldest') {
+    arr.sort(function (a, b) { return (a.mtimeMs == null ? Infinity : a.mtimeMs) - (b.mtimeMs == null ? Infinity : b.mtimeMs); });
+  } else {
+    arr.sort(function (a, b) { return (b.mtimeMs || 0) - (a.mtimeMs || 0); });
+  }
+  return arr;
+}
+function renderScopePanel(s) {
+  let body = '';
+  if (s.claudeTreeLink) {
+    body += '<div class="notice">↪ .claude/skills はディレクトリ丸ごとリンク → ' + esc(s.claudeTreeLink) + '（実体は .agents/skills 側に一覧・二重カウントなし）</div>';
+  }
+  ['claude', 'agents'].forEach(function (tree) {
+    const dir = tree === 'claude' ? s.claudeDir : s.agentsDir;
+    if (!dir || (tree === 'claude' && s.claudeTreeLink)) return;
+    const entries = sortEntries(s.skills.filter(function (e) { return e.tree === tree; }));
+    body += '<div class="tree-sec"><div class="tree-head"' + openAttr(dir) + '>' + esc(dir) + ' <span class="cnt">' + entries.length + ' 件</span></div>';
+    body += entries.length > 0
+      ? '<div class="grid">' + entries.map(function (e) { return renderSkillCard(e, s.label); }).join('') + '</div>'
+      : '<div class="empty-note">スキルなし</div>';
+    body += '</div>';
+  });
+
+  if (s.takt) {
+    const personaFiles = s.takt.personas.map(function (p) { return p.file.replace(/\.md$/, ''); });
+    body += '<div class="tree-sec sec-takt-wf"><div class="tree-head"' + openAttr(s.takt.root + '/workflows') + '>' + esc(s.takt.root) + '/workflows <span class="cnt">' + s.takt.workflows.length + ' 件</span></div>';
+    body += s.takt.workflows.length > 0
+      ? '<div class="takt-grid">' + s.takt.workflows.map(function (w) { return renderWorkflowCard(w, personaFiles, s.label, s.takt.root); }).join('') + '</div>'
+      : '<div class="empty-note">ワークフローなし</div>';
+    body += '</div>';
+    if (s.takt.hasPersonasDir) {
+      body += '<div class="tree-sec sec-takt-ps"><div class="tree-head"' + openAttr(s.takt.root + '/personas') + '>' + esc(s.takt.root) + '/personas <span class="cnt">' + s.takt.personas.length + ' 件</span></div>';
+      body += s.takt.personas.length > 0
+        ? '<div class="takt-grid">' + s.takt.personas.map(function (p) { return renderPersonaCard(p, s.label, s.takt.root); }).join('') + '</div>'
+        : '<div class="empty-note">ペルソナなし</div>';
+      body += '</div>';
+    } else {
+      body += '<div class="tree-sec"><div class="tree-head">' + esc(s.takt.root) + '/personas <span class="cnt">なし</span></div>' +
+        '<div class="empty-note">personas ディレクトリなし（このスコープの takt は facets レイアウト）</div></div>';
+    }
+  }
+  return panel('スコープ: ' + s.label, s.root, body, 'scope-panel');
+}
+
+// ---- ビュー描画 ----
+let activeView = 'all';
+function renderView(keepScroll) {
+  const y = window.scrollY;
+  const app = document.getElementById('app');
+  POP = [];
+  curPop = -1;
+  selEl = null;
+  let html = '';
+
+  if (activeView === 'launchd') {
+    document.getElementById('view-title').textContent = 'launchd ジョブ';
+    document.getElementById('view-root').textContent = '~/Library/LaunchAgents';
+    html = renderLaunchdPanel() || '<div class="empty-note">launchd ジョブなし</div>';
+  } else if (activeView === 'plugins') {
+    document.getElementById('view-title').textContent = 'プラグイン';
+    document.getElementById('view-root').textContent = '~/.claude/plugins ・ ~/.codex/config.toml';
+    html = renderPluginsPanel() || '<div class="empty-note">プラグインなし</div>';
+  } else {
+    const scopes = activeView === 'all'
+      ? DATA.scopes
+      : DATA.scopes.filter(function (s) { return s.id === activeView; });
+
+    document.getElementById('view-title').textContent =
+      activeView === 'all' ? '全体サマリー' : scopes[0].label;
+    document.getElementById('view-root').textContent =
+      activeView === 'all' ? DATA.scopes.length + ' スコープ' : scopes[0].root;
+
+    html = renderTiles(computeStats(scopes), activeView === 'all');
+    if (activeView === 'all') {
+      html += renderDiffStrip();
+      html += '<div class="panel-row">' + renderDistPanel(DATA.scopes) + renderMatrixPanel(scopes) + '</div>';
+      html += renderLaunchdPanel();
+      html += renderPluginsPanel();
+    } else {
+      html += renderMatrixPanel(scopes);
+    }
+    html += renderLinksPanel(scopes);
+    scopes.forEach(function (s) { html += renderScopePanel(s); });
+  }
+
+  app.innerHTML = html;
+  applySearch();
+  window.scrollTo(0, keepScroll ? y : 0);
+}
+
+// ---- サイドバーナビ ----
+function renderNav() {
+  const nav = document.getElementById('nav');
+  function dots(s) {
+    let d = '';
+    if (s.skills.some(function (e) { return e.dupSame; })) d += '<span class="dot amber" title="スコープ内重複あり"></span>';
+    if (s.skills.some(function (e) { return e.dupCross.length > 0; })) d += '<span class="dot red" title="スコープ間重複あり"></span>';
+    return d;
+  }
+  let html = '<div class="nav-head">スコープ</div>' +
+    '<button class="nav-item active" data-view="all"><span>全体</span>' +
+    '<span class="nav-right"><span class="nav-cnt">' + uniqueReals(allSkills(DATA.scopes)) + '</span></span></button>';
+  DATA.scopes.forEach(function (s) {
+    html += '<button class="nav-item" data-view="' + esc(s.id) + '"><span>' + esc(s.label) + '</span>' +
+      '<span class="nav-right">' + dots(s) + '<span class="nav-cnt">' + uniqueReals(s.skills) + '</span></span></button>';
+  });
+  const hasLaunchd = DATA.launchd && DATA.launchd.length > 0;
+  const hasPlugins = DATA.plugins && DATA.plugins.length > 0;
+  if (hasLaunchd || hasPlugins) html += '<div class="nav-head">システム</div>';
+  if (hasLaunchd) {
+    let jdots = '';
+    if (DATA.launchd.some(function (j) { return j.status === 'error'; })) jdots += '<span class="dot red" title="エラーあり"></span>';
+    if (DATA.launchd.some(function (j) { return j.status === 'unloaded'; })) jdots += '<span class="dot amber" title="未ロードあり"></span>';
+    html += '<button class="nav-item" data-view="launchd"><span>launchd</span>' +
+      '<span class="nav-right">' + jdots + '<span class="nav-cnt">' + DATA.launchd.length + '</span></span></button>';
+  }
+  if (hasPlugins) {
+    let pdots = '';
+    if (DATA.plugins.some(function (p) { return (p.inClaude && !p.claudeEnabled) || (p.inCodex && !p.codexEnabled); })) {
+      pdots += '<span class="dot amber" title="無効化されたプラグインあり"></span>';
+    }
+    html += '<button class="nav-item" data-view="plugins"><span>plugins</span>' +
+      '<span class="nav-right">' + pdots + '<span class="nav-cnt">' + DATA.plugins.length + '</span></span></button>';
+  }
+  nav.innerHTML = html;
+  nav.querySelectorAll('.nav-item').forEach(function (b) {
+    b.addEventListener('click', function () {
+      activeView = b.getAttribute('data-view');
+      nav.querySelectorAll('.nav-item').forEach(function (x) { x.classList.toggle('active', x === b); });
+      renderView();
+    });
+  });
+}
+
+// ---- 検索 ----
+function applySearch() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  document.querySelectorAll('[data-search]').forEach(function (el) {
+    el.classList.toggle('hidden', q !== '' && el.getAttribute('data-search').indexOf(q) === -1);
+  });
+  // 検索中はヒットゼロのセクション・スコープ/プラグインパネルを見出しごと隠す
+  document.querySelectorAll('.tree-sec, .scope-panel, .plugins-panel').forEach(function (sec) {
+    const hasVisible = Array.prototype.some.call(
+      sec.querySelectorAll('[data-search]'),
+      function (el) { return !el.classList.contains('hidden'); }
+    );
+    sec.classList.toggle('hidden', q !== '' && !hasVisible);
+  });
+}
+
+// ---- 右固定詳細ペイン ----
+const detailBody = document.getElementById('detail-body');
+let curPop = -1;
+let selEl = null;
+function showPop(idx, card) {
+  curPop = idx;
+  const entry = POP[idx];
+  detailBody.classList.remove('pop-link', 'pop-amber', 'pop-red');
+  if (entry.role === 'link' || entry.role === 'amber' || entry.role === 'red') {
+    detailBody.classList.add('pop-' + entry.role);
+  }
+  detailBody.innerHTML = entry.html;
+  // 表示中のカード/行をハイライト
+  if (selEl) selEl.classList.remove('sel');
+  selEl = card;
+  card.classList.add('sel');
+}
+// ホバーで即ペイン更新（ペインは被らないので遅延は最小限）。マウスを離しても内容は残る
+var hoverTimer = null;
+document.addEventListener('mouseover', function (ev) {
+  const t = ev.target;
+  const card = t && t.closest ? t.closest('[data-pop]') : null;
+  if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+  if (!card) return;
+  const idx = parseInt(card.getAttribute('data-pop'), 10);
+  if (idx === curPop) return;
+  hoverTimer = setTimeout(function () { showPop(idx, card); }, 150);
+});
+
+// ---- KPIタイルのページ内ジャンプ ----
+document.addEventListener('click', function (ev) {
+  const tile = ev.target && ev.target.closest ? ev.target.closest('.tile[data-jump]') : null;
+  if (!tile) return;
+  // 未更新タイルは並び順を「古い順」に切り替えてから飛ぶ（再描画で DOM が入れ替わるため target 取得はその後）
+  const sortHint = tile.getAttribute('data-sort');
+  if (sortHint && sortMode !== sortHint) {
+    sortMode = sortHint;
+    document.getElementById('sort').value = sortHint;
+    renderView(true);
+  }
+  const target = document.querySelector(tile.getAttribute('data-jump'));
+  if (!target) return;
+  // リンク一覧タイルは折りたたみも開く
+  const details = target.querySelector('details.links');
+  if (details) details.open = true;
+  // scrollIntoView は overflow:hidden の .panel 内部をスクロールしてしまうため、ウィンドウ座標で直接スクロールする
+  // （このレイアウトでは smooth 指定が効かないため Markdown アンカー同様の即時ジャンプ）
+  window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 76);
+});
+
+// ---- クリックでファイル/フォルダを開く ----
+document.addEventListener('click', function (ev) {
+  const t = ev.target;
+  if (!t || !t.closest) return;
+  // ボタン・タイル・折りたたみ見出しのクリックは既存動作を優先
+  if (t.closest('button') || t.closest('a') || t.closest('summary') || t.closest('.tile')) return;
+  const el = t.closest('[data-open]');
+  if (!el) return;
+  const p = el.getAttribute('data-open');
+  if (!p) return;
+  if (serverMode) {
+    // ライブモード: サーバ経由で Finder / 既定アプリで開く
+    fetch('/api/open', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: p }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) { if (!res.ok && res.error) console.error('open error:', res.error); })
+      .catch(function (e) { console.error('open error:', e); });
+  } else {
+    // 静的モード（file:// で閲覧中）: file:// URL を新規タブで開く
+    // フォルダはブラウザのディレクトリ一覧、ファイルは中身がそのまま表示される
+    window.open('file://' + p.split('/').map(encodeURIComponent).join('/'), '_blank');
+  }
+});
+
+// ---- launchd 手動実行 ----
+var pollTimer = null;
+function pollStatus(remain) {
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = setTimeout(function () {
+    fetch('/api/launchd/status', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (jobs) {
+        DATA.launchd = jobs;
+        if (activeView === 'launchd' || activeView === 'all') renderView(true);
+        if (remain > 1) pollStatus(remain - 1);
+      })
+      .catch(function () {});
+  }, 2500);
+}
+document.addEventListener('click', function (ev) {
+  const btn = ev.target && ev.target.closest ? ev.target.closest('.runbtn') : null;
+  if (!btn || btn.disabled) return;
+
+  // 静的モード: kickstart コマンドをクリップボードへ
+  const cmd = btn.getAttribute('data-cmd');
+  if (cmd) {
+    const ta = document.createElement('textarea');
+    ta.value = cmd;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* noop */ }
+    document.body.removeChild(ta);
+    btn.textContent = '✓ コピー済み';
+    setTimeout(function () { btn.textContent = '⧉ コピー'; }, 2000);
+    return;
+  }
+
+  // ライブモード: 2段階確認 → POST /api/launchd/run
+  const label = btn.getAttribute('data-label');
+  if (!label) return;
+  const restart = btn.getAttribute('data-restart') === '1';
+  if (btn.getAttribute('data-confirm') !== '1') {
+    btn.setAttribute('data-confirm', '1');
+    btn.classList.add('confirm');
+    btn.textContent = restart ? '再起動する？' : '実行する？';
+    setTimeout(function () {
+      btn.removeAttribute('data-confirm');
+      btn.classList.remove('confirm');
+      btn.textContent = restart ? '↻ 再起動' : '▶ 実行';
+    }, 3000);
+    return;
+  }
+  btn.disabled = true;
+  btn.classList.remove('confirm');
+  btn.textContent = '… 起動中';
+  fetch('/api/launchd/run', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label: label, restart: restart }),
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      btn.textContent = res.ok ? '✓ 起動指示済み' : '✖ 失敗';
+      if (!res.ok && res.error) console.error('launchd run error:', res.error);
+      pollStatus(4);
+    })
+    .catch(function () { btn.textContent = '✖ 失敗'; });
+});
+
+// ---- 初期化 ----
+document.getElementById('meta-generated').textContent = '生成: ' + DATA.generatedAt;
+document.getElementById('meta-command').textContent = DATA.command;
+if (DATA.redacted) document.getElementById('meta-mode').textContent = 'モード: 共有用（launchd・プラグイン・実パス除外）';
+document.getElementById('search').addEventListener('input', applySearch);
+document.getElementById('sort').addEventListener('change', function () {
+  sortMode = this.value;
+  renderView(true);
+});
+renderNav();
+renderView();
+// ライブモード検出（--serve で配信されている場合のみ API が生えている）
+fetch('/api/launchd/status', { cache: 'no-store' })
+  .then(function (r) { return r.ok ? r.json() : null; })
+  .then(function (jobs) {
+    if (!jobs) return;
+    serverMode = true;
+    DATA.launchd = jobs;
+    document.getElementById('meta-mode').textContent = 'モード: ライブ（手動実行可）';
+    renderView(true);
+  })
+  .catch(function () { /* file:// や静的配信では静的モードのまま */ });
+</script>
+</body>
+</html>

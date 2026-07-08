@@ -1,0 +1,7 @@
+# 個人設定・機微情報はコミットしない（example をコピーして各自作成する）
+skills/estimate/rate-card.yaml
+
+# ローカル個人設定の汎用パターン（各スキルの local-config は共有しない）
+skills/*/local-config.*
+
+.DS_Store
