@@ -11,6 +11,7 @@ Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 | [automation-scout](skills/automation-scout/) | AIコーディングツールのチャット履歴から反復パターンを抽出し、スキル化・自動化候補を推奨度付きで提案 |
 | [e2e-testcases](skills/e2e-testcases/) | リポジトリ解析にもとづく E2E テストケース設計（機能・非機能）。`docs/TEST_CASES.md` を生成 |
 | [estimate](skills/estimate/) | 受託開発の見積もり（工数・金額・スケジュール・見積書）。質問シート先行、レートカードは個人設定で分離 |
+| [lark-translate](skills/lark-translate/) | Lark 機械翻訳 API によるテキスト翻訳（16言語＋glossary 対訳固定）と言語自動判定 |
 | [minutes-to-visual](skills/minutes-to-visual/) | Lark ビデオ会議の文字起こしを図解画像・スライド・ドキュメントに視覚化 |
 | [project-catchup](skills/project-catchup/) | 久しぶりに戻るプロジェクトの全体像を「MD 正本＋ペライチ HTML」の二層で生成 |
 | [readme-audit](skills/readme-audit/) | README・主要 docs と実コードの整合を監査し、乖離を根拠付きで列挙してから更新 |
