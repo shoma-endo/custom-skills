@@ -1,0 +1,167 @@
+- generic [active] [ref=e1]:
+  - button "左パネルを閉じる" [ref=e2] [cursor=pointer]: ‹
+  - button "右パネルを閉じる" [ref=e3] [cursor=pointer]: ›
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - text: AGENT ASSETS
+      - generic [ref=e6]: DASHBOARD
+    - generic [ref=e7]:
+      - generic [ref=e8]: スコープ
+      - button "全体 7" [ref=e9] [cursor=pointer]:
+        - generic [ref=e10]: 全体
+        - generic [ref=e12]: "7"
+      - button "グローバル 7" [ref=e13] [cursor=pointer]:
+        - generic [ref=e14]: グローバル
+        - generic [ref=e16]: "7"
+    - generic [ref=e17]:
+      - generic [ref=e18]: 凡例
+      - generic [ref=e19]: 通常（実体・重複なし）
+      - generic [ref=e21]: リンク（同一実体のエイリアス）
+      - generic [ref=e23]: スコープ内重複
+      - generic [ref=e25]: スコープ間重複
+    - generic [ref=e27]:
+      - generic [ref=e28]: "生成: 2026/7/8 15:56:30"
+      - generic [ref=e29]: "モード: 共有用（launchd・プラグイン・実パス除外）"
+      - generic [ref=e30]:
+        - text: "再生成:"
+        - code [ref=e31]: npm run agent-assets
+      - generic [ref=e32]: ホバーで詳細・クリックで開く
+  - generic [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - heading "全体サマリー" [level=2] [ref=e36]
+        - generic [ref=e37]: 1 スコープ
+      - generic [ref=e38]:
+        - combobox "スキルカードの並び順" [ref=e39] [cursor=pointer]:
+          - option "名前順" [selected]
+          - option "更新が古い順"
+          - option "更新が新しい順"
+        - searchbox "名前・説明で絞り込み…" [ref=e40]
+    - main [ref=e41]:
+      - generic [ref=e42]:
+        - generic "クリックで一覧へ" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: "7"
+          - generic [ref=e45]: スキル実体（重複除外） ↓
+        - generic "クリックで一覧へ" [ref=e46] [cursor=pointer]:
+          - generic [ref=e47]: "7"
+          - generic [ref=e48]: リンク（エイリアス） ↓
+        - generic "クリックで一覧へ" [ref=e49] [cursor=pointer]:
+          - generic [ref=e50]: "0"
+          - generic [ref=e51]: スコープ内重複 ↓
+        - generic "クリックで一覧へ" [ref=e52] [cursor=pointer]:
+          - generic [ref=e53]: "0"
+          - generic [ref=e54]: スコープ間重複 ↓
+        - generic "クリックで一覧へ" [ref=e55] [cursor=pointer]:
+          - generic [ref=e56]: "0"
+          - generic [ref=e57]: 90日以上未更新 ↓
+        - generic "クリックで一覧へ" [ref=e58] [cursor=pointer]:
+          - generic [ref=e59]: "0"
+          - generic [ref=e60]: takt ワークフロー ↓
+        - generic "クリックで一覧へ" [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: "0"
+          - generic [ref=e63]: takt ペルソナ ↓
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - generic [ref=e66]:
+            - generic [ref=e67]: スコープ別エントリ構成
+            - generic [ref=e68]: 実体 + リンク
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - generic [ref=e72]: 実体エントリ
+              - generic [ref=e74]: リンク
+            - generic [ref=e76]:
+              - generic [ref=e77]: グローバル
+              - generic [ref=e80]: 0 + 7
+        - generic [ref=e81]:
+          - generic [ref=e83]: 重複マトリクス
+          - generic [ref=e85]: ✓ 重複なし — 同名の別実体は存在しません（リンクによる同一実体の共有は重複に数えません）
+      - generic [ref=e86]:
+        - generic [ref=e88]: リンク（エイリアス）一覧
+        - group [ref=e90]:
+          - generic "↪ 7 本のシンボリックリンク — クリックで展開" [ref=e91] [cursor=pointer]
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e94]: "スコープ: グローバル"
+          - generic [ref=e95]: ~
+        - generic [ref=e96]:
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - text: ~/.claude/skills
+              - generic [ref=e99]: 7 件
+            - generic [ref=e100]:
+              - article [ref=e101]:
+                - generic [ref=e102]: automation-scout
+                - generic [ref=e103]:
+                  - generic [ref=e104]: ↪ リンク → ~/dev/custom-skills/skills/automation-scout
+                  - generic [ref=e105]: "tools: 3"
+                - paragraph [ref=e106]: Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。
+                - generic [ref=e107]:
+                  - text: ~/.claude/skills/automation-scout
+                  - link "GitHub ↗" [ref=e108] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/automation-scout
+              - article [ref=e109]:
+                - generic [ref=e110]: e2e-testcases
+                - generic [ref=e111]:
+                  - generic [ref=e112]: ↪ リンク → ~/dev/custom-skills/skills/e2e-testcases
+                  - generic [ref=e113]: "tools: 10"
+                - paragraph [ref=e114]: アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。
+                - generic [ref=e115]:
+                  - text: ~/.claude/skills/e2e-testcases
+                  - link "GitHub ↗" [ref=e116] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/e2e-testcases
+              - article [ref=e117]:
+                - generic [ref=e118]: estimate
+                - generic [ref=e119]:
+                  - generic [ref=e120]: ↪ リンク → ~/dev/custom-skills/skills/estimate
+                  - generic [ref=e121]: "tools: 5"
+                - paragraph [ref=e122]: 開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。
+                - generic [ref=e123]:
+                  - text: ~/.claude/skills/estimate
+                  - link "GitHub ↗" [ref=e124] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/estimate
+              - article [ref=e125]:
+                - generic [ref=e126]: lark-translate
+                - generic [ref=e128]: ↪ リンク → ~/dev/custom-skills/skills/lark-translate
+                - paragraph [ref=e129]: Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。
+                - generic [ref=e130]:
+                  - text: ~/.claude/skills/lark-translate
+                  - link "GitHub ↗" [ref=e131] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/lark-translate
+              - article [ref=e132]:
+                - generic [ref=e133]: minutes-to-visual
+                - generic [ref=e134]:
+                  - generic [ref=e135]: ↪ リンク → ~/dev/custom-skills/skills/minutes-to-visual
+                  - generic [ref=e136]: "tools: 8"
+                - paragraph [ref=e137]: Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。
+                - generic [ref=e138]:
+                  - text: ~/.claude/skills/minutes-to-visual
+                  - link "GitHub ↗" [ref=e139] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/minutes-to-visual
+              - article [ref=e140]:
+                - generic [ref=e141]: project-catchup
+                - generic [ref=e142]:
+                  - generic [ref=e143]: ↪ リンク → ~/dev/custom-skills/skills/project-catchup
+                  - generic [ref=e144]: "tools: 12"
+                - paragraph [ref=e145]: 数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。
+                - generic [ref=e146]:
+                  - text: ~/.claude/skills/project-catchup
+                  - link "GitHub ↗" [ref=e147] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/project-catchup
+              - article [ref=e148]:
+                - generic [ref=e149]: readme-audit
+                - generic [ref=e150]:
+                  - generic [ref=e151]: ↪ リンク → ~/dev/custom-skills/skills/readme-audit
+                  - generic [ref=e152]: "tools: 7"
+                - paragraph [ref=e153]: README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。
+                - generic [ref=e154]:
+                  - text: ~/.claude/skills/readme-audit
+                  - link "GitHub ↗" [ref=e155] [cursor=pointer]:
+                    - /url: https://github.com/shoma-endo/custom-skills/tree/main/skills/readme-audit
+          - generic [ref=e156]:
+            - generic [ref=e157]:
+              - text: ~/.agents/skills
+              - generic [ref=e158]: 0 件
+            - generic [ref=e159]: スキルなし
+  - complementary [ref=e160]:
+    - generic [ref=e161]: 詳細（ホバーで更新）
+    - generic [ref=e163]: カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。
