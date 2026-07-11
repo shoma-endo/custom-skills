@@ -492,6 +492,7 @@ table.matrix .mark { font-family: ui-monospace, "SF Mono", Menlo, monospace; fon
 table.matrix .mark.real-amber { background: var(--amber-tint); color: var(--amber); border: 1px solid var(--amber); }
 table.matrix .mark.real-red { background: var(--red-tint); color: var(--red); border: 1px solid var(--red); }
 table.matrix .mark.alias { background: var(--blue-tint); color: var(--blue); border: 1px solid var(--blue); }
+table.matrix .mark.real-ok { background: var(--surface); color: var(--muted); border: 1px dashed var(--muted); }
 
 /* ---- リンク一覧 ---- */
 details.links summary {
@@ -652,7 +653,46 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 [data-open] { cursor: pointer; }
 .tree-head[data-open]:hover { color: var(--blue); }
 
-/* ハーネスビュー（マクロ/ミクロ構造） */
+/* 全体地図ビュー */
+.wm-note { font-size: 12px; color: var(--muted); margin: 4px 0 8px; }
+.wm-goal, .wm-layer-head { display: flex; align-items: center; gap: 10px; margin: 6px 0; flex-wrap: wrap; }
+.wm-goal-label, .wm-layer-name { flex: 0 0 150px; font-weight: 600; font-size: 13px; }
+.wm-bar { flex: 1 1 120px; height: 10px; border-radius: 5px; background: var(--hairline); overflow: hidden; }
+.wm-fill { height: 100%; border-radius: 5px; background: var(--bar); }
+.wm-fill.hit { background: var(--blue); }
+.wm-fill.low { background: var(--amber); }
+.wm-fill.mid { background: var(--bar-alt); }
+.wm-fill.l3 { background: var(--bar); }
+.wm-fill.l2 { background: var(--bar-alt); }
+.wm-fill.l1 { background: var(--blue); }
+.wm-goal-val { flex: 0 0 auto; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.wm-layer { margin: 10px 0; }
+.wm-layer-hint { font-size: 11px; color: var(--muted); margin: 0 0 4px 160px; }
+.wm-row { display: flex; gap: 10px; align-items: baseline; font-size: 12px; padding: 3px 0 3px 160px; flex-wrap: wrap; }
+.wm-row[data-open] { cursor: pointer; }
+.wm-row[data-open]:hover { color: var(--blue); }
+.wm-party { font-weight: 600; min-width: 170px; }
+.wm-desc { color: var(--ink-2); }
+.wm-amt { margin-left: auto; font-variant-numeric: tabular-nums; }
+.wm-lnote { color: var(--muted); font-size: 11px; }
+.wm-prio { display: flex; gap: 8px; align-items: baseline; margin: 6px 0; font-size: 13px; }
+.wm-prio-n { flex: 0 0 20px; height: 20px; border-radius: 50%; background: var(--blue-tint); color: var(--blue); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.wm-judge { color: var(--ink-2); font-size: 12px; }
+.wm-powers { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0 2px; }
+.wm-pchip { font-size: 11px; border: 1px solid var(--hairline); border-radius: 20px; padding: 2px 9px; color: var(--ink-2); background: var(--surface); }
+.wm-p-crown { border-color: var(--amber); color: var(--amber); background: var(--amber-tint); }
+.wm-p-danger { border-color: var(--red); color: var(--red); background: var(--red-tint); }
+.wm-p-grant { border-color: var(--blue); color: var(--blue); background: var(--blue-tint); }
+.wm-flow { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; color: var(--muted); padding: 5px 8px; flex-wrap: wrap; }
+.wm-flow-down { color: var(--ink-2); }
+.wm-flow-up { color: var(--muted); }
+.wm-chips { margin-top: 8px; }
+.wm-assets { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.wm-asset { border: 1px solid var(--hairline); border-radius: 8px; padding: 6px 12px; text-align: center; cursor: pointer; }
+.wm-asset:hover { border-color: var(--blue); color: var(--blue); }
+.wm-asset-n { display: block; font-size: 16px; font-weight: 700; }
+.wm-asset-l { font-size: 11px; color: var(--muted); }
+/* ハーネスビュー（三重ループ構造） */
 .hz-stack { display: flex; flex-direction: column; margin: 2px 0 6px; }
 .hz-layer {
   border: 1px solid var(--hairline);
@@ -838,7 +878,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/7/10 18:45:04","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[]},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[]},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[]},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[]},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[]},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783353394704.038,"dupSame":false,"dupCross":[]},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[]}],"takt":null}],"launchd":[],"plugins":[],"harness":null,"ops":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/7/11 18:45:06","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783741621545.5608,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"plugins":[],"harness":null,"ops":null,"business":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -903,8 +943,13 @@ var serverMode = false;
 // スキルカードの並び順（name / oldest / newest）
 var sortMode = 'name';
 
+// 警告として扱うべきスコープ間重複か（意図的重複 INTENTIONAL_CROSS_DUPS は除外）。
+// dots・要注意・KPI・畳み判定はすべてこの述語を使う（設計方針3: 述語の一元化）
+function dupCrossReal(e) {
+  return e.dupCross.length > 0 && !e.dupCrossOk;
+}
 function skillRole(e) {
-  if (e.dupCross.length > 0) return 'red';
+  if (dupCrossReal(e)) return 'red';
   if (e.dupSame) return 'amber';
   if (e.link) return 'link';
   return '';
@@ -929,7 +974,11 @@ function skillBadges(e) {
   var b = '';
   if (e.link) b += '<span class="badge b-link">↪ リンク → ' + esc(e.link) + '</span>';
   if (e.dupSame) b += '<span class="badge b-amber">⚠ スコープ内重複（.claude＋.agents）</span>';
-  e.dupCross.forEach(function (l) { b += '<span class="badge b-red">✖ 重複 → ' + esc(l) + '</span>'; });
+  if (dupCrossReal(e)) {
+    e.dupCross.forEach(function (l) { b += '<span class="badge b-red">✖ 重複 → ' + esc(l) + '</span>'; });
+  } else if (e.dupCrossOk) {
+    b += '<span class="badge b-mute">◈ 意図的重複（' + e.dupCross.map(esc).join('・') + '）</span>';
+  }
   if (e.broken) b += '<span class="badge b-mute">リンク切れ</span>';
   if (!e.desc && !e.broken) b += '<span class="badge b-mute">SKILL.md メタ情報なし</span>';
   if (isStale(e)) b += '<span class="badge b-mute">⏳ ' + daysSince(e.mtimeMs) + '日未更新</span>';
@@ -944,7 +993,7 @@ function computeStats(scopes) {
   const dupCrossNames = new Set();
   skills.forEach(function (e) {
     if (e.dupSame) dupSameNames.add(e.dir);
-    if (e.dupCross.length > 0) dupCrossNames.add(e.dir);
+    if (dupCrossReal(e)) dupCrossNames.add(e.dir);
   });
   let wf = 0, ps = 0;
   scopes.forEach(function (s) {
@@ -1012,8 +1061,8 @@ function pluginsCalm() {
   return !(DATA.plugins || []).some(function (p) { return (p.inClaude && !p.claudeEnabled) || (p.inCodex && !p.codexEnabled); });
 }
 function scopeCalm(s) {
-  // ナビの dots と同じ基準（重複）＋リンク切れ
-  return !s.skills.some(function (e) { return e.dupSame || e.dupCross.length > 0 || e.broken; });
+  // ナビの dots と同じ基準（重複）＋リンク切れ。意図的重複は dupCrossReal が除外する
+  return !s.skills.some(function (e) { return e.dupSame || dupCrossReal(e) || e.broken; });
 }
 function renderAttentionPanel(scopes, stats) {
   var items = [];
@@ -1129,8 +1178,10 @@ function renderMatrixPanel(scopes) {
         const treeLabel = e.tree === 'claude' ? '.claude' : '.agents';
         if (e.link) {
           html += '<span class="mark alias">↪ ' + treeLabel + '</span>';
+        } else if (e.dupCrossOk && !e.dupSame) {
+          html += '<span class="mark real-ok" title="意図的な重複（INTENTIONAL_CROSS_DUPS）">◈ ' + treeLabel + '</span>';
         } else {
-          const cls = e.dupCross.length > 0 ? 'real-red' : 'real-amber';
+          const cls = dupCrossReal(e) ? 'real-red' : 'real-amber';
           html += '<span class="mark ' + cls + '">● ' + treeLabel + '</span>';
         }
       });
@@ -1139,7 +1190,7 @@ function renderMatrixPanel(scopes) {
     });
     html += '</tr>';
   });
-  return panel('重複マトリクス', '同名の別実体がどこにあるか', html + '</tbody></table></div>', '', 'sec-matrix');
+  return panel('重複マトリクス', '同名の別実体がどこにあるか。◈=意図的な重複（フォーク対リポジトリの自己完結用・警告対象外）', html + '</tbody></table></div>', '', 'sec-matrix');
 }
 
 // ---- リンク一覧パネル ----
@@ -1411,7 +1462,7 @@ function renderScopePanel(s, closed) {
 
 // ---- ビュー描画 ----
 let activeView = 'all';
-// ---- ハーネスビュー（マクロ/ミクロ構造の見える化） ----
+// ---- ハーネスビュー（三重ループ構造の見える化） ----
 var HZ_TERMINAL = { completed: 1, failed: 1, aborted: 1 };
 function hzDur(sec) {
   if (sec == null) return '—';
@@ -1566,7 +1617,7 @@ function renderOpsView() {
       varsOpen = hv.varsPath;
     } else {
       varNum = '<span class="unit">未設定</span>';
-      varLines = '<div class="roi-note">成果変数.md が未作成。変数の指定は人間の仕事（マクロ・マクロ層）</div>';
+      varLines = '<div class="roi-note">成果変数.md が未作成。変数の指定は人間の仕事（人間ループ）</div>';
     }
     var digestNote = hv && hv.digestDate
       ? '実績の判定は火曜EMB週次（母数digest: ' + esc(hv.digestDate) + (hv.digestStale ? ' ⚠ 8日超stale' : '') + '）。数値表はハーネスビュー→数値化レイヤー'
@@ -1643,7 +1694,7 @@ function renderOpsView() {
         return '<div class="hz-q" style="padding-left:0" data-search="' + esc(s.dir.toLowerCase()) + '"' + openAttr(s.path) + '>🧹 <b>' + esc(s.dir) + '</b>（' + esc(s.scope) + '・' + s.days + '日）</div>';
       }).join('')
     : '<div class="empty-note">なし</div>';
-  cleanupHtml += '<div class="hz-chart-head" style="margin-top:14px">どの workflow からも参照されないペルソナ（' + c.unusedPersonas.length + '体）</div>';
+  cleanupHtml += '<div class="hz-chart-head" style="margin-top:14px">どの workflow からも参照されないペルソナ（' + c.unusedPersonas.length + '体・config.yaml 割当済みは現役として除外）</div>';
   cleanupHtml += c.unusedPersonas.length
     ? c.unusedPersonas.map(function (p) {
         return '<div class="hz-q" style="padding-left:0" data-search="' + esc(p.title.toLowerCase()) + '"' + openAttr(p.path) + '>🧹 <b>' + esc(p.title) + '</b>（' + esc(p.file) + '）</div>';
@@ -1688,7 +1739,7 @@ function renderHarnessView() {
 
   // --- 思想レイヤー図 ---
   var layers = '';
-  layers += hzLayer('l-mm', 'MACRO / MACRO', '人間接点',
+  layers += hzLayer('l-mm', '人間ループ', '人間接点',
     '決定は朝夕2回に集約する。仕事が片付く環境だからこそ「問い」を準備する（認知負荷・タスク爆発対策）',
     hzChip('朝刊ハーネス司令塔: ' + (h.wiring.morningBriefSection ? '配線済' : '未配線') + (mbStatus ? '・job=' + esc(mbStatus) : ''),
       h.wiring.morningBriefSection ? 'ok' : 'miss', '~/bin/claude-cron/morning-brief.sh') +
@@ -1699,8 +1750,8 @@ function renderHarnessView() {
     hzChip('外部送信は承認ゲート／ドラフト行き', 'ok', null),
     '人間接点 問い 朝刊 司令塔 承認ゲート 成果変数 macro');
   layers += hzFlow('朝ゲート（今日のキュー確認・投入）', '火曜カード（週次判断を人間へ）');
-  layers += hzLayer('l-pos', 'MACRO / MICRO', 'プロジェクトOS（接合部）',
-    'ミクロの結果を見てマクロの次の割り振りを変える。決定的な集計はスクリプト、判断だけ LLM',
+  layers += hzLayer('l-pos', '外ループ', 'プロジェクトOS（接合部）',
+    '内ループの結果を見て外ループの次の割り振りを変える。決定的な集計はスクリプト、判断だけ LLM',
     hzChip('harness-digest.sh: ' + (h.wiring.digestScript ? 'あり' : 'なし'),
       h.wiring.digestScript ? 'ok' : 'miss', '~/.takt/scripts/harness-digest.sh') +
     hzChip('weekly-report-emb: ' + stepChain + (wkStatus ? '・job=' + esc(wkStatus) : ''),
@@ -1714,7 +1765,7 @@ function renderHarnessView() {
     }).join(''),
     'プロジェクトOS 接合部 digest 週次 再配分 knowledge fable macro micro');
   layers += hzFlow('実行（workflow へ委譲）', 'runs 集計（実績が判断材料）');
-  layers += hzLayer('l-micro', 'MICRO', 'takt workflow 群',
+  layers += hzLayer('l-micro', '内ループ', 'takt workflow 群',
     'Fable 前提で薄く作る。停止条件（スコア・回数・時間）は保険であり、監視は強化しない',
     (gTakt
       ? hzChip('workflows: <b>' + gTakt.workflows.length + '</b> 本', '', '~/.takt/workflows') +
@@ -1731,30 +1782,14 @@ function renderHarnessView() {
     hzChip('失敗/中断: <b>' + failedN + '</b>', failedN > 0 ? 'warn' : '', null),
     'データ runs 実績 meta.json');
 
-  // --- 三重ループ概念図（内が速く・外が偉い） ---
-  function nest(cls, name, question, cadence, body, search) {
-    return '<div class="hz-nest ' + cls + '" data-search="' + esc(('ループ ' + name + ' ' + search).toLowerCase()) + '">' +
-      '<div class="hz-nest-head"><span class="hz-nest-name">' + esc(name) + '</span>' +
-      '<span class="hz-nest-q">「' + esc(question) + '」</span>' +
-      '<span class="hz-cad">' + esc(cadence) + '</span></div>' +
-      '<div class="hz-nest-body">' + body + '</div>';
-  }
-  var loop3 =
-    nest('n-human', '人間ループ（マクロ・マクロ）', 'どのゲームを戦うか', '月次〜四半期',
-      '判定者: <b>あなた</b> — 成果変数の指定・問いの選択・事業の取捨。ここは AI に渡さない', '人間 変数 問い ゲーム') +
-    nest('n-outer', '外ループ（マクロ・ミクロ）', '正しい仕事を選んでいるか', '週1・火曜',
-      '判定者: <b>emb = Fable</b> — runs/母数 digest → 失敗分析・熱い/寒い triage → 再配分提案（採否は人間）。内ループの失敗を内ループ自身は直せない — 外から仕組みを直すのがこのループ', '外ループ digest 週次 再配分 fable') +
-    nest('n-inner', '内ループ（ミクロ）', 'この仕事を正しくやれているか', '分〜時間',
-      '判定者: <b>reviewer / supervisor</b> — run 内の review→fix 反復・停止条件（Fable 時代は薄くていい）', '内ループ review fix supervisor 停止条件') +
-    '</div></div></div>';
   // 7パネルを3チャンクにグループ化: ①構造 ②数値 ③判断材料（ワーキングメモリ対策）
   var html = '<div class="view-group">① 構造 — 思想と配線</div>';
   html += panel('三重ループ（概念図）',
-    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い（内=成果物の質 / 外=仕事の選び方 / 最外=ゲームの選び方）',
-    loop3, '', 'sec-hz-loop3');
+    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い（内=成果物の質 / 外=仕事の選び方 / 最外=ゲームの選び方）。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す',
+    renderLoop3Diagram(), '', 'sec-hz-loop3');
 
   html += panel('ハーネス構造（思想 × 実配線）',
-    'マクロは入れ子: 人間接点（マクロ・マクロ）と接合部（マクロ・ミクロ）。右の帰還レールが外ループ＝「ミクロの結果でマクロを変える」。chips は実ファイル・実データから自動生成',
+    '上から人間ループ・外ループ・内ループ。右の帰還レールが外ループ＝「内ループの結果で次の割り振りを変える」。chips は実ファイル・実データから自動生成',
     '<div class="hz-loopwrap"><div class="hz-stack">' + layers + '</div>' +
     '<div class="hz-rail"><div class="bracket"></div>' +
     '<div class="rail-label">外ループ: runs 実績 → digest → 週次判断（火曜）→ 再配分</div></div></div>',
@@ -1764,9 +1799,9 @@ function renderHarnessView() {
   var vr = h.vaultRefs || [];
   if (vr.length) {
     var VR_META = {
-      mm: { cls: 'l-mm', name: 'MACRO / MACRO', title: '人間接点が読み書きするナレッジ', src: '~/bin/claude-cron・~/bin/raycast-scripts' },
-      pos: { cls: 'l-pos', name: 'MACRO / MICRO', title: '接合部（プロジェクトOS・外ループ）が参照するナレッジ', src: '~/.takt/scripts・knowledge facet・weekly-report-emb / automation-scout とその facet' },
-      micro: { cls: 'l-micro', name: 'MICRO', title: 'workflow・ペルソナが参照するナレッジ', src: 'その他 workflow とその facet・単体ペルソナ' }
+      mm: { cls: 'l-mm', name: '人間ループ', title: '人間接点が読み書きするナレッジ', src: '~/bin/claude-cron・~/bin/raycast-scripts' },
+      pos: { cls: 'l-pos', name: '外ループ', title: '接合部（プロジェクトOS・外ループ）が参照するナレッジ', src: '~/.takt/scripts・knowledge facet・weekly-report-emb / automation-scout とその facet' },
+      micro: { cls: 'l-micro', name: '内ループ', title: 'workflow・ペルソナが参照するナレッジ', src: 'その他 workflow とその facet・単体ペルソナ' }
     };
     var vrGroups = ['mm', 'pos', 'micro'].map(function (layer) {
       var meta = VR_META[layer];
@@ -1869,6 +1904,123 @@ function renderHarnessView() {
   return html;
 }
 
+// ---- 全体地図ビュー（事業→戦略→ループ→資産。DATA.business は redact/public では null） ----
+// 三重ループ図解 — 全体地図とハーネスビューの共通コンポーネント（書くのはここ1箇所）。
+// 入れ子＝包含（人間⊃外⊃内）、チップ＝権能（👑専権/🛑緊急停止/👁三眼/🔧修理/🧲引き戻し/🛡結界）、
+// 層間フロー＝統治の円環（⬇委任・割当 / ⬆報告・実績）。
+function renderLoop3Diagram() {
+  function nest(cls, name, q, cad, judge, powers) {
+    return '<div class="hz-nest ' + cls + '" data-search="' + esc(('ループ ' + name + ' ' + q).toLowerCase()) + '">' +
+      '<div class="hz-nest-head"><span class="hz-nest-name">' + esc(name) + '</span>' +
+      '<span class="hz-nest-q">「' + esc(q) + '」</span>' +
+      '<span class="wm-judge">判定: <b>' + esc(judge) + '</b></span>' +
+      '<span class="hz-cad">' + esc(cad) + '</span></div>' +
+      (powers ? '<div class="wm-powers">' + powers + '</div>' : '') +
+      '<div class="hz-nest-body">';
+  }
+  function flow(down, up) {
+    return '<div class="wm-flow"><span class="wm-flow-down">⬇ ' + esc(down) + '</span><span class="wm-flow-up">⬆ ' + esc(up) + '</span></div>';
+  }
+  function pchip(txt, cls) { return '<span class="wm-pchip' + (cls ? ' ' + cls : '') + '">' + txt + '</span>'; }
+  return nest('n-human', '人間ループ', 'どのゲームを戦うか', '月次〜四半期', 'あなた',
+      pchip('👑 専権: 採否・閾値・取捨・問いの選択', 'wm-p-crown') +
+      pchip('🛑 緊急停止 shinra-tensei — 発動・再装填は神のみ', 'wm-p-danger')) +
+    flow('委任: 仕事とルールを授ける', '報告: 週次レビュー＋答え合わせ（仮説的中・提案採用率）') +
+    nest('n-outer', '外ループ', '正しい仕事を選んでいるか', '週1・火曜', 'emb = Fable',
+      pchip('👁 量: digest') + pchip('👁 質: 手戻り率・ゴム印検知・サンプル監査') + pchip('👁 己: 答え合わせ') +
+      pchip('🔧 委譲: 機械的修理3種', 'wm-p-grant') + pchip('🧲 引き戻し（4条件・1回まで）', 'wm-p-grant')) +
+    flow('割当: タスク投入・修理・引き戻し', '実績: 成功率・反復・所要・abort 原因') +
+    nest('n-inner', '内ループ', 'この仕事を正しくやれているか', '分〜時間', 'reviewer / supervisor',
+      pchip('🛡 結界: max_steps') + pchip('🛡 loop_monitors — 3周で強制判定')) +
+    '</div></div>'.repeat(3);
+}
+
+function renderWorldMapView() {
+  var b = DATA.business;
+  var h = DATA.harness;
+  function yen(n) { return '¥' + Number(n).toLocaleString('ja-JP'); }
+  var html = '';
+
+  // 1. 人間ループ（神の間）: ファーストゴール＋成果変数＋問い
+  var god = '';
+  if (b.firstGoal.living) {
+    var living = b.firstGoal.living;
+    var goalBar = function (label, val, cls) {
+      var pct = Math.round((val / living) * 100);
+      var hit = val >= living;
+      return '<div class="wm-goal" data-search="ファーストゴール ' + esc(label.toLowerCase()) + '">' +
+        '<span class="wm-goal-label">' + esc(label) + '</span>' +
+        '<div class="wm-bar"><div class="wm-fill ' + (hit ? 'hit' : cls) + '" style="width:' + Math.min(100, pct) + '%"></div></div>' +
+        '<span class="wm-goal-val">' + yen(val) + ' / ' + yen(living) + '（<b>' + pct + '%</b>' + (hit ? '・達成' : '・未達') + '）</span></div>';
+    };
+    god += '<div class="wm-note">ファーストゴール: サブスク収入 ＞ 生活費 ' + yen(living) + '。広義は②の顧問継続が前提・厳格は稼働≈0の①のみ</div>';
+    god += goalBar('広義（①＋②）', b.firstGoal.broad, 'mid');
+    god += goalBar('厳格（①のみ）', b.firstGoal.strict, 'low');
+  }
+  var hv = h && h.variables;
+  var qs = h && h.questions;
+  god += '<div class="wm-chips">' +
+    hzChip('成果変数: ' + (hv && hv.vars.length
+      ? hv.vars.map(function (v) { return esc(v.name) + ' 週' + esc(v.target); }).join(' ／ ')
+      : '未設定'), hv && hv.vars.length ? 'ok' : 'miss', hv ? hv.varsPath : null) +
+    hzChip('未消化の問い: ' + (qs ? '<b>' + qs.count + '</b> 件' : '未作成'), qs ? '' : 'miss', qs ? qs.path : null) +
+    hzChip('変数指定・事業取捨・3層分類は人間の専権', 'hero', null) +
+    hzChip('緊急停止 shinra-tensei.sh — 発動（--run）と再装填（launchctl load）は神のみ', 'hero', null) +
+    '</div>';
+  html += panel('人間ループ — 神の間', '判定者はあなた。どのゲームを戦うかをここで決める（金額の最終正本は Lark 事業計画シート）', god, '', 'sec-wm-god');
+
+  // 2. 事業3層ポートフォリオ
+  var total = b.layerTotals.labor + b.layerTotals.light + b.layerTotals.auto;
+  var LAYERS = [
+    { key: '③', amt: b.layerTotals.labor, name: '③ 労働', cls: 'l3', hint: '足場 — 時間の切り売り。圧縮して上の層へ転嫁する' },
+    { key: '②', amt: b.layerTotals.light, name: '② 少労（顧問）', cls: 'l2', hint: '継続KPI — チャーン防止が仕事' },
+    { key: '①', amt: b.layerTotals.auto, name: '① 自動', cls: 'l1', hint: '偉い — 稼働≈0で積み上がる資産。ここを太らせる' },
+  ];
+  var biz = '<div class="wm-note">月額合計 <b>' + yen(total) + '</b> ・ サブスクの偉い順: ① ← ② ← ③（③で稼ぎながら①を積む）</div>';
+  LAYERS.forEach(function (L) {
+    var pct = total ? Math.round((L.amt / total) * 100) : 0;
+    biz += '<div class="wm-layer" data-search="' + esc(('事業 ' + L.name).toLowerCase()) + '">' +
+      '<div class="wm-layer-head"><span class="wm-layer-name">' + esc(L.name) + '</span>' +
+      '<div class="wm-bar"><div class="wm-fill ' + L.cls + '" style="width:' + pct + '%"></div></div>' +
+      '<span class="wm-goal-val"><b>' + yen(L.amt) + '</b>（' + pct + '%）</span></div>' +
+      '<div class="wm-layer-hint">' + esc(L.hint) + '</div>';
+    b.contracts.filter(function (c) { return c.layer === L.key; }).forEach(function (c) {
+      biz += '<div class="wm-row" data-search="' + esc((c.party + ' ' + c.desc).toLowerCase()) + '"' + openAttr(b.contractsPath) + '>' +
+        '<span class="wm-party">' + esc(c.party) + '</span><span class="wm-desc">' + esc(c.desc) + '</span>' +
+        '<span class="wm-amt">' + yen(c.amount) + '</span><span class="wm-lnote">' + esc(c.note) + '</span></div>';
+    });
+    biz += '</div>';
+  });
+  html += panel('事業 3層ポートフォリオ', '正本: ' + esc(b.contractsPath) + '。層分類は人間の判断事項（AIは転記のみ）', biz, '', 'sec-wm-biz');
+
+  // 3. 事業優先度
+  if (b.priorities.length) {
+    var pr = b.priorities.map(function (p, i) {
+      return '<div class="wm-prio" data-search="優先度 ' + esc(p.toLowerCase()) + '"><span class="wm-prio-n">' + (i + 1) + '</span><span>' + esc(p) + '</span></div>';
+    }).join('');
+    html += panel('事業優先度', 'ロードマップ「事業戦略まとめ」の要点スナップショット（' + esc(b.roadmapPath) + '）。判断は必ず正本の Lark doc で行う', pr, '', 'sec-wm-prio');
+  }
+
+  // 4. ループと資産 — 三重ループ図解はハーネスビューと共通コンポーネント
+  var loops = renderLoop3Diagram();
+  loops += '<div class="wm-note">メタ軸（ハーネス自体を作り替える。KPIは削除数と工数削減）: harness-review 週次 ・ automation-scout 半月 ・ 四半期棚卸し</div>';
+  var gTakt = null;
+  DATA.scopes.forEach(function (s) { if (s.id === 'global' && s.takt) gTakt = s.takt; });
+  var asset = function (view, label, count) {
+    return '<div class="wm-asset wm-goview" data-goview="' + view + '"><span class="wm-asset-n">' + count + '</span><span class="wm-asset-l">' + esc(label) + '</span></div>';
+  };
+  var assets = '<div class="wm-assets">';
+  assets += asset('all', 'skills', uniqueReals(allSkills(DATA.scopes)));
+  if (gTakt) assets += asset('harness', 'workflows', gTakt.workflows.length) + asset('harness', 'personas', gTakt.personas.length);
+  if (DATA.launchd && DATA.launchd.length) assets += asset('launchd', 'launchd', DATA.launchd.length);
+  if (DATA.plugins && DATA.plugins.length) assets += asset('plugins', 'plugins', DATA.plugins.length);
+  if (DATA.ops) assets += asset('ops', 'パイプライン', DATA.ops.pipelines.length);
+  assets += '</div>';
+  html += panel('ループと資産 — 機械の間', '三重ループが事業を回す。数字クリックで各ビューへ', loops + assets, '', 'sec-wm-loops');
+
+  return html;
+}
+
 function renderView(keepScroll) {
   const y = window.scrollY;
   const app = document.getElementById('app');
@@ -1877,9 +2029,19 @@ function renderView(keepScroll) {
   selEl = null;
   let html = '';
 
+  if (activeView === 'worldmap' && DATA.business) {
+    document.getElementById('view-title').textContent = '全体地図';
+    document.getElementById('view-root').textContent = '事業 → 戦略 → ループ → 資産 ・ 正本は Vault / Lark';
+    html = renderWorldMapView();
+    app.innerHTML = html;
+    applySearch();
+    window.scrollTo(0, keepScroll ? y : 0);
+    return;
+  }
+
   if (activeView === 'harness' && DATA.harness) {
     document.getElementById('view-title').textContent = 'ハーネス構造';
-    document.getElementById('view-root').textContent = 'マクロ/ミクロハーネス v2 ・ 再生成で自動反映';
+    document.getElementById('view-root').textContent = '三重ループハーネス v2 ・ 再生成で自動反映';
     html = renderHarnessView();
     app.innerHTML = html;
     applySearch();
@@ -1944,10 +2106,19 @@ function renderNav() {
   function dots(s) {
     let d = '';
     if (s.skills.some(function (e) { return e.dupSame; })) d += '<span class="dot amber" title="スコープ内重複あり"></span>';
-    if (s.skills.some(function (e) { return e.dupCross.length > 0; })) d += '<span class="dot red" title="スコープ間重複あり"></span>';
+    if (s.skills.some(function (e) { return dupCrossReal(e); })) d += '<span class="dot red" title="スコープ間重複あり"></span>';
     return d;
   }
-  let html = '<div class="nav-head">スコープ</div>' +
+  let html = '';
+  if (DATA.business) {
+    var strictPct = DATA.business.firstGoal.living
+      ? Math.round((DATA.business.firstGoal.strict / DATA.business.firstGoal.living) * 100)
+      : null;
+    html += '<div class="nav-head">地図</div>' +
+      '<button class="nav-item" data-view="worldmap"><span>全体地図</span>' +
+      '<span class="nav-right">' + (strictPct !== null ? '<span class="nav-cnt" title="厳格ゴール（①のみ）進捗">①' + strictPct + '%</span>' : '') + '</span></button>';
+  }
+  html += '<div class="nav-head">スコープ</div>' +
     '<button class="nav-item active" data-view="all"><span>全体</span>' +
     '<span class="nav-right"><span class="nav-cnt">' + uniqueReals(allSkills(DATA.scopes)) + '</span></span></button>';
   DATA.scopes.forEach(function (s) {
@@ -2077,7 +2248,7 @@ document.addEventListener('click', function (ev) {
 
 // ---- 要注意パネルの行クリック（別ビューへ切替 or 同ビュー内アンカーへジャンプ） ----
 document.addEventListener('click', function (ev) {
-  const row = ev.target && ev.target.closest ? ev.target.closest('.attn-row') : null;
+  const row = ev.target && ev.target.closest ? ev.target.closest('.attn-row, .wm-goview') : null;
   if (!row) return;
   const v = row.getAttribute('data-goview');
   if (v) {
