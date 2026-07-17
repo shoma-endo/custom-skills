@@ -94,4 +94,4 @@ allowed-tools:
 
 - 正面カメラ目線の写真撮り直し（名刺・LP・X・note共通資産）
 - GrowMate多社展開後のツール命名→裏面の商品カード化
-- Lステップ等導入時は名刺専用の流入経路QRを次ロットで
+- 次ロットのLINE QRは LINE Harness のエントリールート `https://line-harness.shoma-ai-line.workers.dev/r/meishi` をQR化する（ref_code=meishi で友だち追加が帰属計測される。2026-07-17 Harness導入済み・ルート作成済み）。QR画像は worker の `/api/qr?size=300x300&data=<URL>` で生成可。現行ロット（公式LINE直QR）の追加は「経路情報なし」に落ちる
