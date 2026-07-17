@@ -18,7 +18,7 @@ allowed-tools:
   - `print-front.html` / `print-back.html` — デザイン正本（写真・QRはbase64インライン）
   - `pdf-front.html` / `pdf-back.html` — PDF化ラッパー（生成済みPNGを参照）
   - `build.sh` — PNG再生成スクリプト
-- 出力先: `~/Downloads/meishi-print/`（PNG・PDF・meishi-nyuko.zip）
+- 出力先: `~/dev/ai-support-lp/meishi/dist/`（PNG・PDF・meishi-nyuko.zip。git管理下＝誤削除しても復元可）
 - 記録: memory `lp-line-funnel.md` に発注履歴あり
 
 ## 寸法の数理（これだけ守れば再現できる）
@@ -32,17 +32,8 @@ allowed-tools:
 
 ```bash
 # 1. print-front/back.html を編集（実績数字・文言・スタイル）
-~/dev/ai-support-lp/meishi/build.sh   # 2. PNG再生成
-# 3. PDF再生成
-CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-for side in front back; do
-  "$CHROME" --headless --disable-gpu --no-pdf-header-footer \
-    --print-to-pdf="$HOME/Downloads/meishi-print/meishi-$side-97x61mm-bleed.pdf" \
-    "file://$HOME/dev/ai-support-lp/meishi/pdf-$side.html"
-done
-# 4. ZIP梱包
-cd ~/Downloads/meishi-print && rm -f meishi-nyuko.zip && \
-  zip -jq meishi-nyuko.zip meishi-front-97x61mm-bleed.pdf meishi-back-97x61mm-bleed.pdf
+~/dev/ai-support-lp/meishi/build.sh   # 2. PNG+PDF+ZIP を dist/ に一発生成
+# 3. 検証OKなら dist/ ごと git commit
 ```
 
 ## 印刷基準チェックリスト（編集のたびに全部通す）
