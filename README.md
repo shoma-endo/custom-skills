@@ -12,6 +12,7 @@ Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 | [e2e-testcases](skills/e2e-testcases/) | リポジトリ解析にもとづく E2E テストケース設計（機能・非機能）。`docs/TEST_CASES.md` を生成 |
 | [estimate](skills/estimate/) | 受託開発の見積もり（工数・金額・スケジュール・見積書）。質問シート先行、レートカードは個人設定で分離 |
 | [lark-translate](skills/lark-translate/) | Lark 機械翻訳 API によるテキスト翻訳（16言語＋glossary 対訳固定）と言語自動判定 |
+| [meishi](skills/meishi/) | 名刺の作成・改版・入稿データ生成。HTML正本→350dpi PNG/PDF→印刷基準検証（文字pt・マージン・線の視認性）→ZIP梱包。 |
 | [minutes-to-visual](skills/minutes-to-visual/) | Lark ビデオ会議の文字起こしを図解画像・スライド・ドキュメントに視覚化 |
 | [project-catchup](skills/project-catchup/) | 久しぶりに戻るプロジェクトの全体像を「MD 正本＋ペライチ HTML」の二層で生成 |
 | [readme-audit](skills/readme-audit/) | README・主要 docs と実コードの整合を監査し、乖離を根拠付きで列挙してから更新 |
