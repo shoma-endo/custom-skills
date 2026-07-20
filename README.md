@@ -16,6 +16,7 @@ Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 | [minutes-to-visual](skills/minutes-to-visual/) | Lark ビデオ会議の文字起こしを図解画像・スライド・ドキュメントに視覚化 |
 | [project-catchup](skills/project-catchup/) | 久しぶりに戻るプロジェクトの全体像を「MD 正本＋ペライチ HTML」の二層で生成 |
 | [readme-audit](skills/readme-audit/) | README・主要 docs と実コードの整合を監査し、乖離を根拠付きで列挙してから更新 |
+| [skill-sheet-scout](skills/skill-sheet-scout/) | SES技術経歴書の月次更新支援。直近1ヶ月の全行動（git・Vault・Lark）を収集し、単価に効く追記候補を文面案付きで提案 |
 
 ## インストール
 
