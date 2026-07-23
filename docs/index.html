@@ -27,6 +27,17 @@
   --st-good-tint: rgba(11, 125, 11, 0.10);
   --st-crit: #b83232;
   --st-crit-tint: rgba(184, 50, 50, 0.10);
+  /* 階層レイヤ（構造の視認用。異常色 --red/--amber とは分離） */
+  --layer-command: #1a2744;
+  --layer-command-ink: #f4f6fa;
+  --layer-command-tint: rgba(26, 39, 68, 0.08);
+  --layer-process: #c47a3a;
+  --layer-process-tint: #f5ebe0;
+  --layer-process-ink: #5c3a18;
+  --layer-foundation: #3d6f8f;
+  --layer-foundation-tint: #e4eef4;
+  --layer-foundation-ink: #1e3a4d;
+  --layer-storage-border: #2a2a28;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -50,6 +61,16 @@
     --st-good-tint: rgba(46, 204, 64, 0.16);
     --st-crit: #d03b3b;
     --st-crit-tint: rgba(230, 103, 103, 0.14);
+    --layer-command: #c5d0e8;
+    --layer-command-ink: #0d0d0d;
+    --layer-command-tint: rgba(197, 208, 232, 0.10);
+    --layer-process: #e0a06a;
+    --layer-process-tint: rgba(224, 160, 106, 0.14);
+    --layer-process-ink: #f5ebe0;
+    --layer-foundation: #7eb0cc;
+    --layer-foundation-tint: rgba(126, 176, 204, 0.14);
+    --layer-foundation-ink: #d6e8f2;
+    --layer-storage-border: #8a8984;
   }
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -112,18 +133,26 @@ body.side-collapsed #toggle-side { left: 12px; }
   font-size: 1.32rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  padding: 26px 22px 18px;
-  border-bottom: 3px solid var(--ink);
+  padding: 22px 22px 16px;
+  border-bottom: none;
   line-height: 1.3;
+  background: var(--layer-command);
+  color: var(--layer-command-ink);
+  border-radius: 0 0 10px 0;
 }
-.brand .x { color: var(--blue); }
+.brand .x { color: #8eb4e8; }
 .brand .sub {
   display: block;
   font-size: 0.72rem;
   font-weight: 400;
-  color: var(--muted);
-  letter-spacing: 0.24em;
-  margin-top: 4px;
+  color: rgba(244, 246, 250, 0.72);
+  letter-spacing: 0.18em;
+  margin-top: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  .brand { background: #243552; color: #f4f6fa; }
+  .brand .x { color: #8eb4e8; }
+  .brand .sub { color: rgba(244, 246, 250, 0.72); }
 }
 #nav { padding: 14px 0; }
 .nav-head {
@@ -132,7 +161,20 @@ body.side-collapsed #toggle-side { left: 12px; }
   letter-spacing: 0.22em;
   color: var(--muted);
   padding: 8px 22px 6px;
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer; user-select: none;
 }
+.nav-head:hover { color: var(--ink-2); }
+.nav-head-chevron {
+  display: inline-block; width: 0; height: 0;
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  transition: transform 0.12s ease;
+  flex: 0 0 auto;
+}
+.nav-head-chevron.collapsed { transform: rotate(-90deg); }
+.nav-group { overflow: hidden; }
+.nav-group.collapsed { display: none; }
 button.nav-item {
   appearance: none;
   border: none;
@@ -312,17 +354,50 @@ main { padding: 22px 30px 90px; max-width: 1720px; }
 .attn-row .sevdot { width: 8px; height: 8px; border-radius: 50%; flex: none; align-self: center; }
 .attn-row .sevdot.red { background: var(--red, #cf222e); }
 .attn-row .sevdot.amber { background: var(--amber, #bf8700); }
+.attn-row .gate {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  align-self: center;
+  transform: rotate(45deg);
+  border: 1.5px solid;
+  background: transparent;
+}
+.attn-row .gate.red { border-color: var(--red); background: var(--red-tint); }
+.attn-row .gate.amber { border-color: var(--amber); background: var(--amber-tint); }
 .attn-row .go { margin-left: auto; color: var(--muted); font-size: 0.76rem; white-space: nowrap; }
 
-/* ---- ビュー内グループ見出し（チャンク化） ---- */
+/* ---- ビュー内グループ見出し（チャンク化・稼働レイヤ） ---- */
 .view-group {
-  font-size: 0.76rem;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  margin: 26px 2px 10px;
+  letter-spacing: 0.04em;
+  color: var(--layer-process-ink);
+  background: var(--layer-process-tint);
+  border: 1px solid color-mix(in srgb, var(--layer-process) 35%, transparent);
+  border-left: 4px solid var(--layer-process);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 28px 0 12px;
 }
 .view-group:first-child { margin-top: 0; }
+.view-group .vg-num {
+  flex: none;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--layer-process);
+  letter-spacing: 0;
+}
+.view-group .vg-sub {
+  font-weight: 400;
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-left: auto;
+}
 
 /* ---- パネル ---- */
 .panel {
@@ -332,6 +407,32 @@ main { padding: 22px 30px 90px; max-width: 1720px; }
   margin-bottom: 20px;
   overflow: hidden;
 }
+.panel.layer-command { border-left: 4px solid var(--layer-command); }
+.panel.layer-command > .panel-head {
+  background: var(--layer-command);
+  color: var(--layer-command-ink);
+  border-bottom-color: transparent;
+}
+.panel.layer-command > .panel-head .ph-title { color: var(--layer-command-ink); }
+.panel.layer-command > .panel-head .ph-sub { color: rgba(244, 246, 250, 0.72); }
+.panel.layer-command > .panel-head .ph-chevron { color: rgba(244, 246, 250, 0.72); }
+.panel.layer-command > .panel-head:hover { filter: brightness(1.06); background: var(--layer-command); }
+@media (prefers-color-scheme: dark) {
+  .panel.layer-command > .panel-head { background: #243552; color: #f4f6fa; }
+  .panel.layer-command > .panel-head .ph-title { color: #f4f6fa; }
+  .panel.layer-command > .panel-head .ph-sub,
+  .panel.layer-command > .panel-head .ph-chevron { color: rgba(244, 246, 250, 0.72); }
+}
+.panel.layer-process { border-left: 4px solid var(--layer-process); }
+.panel.layer-process > .panel-head { background: var(--layer-process-tint); }
+.panel.layer-foundation { border-left: 4px solid var(--layer-foundation); }
+.panel.layer-foundation > .panel-head { background: var(--layer-foundation-tint); }
+.panel.layer-storage {
+  border: 1.5px solid var(--layer-storage-border);
+  border-left-width: 1.5px;
+  background: var(--surface);
+}
+.panel.layer-storage > .panel-head { background: transparent; }
 .panel-head {
   display: flex;
   align-items: baseline;
@@ -366,11 +467,40 @@ details.panel:not([open]) > .panel-head { border-bottom: none; }
   text-transform: uppercase;
   color: var(--ink-2);
 }
-.panel-head .ph-sub { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.78rem; color: var(--muted); }
+.panel-head .ph-sub {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  max-width: 52%;
+  text-align: right;
+  line-height: 1.4;
+}
 .panel-body { padding: 18px 20px; }
 .panel-row { display: grid; grid-template-columns: 2fr 3fr; gap: 20px; align-items: start; }
 .panel-row .panel { margin-bottom: 0; }
 .panel-row { margin-bottom: 20px; }
+
+/* 基盤バー（共通コンテキスト帯） */
+.foundation-bar {
+  background: var(--layer-foundation-tint);
+  border: 1px solid color-mix(in srgb, var(--layer-foundation) 30%, transparent);
+  border-left: 4px solid var(--layer-foundation);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+  color: var(--layer-foundation-ink);
+  line-height: 1.55;
+}
+.foundation-bar .fb-label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--layer-foundation);
+  margin-bottom: 4px;
+}
 
 /* ---- スキルカード ---- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
@@ -411,8 +541,9 @@ table.jobs tr.sel td { background: var(--blue-tint); }
 .badge.b-red { color: var(--red); border-color: var(--red); background: var(--red-tint); }
 .badge.b-mute { color: var(--muted); border-color: var(--hairline); }
 .card .desc {
-  font-size: 0.84rem;
-  color: var(--ink-2);
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.45;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -668,6 +799,35 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 .wm-asset:hover { border-color: var(--blue); color: var(--blue); }
 .wm-asset-n { display: block; font-size: 16px; font-weight: 700; }
 .wm-asset-l { font-size: 11px; color: var(--muted); }
+/* パイプライン詳細フロー（launchd→スクリプト/takt→成果物→消費先の連鎖図） */
+.flow-pipeline { margin: 4px 0 18px; }
+.flow-pipeline-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.flow-pipeline-name { font-weight: 700; font-size: 0.92rem; }
+.flow-pipeline-note { font-size: 0.76rem; color: var(--muted); }
+.flow-chain { display: flex; align-items: stretch; gap: 0; row-gap: 12px; flex-wrap: wrap; }
+.flow-step {
+  border: 1px solid var(--hairline); border-radius: 12px; padding: 11px 15px;
+  background: var(--surface); min-width: 168px; max-width: 260px; font-size: 0.8rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.flow-step[data-open]:hover { border-color: var(--blue); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
+.flow-step-label { font-weight: 700; color: var(--ink); font-size: 0.85rem; }
+.flow-step-detail { color: var(--ink-2); font-size: 0.74rem; margin-top: 4px; line-height: 1.4; }
+.flow-step-kind { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 7px; }
+.flow-step-trigger { border-left: 5px solid var(--amber); background: var(--amber-tint); }
+.flow-step-exec { border-left: 5px solid var(--blue); background: var(--blue-tint); }
+.flow-step-artifact { border-left: 5px solid var(--muted); background: var(--layer-foundation-tint); }
+.flow-step-consumer { border-left: 5px solid var(--st-good); background: var(--st-good-tint); }
+/* スキル連携フロー（別の色語彙: skill=青, file=グレー, related-skill=琥珀, output=緑） */
+.flow-step-skill { border-left: 5px solid var(--blue); background: var(--blue-tint); }
+.flow-step-file { border-left: 5px solid var(--muted); background: var(--layer-foundation-tint); }
+.flow-step-related-skill { border-left: 5px solid var(--amber); background: var(--amber-tint); }
+.flow-step-output { border-left: 5px solid var(--st-good); background: var(--st-good-tint); }
+.flow-arrow { display: flex; align-items: center; justify-content: center; padding: 0 8px; color: var(--muted); flex: 0 0 auto; }
+.flow-arrow svg { width: 24px; height: 24px; }
+.flow-legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.72rem; color: var(--muted); margin: 2px 0 14px; }
+.flow-legend span.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
 /* ハーネスビュー（三重ループ構造） */
 .hz-stack { display: flex; flex-direction: column; margin: 2px 0 6px; }
 .hz-layer {
@@ -748,6 +908,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 
 /* 全体タブ最上部: 週次KPIサマリーカード（成果変数・毎回スクロール不要で見える） */
 .kpi-summary .panel-body { padding-top: 4px; }
+.kpi-summary.layer-command > .panel-body { background: var(--layer-command-tint); }
 .kpi-vars-row { font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .kpi-var-chip {
   display: inline-block; padding: 3px 9px; border-radius: 999px;
@@ -763,6 +924,48 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .kpi-num { font-size: 1.5rem; font-weight: 600; line-height: 1.2; }
 .kpi-target { font-size: 0.7rem; font-weight: 400; color: var(--muted); margin-left: 2px; }
 .kpi-prev { font-size: 0.74rem; color: var(--muted); margin: 4px 0 6px; }
+
+/* KPI達成バッジ（emb週次レビューの◎○△×判定を一目で見せる） */
+.kpi-verdict-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.kpi-verdict-card {
+  flex: 1 1 220px; min-width: 200px; padding: 12px 14px;
+  border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface-2, var(--surface));
+  border-left-width: 4px;
+}
+.kpi-verdict-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.kpi-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%; font-size: 0.95rem; font-weight: 700;
+  flex: none; background: var(--page); border: 1px solid var(--hairline); color: var(--ink-2);
+}
+.kpi-verdict-name { font-size: 0.86rem; font-weight: 600; color: var(--ink); }
+.kpi-verdict-actual { font-size: 0.92rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.kpi-verdict-target, .kpi-verdict-prev { font-size: 0.72rem; font-weight: 400; color: var(--muted); }
+.kpi-verdict-note { font-size: 0.74rem; color: var(--ink-2); margin-top: 6px; line-height: 1.45; }
+.kpi-verdict-card.kpi-badge-good { border-left-color: var(--st-good); background: var(--st-good-tint); }
+.kpi-verdict-card.kpi-badge-good .kpi-badge { background: var(--st-good); border-color: var(--st-good); color: #fff; }
+.kpi-verdict-card.kpi-badge-ok { border-left-color: var(--blue); background: var(--blue-tint); }
+.kpi-verdict-card.kpi-badge-ok .kpi-badge { background: var(--blue); border-color: var(--blue); color: #fff; }
+.kpi-verdict-card.kpi-badge-warn { border-left-color: var(--amber); background: var(--amber-tint); }
+.kpi-verdict-card.kpi-badge-warn .kpi-badge { background: var(--amber); border-color: var(--amber); color: #fff; }
+.kpi-verdict-card.kpi-badge-bad { border-left-color: var(--red); background: var(--red-tint); }
+.kpi-verdict-card.kpi-badge-bad .kpi-badge { background: var(--red); border-color: var(--red); color: #fff; }
+.kpi-verdict-card.kpi-badge-unknown { border-left-color: var(--hairline); }
+.kpi-tiles-label { font-size: 0.72rem; letter-spacing: 0.05em; color: var(--muted); margin: 4px 0 8px; }
+
+/* 判断待ちリスト（人間ループへの差し戻し・emb週次レビューを永続表示） */
+.pd-list { display: flex; flex-direction: column; gap: 8px; }
+.pd-item {
+  display: flex; align-items: baseline; gap: 8px; font-size: 0.84rem; line-height: 1.5;
+  padding: 8px 12px; border: 1px solid var(--hairline); border-left: 3px solid var(--amber);
+  border-radius: 8px; background: var(--surface-2, var(--surface));
+}
+.pd-flag {
+  flex: none; font-size: 0.68rem; font-weight: 600; color: var(--amber);
+  border: 1px solid var(--amber); background: var(--amber-tint);
+  border-radius: 999px; padding: 1px 8px; white-space: nowrap;
+}
+.pd-text { color: var(--ink-2); }
 
 /* ハーネス図解: バーチャート（母数ペアバー・日別 run・workflow別成否） */
 .hz-bars { display: flex; flex-direction: column; gap: 3px; width: 130px; }
@@ -852,7 +1055,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 <button id="toggle-side" class="pane-toggle" type="button" aria-label="左パネルを閉じる" title="左パネルを開閉">‹</button>
 <button id="toggle-detail" class="pane-toggle" type="button" aria-label="右パネルを閉じる" title="右パネルを開閉">›</button>
 <aside id="side">
-  <div class="brand">AGENT <span class="x">ASSETS</span><span class="sub">DASHBOARD</span></div>
+  <div class="brand">AGENT <span class="x">ASSETS</span><span class="sub">方向と判定 / 資産の地図</span></div>
   <div id="nav"></div>
   <div class="side-legend">
     <div class="lg-head">凡例</div>
@@ -887,7 +1090,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/7/21 3:53:41","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783741621545.5608,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"plugins":[],"harness":null,"ops":null,"business":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/7/23 18:45:03","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783741621545.5608,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"plugins":[],"harness":null,"ops":null,"business":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1122,14 +1325,14 @@ function renderAttentionPanel(scopes, stats) {
       return '<button class="attn-row"' +
         (it.view ? ' data-goview="' + it.view + '"' : '') +
         (it.jump ? ' data-jump="' + it.jump + '"' : '') + '>' +
-        '<span class="sevdot ' + it.sev + '"></span>' +
+        '<span class="gate ' + it.sev + '" title="確認ゲート"></span>' +
         '<span>' + esc(it.text) + '</span>' +
         '<span class="go">→ 該当箇所へ</span></button>';
     }).join('');
   }
   return panel('要注意（' + items.length + ' 件）',
     '例外ファースト — 今日見るべきことだけ。正常なパネルは下で畳んである',
-    body, 'attn-panel', 'sec-attn');
+    body, 'attn-panel layer-command', 'sec-attn');
 }
 
 function panel(title, sub, bodyHtml, extraClass, id, closed) {
@@ -1155,7 +1358,7 @@ function renderDistPanel(scopes) {
     };
   });
   return panel('スコープ別エントリ構成', '実体 + リンク',
-    chartLegend([{ color: 'var(--bar)', label: '実体エントリ' }, { color: 'var(--bar-alt)', label: 'リンク' }]) + hBars(rows));
+    chartLegend([{ color: 'var(--bar)', label: '実体エントリ' }, { color: 'var(--bar-alt)', label: 'リンク' }]) + hBars(rows), 'layer-process');
 }
 
 // ---- 重複マトリクスパネル ----
@@ -1167,7 +1370,7 @@ function renderMatrixPanel(scopes) {
   });
   const names = Object.keys(byName).sort();
   if (names.length === 0) {
-    return panel('重複マトリクス', '', '<div class="empty-note">✓ 重複なし — 同名の別実体は存在しません（リンクによる同一実体の共有は重複に数えません）</div>', '', 'sec-matrix');
+    return panel('重複マトリクス', '', '<div class="empty-note">✓ 重複なし — 同名の別実体は存在しません（リンクによる同一実体の共有は重複に数えません）</div>', 'layer-process', 'sec-matrix');
   }
   let html = '<div style="overflow-x:auto"><table class="matrix"><thead><tr><th style="text-align:left">スキル名</th>';
   scopes.forEach(function (s) { html += '<th>' + esc(s.label) + '</th>'; });
@@ -1193,7 +1396,7 @@ function renderMatrixPanel(scopes) {
     });
     html += '</tr>';
   });
-  return panel('重複マトリクス', '同名の別実体がどこにあるか。◈=意図的な重複（フォーク対リポジトリの自己完結用・警告対象外）', html + '</tbody></table></div>', '', 'sec-matrix');
+  return panel('重複マトリクス', '同名の別実体がどこにあるか。◈=意図的な重複（フォーク対リポジトリの自己完結用・警告対象外）', html + '</tbody></table></div>', 'layer-process', 'sec-matrix');
 }
 
 // ---- リンク一覧パネル ----
@@ -1210,7 +1413,7 @@ function renderLinksPanel(scopes, closed) {
   links.forEach(function (e) {
     html += '<li><span class="from">' + esc(e.path) + '</span> <span class="arrow">→</span> ' + esc(e.link) + '</li>';
   });
-  return panel('リンク（エイリアス）一覧', '', html + '</ul></details>', '', 'sec-links', closed);
+  return panel('リンク（エイリアス）一覧', '', html + '</ul></details>', 'layer-foundation', 'sec-links', closed);
 }
 
 // ---- launchd ジョブパネル ----
@@ -1277,7 +1480,7 @@ function renderLaunchdPanel(closed) {
       '</tr>';
   });
   html += '</tbody></table></div>';
-  return panel('launchd ジョブ', sub, html, '', 'sec-launchd', closed);
+  return panel('launchd ジョブ', sub, html, 'layer-foundation', 'sec-launchd', closed);
 }
 
 // ---- プラグイン（Claude Code / Codex）パネル ----
@@ -1324,7 +1527,7 @@ function renderPluginsPanel(closed) {
   const nBoth = plugins.filter(function (p) { return p.inClaude && p.inCodex; }).length;
   const sub = 'Claude Code ' + nClaude + '　Codex ' + nCodex + '　両ツール ' + nBoth;
   const html = '<div class="grid">' + plugins.map(renderPluginCard).join('') + '</div>';
-  return panel('プラグイン（Claude Code / Codex）', sub, html, 'plugins-panel', 'sec-plugins', closed);
+  return panel('プラグイン（Claude Code / Codex）', sub, html, 'plugins-panel layer-foundation', 'sec-plugins', closed);
 }
 
 // ---- スキルカード ----
@@ -1460,7 +1663,7 @@ function renderScopePanel(s, closed) {
         '<div class="empty-note">personas ディレクトリなし（このスコープの takt は facets レイアウト）</div></div>';
     }
   }
-  return panel('スコープ: ' + s.label, s.root, body, 'scope-panel', undefined, closed);
+  return panel('スコープ: ' + s.label, s.root, body, 'scope-panel layer-storage', undefined, closed);
 }
 
 // ---- ビュー描画 ----
@@ -1664,7 +1867,7 @@ function renderOpsView() {
   }
   var html = panel('整合性チェック（乖離検知）' + (igFail + igWarn > 0 ? '（FAIL ' + igFail + ' / WARN ' + igWarn + '）' : ''),
     'generate-skills-map.ts 冒頭「外部事実の宣言」を生成のたびに実体（ファイル・plist・workflow・単価・shellスクリプト）と突合。宣言と現実がズレたらここに自己申告される',
-    igBody, '', 'sec-ops-integrity');
+    igBody, 'layer-command', 'sec-ops-integrity');
 
   // --- パイプライン鮮度 ---
   var plRows = o.pipelines.map(function (p) {
@@ -1805,6 +2008,85 @@ function renderOpsView() {
     cleanupHtml, '', 'sec-ops-cleanup');
   return html;
 }
+
+// ---- パイプライン詳細フロー画面（launchd→スクリプト/takt→成果物→消費先を1本ずつ図解） ----
+function renderPipelinesView() {
+  var pipelines = ((DATA.ops && DATA.ops.pipelines) || []).filter(function (p) { return p.chain && p.chain.length; });
+  function jobStatus(label) {
+    var j = (DATA.launchd || []).filter(function (x) { return x.label === label; })[0];
+    return j ? j.status : null;
+  }
+  var KIND_LABEL = { trigger: '起動', exec: '実行', artifact: '成果物', consumer: '消費先' };
+  // ステップのクリック先パスを解決する: 手書き path があればそれを最優先、
+  // trigger は jobLabel から launchd plist を、artifact は PipelineEntry.openPath をフォールバックに使う（重複定義を避ける）
+  function resolveStepPath(s, p) {
+    if (s.path) return s.path;
+    if (s.kind === 'trigger' && p.jobLabel) {
+      var job = (DATA.launchd || []).filter(function (j) { return j.label === p.jobLabel; })[0];
+      return job ? job.plist : null;
+    }
+    if (s.kind === 'artifact') return p.openPath;
+    return null;
+  }
+  function stepBox(s, p) {
+    var linkPath = resolveStepPath(s, p);
+    return '<div class="flow-step flow-step-' + s.kind + '"' + openAttr(linkPath) + '>' +
+      '<div class="flow-step-label">' + esc(s.label) + '</div>' +
+      (s.detail ? '<div class="flow-step-detail">' + esc(s.detail) + '</div>' : '') +
+      '<div class="flow-step-kind">' + esc(KIND_LABEL[s.kind]) + '</div></div>';
+  }
+  var body = '<div class="flow-legend">' +
+    '<span><span class="sw" style="background:var(--amber)"></span>起動（launchd）</span>' +
+    '<span><span class="sw" style="background:var(--blue)"></span>実行（スクリプト・takt）</span>' +
+    '<span><span class="sw" style="background:var(--muted)"></span>成果物</span>' +
+    '<span><span class="sw" style="background:var(--st-good)"></span>消費先</span>' +
+    '<span>枠のあるboxはクリックで実ファイル/フォルダを開く</span></div>';
+  body += pipelines.map(function (p) {
+    var js = p.jobLabel ? jobStatus(p.jobLabel) : null;
+    var stCls = js === 'error' ? 'failed' : js === 'ok' || js === 'running' ? 'completed' : 'other';
+    var arrowHtml = '<div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"></line><polyline points="12 6 18 12 12 18"></polyline></svg></div>';
+    var chainHtml = p.chain.map(function (s) { return stepBox(s, p); }).join(arrowHtml);
+    return '<div class="flow-pipeline" data-search="' + esc((p.name + ' ' + (p.note || '')).toLowerCase()) + '">' +
+      '<div class="flow-pipeline-head"><span class="flow-pipeline-name">' + esc(p.name) + '</span>' +
+      (js ? '<span class="hz-st ' + stCls + '">launchd: ' + esc(js) + '</span>' : '') +
+      (p.note ? '<span class="flow-pipeline-note">' + esc(p.note) + '</span>' : '') + '</div>' +
+      '<div class="flow-chain">' + chainHtml + '</div></div>';
+  }).join('');
+  return panel('パイプライン詳細フロー（' + pipelines.length + '件）',
+    '起動条件→実行内容→成果物→消費先を1本ずつ図解。対象は運用ヘルスの鮮度監視10件のうち launchd 起点の自動パイプライン（手動起動の takt ワークフロー・個別 skill は対象外）',
+    body, 'layer-foundation', 'sec-pipelines');
+}
+
+// ---- スキル連携フロー画面（他skill/他ファイルへの参照関係。複数ファイル・他skillを跨ぐ複雑なものだけが対象） ----
+function renderSkillFlowView() {
+  var flows = DATA.skillFlows || [];
+  var KIND_LABEL = { skill: 'スキル本体', file: '参照ファイル', 'related-skill': '連携skill', output: '成果物/接続先' };
+  function stepBox(s) {
+    return '<div class="flow-step flow-step-' + s.kind + '"' + openAttr(s.path) + '>' +
+      '<div class="flow-step-label">' + esc(s.label) + '</div>' +
+      (s.detail ? '<div class="flow-step-detail">' + esc(s.detail) + '</div>' : '') +
+      '<div class="flow-step-kind">' + esc(KIND_LABEL[s.kind]) + '</div></div>';
+  }
+  var body = '<div class="flow-legend">' +
+    '<span><span class="sw" style="background:var(--blue)"></span>スキル本体</span>' +
+    '<span><span class="sw" style="background:var(--muted)"></span>参照ファイル</span>' +
+    '<span><span class="sw" style="background:var(--amber)"></span>連携skill（前段/後段/検証役）</span>' +
+    '<span><span class="sw" style="background:var(--st-good)"></span>成果物/接続先</span>' +
+    '<span>枠のあるboxはクリックで実ファイルを開く</span></div>';
+  var arrowHtml = '<div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"></line><polyline points="12 6 18 12 12 18"></polyline></svg></div>';
+  body += flows.map(function (f) {
+    var chainHtml = f.chain.map(stepBox).join(arrowHtml);
+    return '<div class="flow-pipeline" data-search="' + esc((f.name + ' ' + f.scope + ' ' + (f.note || '')).toLowerCase()) + '">' +
+      '<div class="flow-pipeline-head"><span class="flow-pipeline-name">' + esc(f.name) + '</span>' +
+      '<span class="hz-st completed">' + esc(f.scope) + '</span>' +
+      (f.note ? '<span class="flow-pipeline-note">' + esc(f.note) + '</span>' : '') + '</div>' +
+      '<div class="flow-chain">' + chainHtml + '</div></div>';
+  }).join('');
+  return panel('スキル連携フロー（' + flows.length + '件）',
+    '他skill/他ファイルへの参照関係を1本ずつ図解。対象は複数ファイル・他skillを跨ぐ複雑なものだけ（単体で完結する軽量skillは対象外）。手書き宣言のため新規skillは都度追加が必要',
+    flows.length ? body : '<div class="empty-note">対象skillなし</div>', 'layer-foundation', 'sec-skillflow');
+}
+
 function renderHarnessView() {
   var h = DATA.harness;
   function jobStatus(label) {
@@ -1877,17 +2159,17 @@ function renderHarnessView() {
     'データ runs 実績 meta.json');
 
   // 7パネルを3チャンクにグループ化: ①構造 ②数値 ③判断材料（ワーキングメモリ対策）
-  var html = '<div class="view-group">① 構造 — 思想と配線</div>';
+  var html = '<div class="view-group"><span class="vg-num">①</span>構造 — 思想と配線<span class="vg-sub">Structure</span></div>';
   html += panel('三重ループ（概念図）',
     '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い（内=成果物の質 / 外=仕事の選び方 / 最外=ゲームの選び方）。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す',
-    renderLoop3Diagram(), '', 'sec-hz-loop3');
+    renderLoop3Diagram(), 'layer-command', 'sec-hz-loop3');
 
   html += panel('ハーネス構造（思想 × 実配線）',
     '上から人間ループ・外ループ・内ループ。右の帰還レールが外ループ＝「内ループの結果で次の割り振りを変える」。chips は実ファイル・実データから自動生成',
     '<div class="hz-loopwrap"><div class="hz-stack">' + layers + '</div>' +
     '<div class="hz-rail"><div class="bracket"></div>' +
     '<div class="rail-label">外ループ: runs 実績 → digest → 週次判断（火曜）→ 再配分</div></div></div>',
-    '', 'sec-hz-layers');
+    'layer-foundation', 'sec-hz-layers');
 
   // --- Vault ナレッジ参照マップ（層別） ---
   var vr = h.vaultRefs || [];
@@ -1919,10 +2201,10 @@ function renderHarnessView() {
     }).join('<div style="height:8px"></div>');
     html += panel('Vault ナレッジ参照マップ（層別）',
       '各層の実体ファイルを走査して Obsidian Vault への参照を自動抽出（← は参照元）。どの層がどの知識を読むかの見える化。チップクリックでノートを開く・再生成で自動反映',
-      vrGroups, '', 'sec-hz-vault');
+      vrGroups, 'layer-storage', 'sec-hz-vault');
   }
 
-  html += '<div class="view-group">② 数値 — 実績と母数</div>';
+  html += '<div class="view-group"><span class="vg-num">②</span>数値 — 実績と母数<span class="vg-sub">Metrics</span></div>';
 
   // --- 母数ダッシュボード（数値化レイヤー: 変数指定=人間・数値化=スクリプト・分析=emb週次） ---
   if (hv) {
@@ -1931,11 +2213,18 @@ function renderHarnessView() {
       if (isNaN(a) || isNaN(b)) return '';
       return a > b ? ' <span style="color:var(--green,#1a7f37)">↑</span>' : a < b ? ' <span style="color:var(--red,#cf222e)">↓</span>' : ' →';
     };
+    var verdictsForTable = hv.verdicts || [];
     var varsHtml = hv.vars.length
-      ? '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>変数（人間指定・最大3個）</th><th>週次母数目標</th><th>数え方</th></tr></thead><tbody>' +
+      ? '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>変数（人間指定・最大3個）</th><th>週次母数目標</th><th>数え方</th><th>今週の判定（emb）</th></tr></thead><tbody>' +
         hv.vars.map(function (v) {
+          var match = findKpiVerdict(verdictsForTable, v.name);
+          var verdictCell = match
+            ? (match.thisWeek === '計測不能'
+                ? '計測不能'
+                : esc(match.thisWeek) + (match.symbol ? ' ' + esc(match.symbol) : '') + (match.prevWeek ? ' <span style="color:var(--muted)">（前週 ' + esc(match.prevWeek) + '）</span>' : ''))
+            : '<span class="empty-note">判定待ち</span>';
           return '<tr data-search="' + esc((v.name + ' ' + v.how).toLowerCase()) + '"' + openAttr(hv.varsPath) + '>' +
-            '<td><b>' + esc(v.name) + '</b></td><td>' + esc(v.target) + '</td><td>' + esc(v.how) + '</td></tr>';
+            '<td><b>' + esc(v.name) + '</b></td><td>' + esc(v.target) + '</td><td>' + esc(v.how) + '</td><td>' + verdictCell + '</td></tr>';
         }).join('') + '</tbody></table></div>'
       : '<div class="empty-note">成果変数.md が未設定（変数の指定は人間の仕事）</div>';
     var countsHtml = hv.counts.length
@@ -1949,7 +2238,7 @@ function renderHarnessView() {
     html += panel('母数ダッシュボード（数値化レイヤー）',
       '『数値化の鬼』方式: 率でなく母数を見る。集計 ' + (hv.digestDate ? hv.digestDate + (hv.digestStale ? ' ⚠ 8日超・週次更新が止まっている' : '') : '未生成') +
       '・判定と施策提案は火曜の emb 週次レビュー',
-      varsHtml + countsHtml, '', 'sec-hz-variables');
+      varsHtml + countsHtml, 'layer-process', 'sec-hz-variables');
   }
 
   // --- runs 実績表 ---
@@ -1974,9 +2263,9 @@ function renderHarnessView() {
     h.runs.length
       ? runCharts + '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>開始</th><th>workflow</th><th>status</th><th>反復</th><th>所要</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
       : '<div class="empty-note">期間内の run はありません</div>',
-    '', 'sec-hz-runs');
+    'layer-process', 'sec-hz-runs');
 
-  html += '<div class="view-group">③ 判断材料 — 脳と問い</div>';
+  html += '<div class="view-group"><span class="vg-num">③</span>判断材料 — 脳と問い<span class="vg-sub">Judgment</span></div>';
 
   // --- 外ループの脳（persona × provider × model） ---
   var pmRows = h.personaModels.map(function (pm) {
@@ -2061,7 +2350,7 @@ function renderWorldMapView() {
     hzChip('変数指定・事業取捨・3層分類は人間の専権', 'hero', null) +
     hzChip('緊急停止 shinra-tensei.sh — 発動（--run）と再装填（launchctl load）は神のみ', 'hero', null) +
     '</div>';
-  html += panel('人間ループ — 神の間', '判定者はあなた。どのゲームを戦うかをここで決める（金額の最終正本は Lark 事業計画シート）', god, '', 'sec-wm-god');
+  html += panel('人間ループ — 神の間', '判定者はあなた。どのゲームを戦うかをここで決める（金額の最終正本は Lark 事業計画シート）', god, 'layer-command', 'sec-wm-god');
 
   // 2. 事業3層ポートフォリオ
   var total = b.layerTotals.labor + b.layerTotals.light + b.layerTotals.auto;
@@ -2085,14 +2374,14 @@ function renderWorldMapView() {
     });
     biz += '</div>';
   });
-  html += panel('事業 3層ポートフォリオ', '正本: ' + esc(b.contractsPath) + '。層分類は人間の判断事項（AIは転記のみ）', biz, '', 'sec-wm-biz');
+  html += panel('事業 3層ポートフォリオ', '正本: ' + esc(b.contractsPath) + '。層分類は人間の判断事項（AIは転記のみ）', biz, 'layer-process', 'sec-wm-biz');
 
   // 3. 事業優先度
   if (b.priorities.length) {
     var pr = b.priorities.map(function (p, i) {
       return '<div class="wm-prio" data-search="優先度 ' + esc(p.toLowerCase()) + '"><span class="wm-prio-n">' + (i + 1) + '</span><span>' + esc(p) + '</span></div>';
     }).join('');
-    html += panel('事業優先度', 'ロードマップ「事業戦略まとめ」の要点スナップショット（' + esc(b.roadmapPath) + '）。判断は必ず正本の Lark doc で行う', pr, '', 'sec-wm-prio');
+    html += panel('事業優先度', 'ロードマップ「事業戦略まとめ」の要点スナップショット（' + esc(b.roadmapPath) + '）。判断は必ず正本の Lark doc で行う', pr, 'layer-process', 'sec-wm-prio');
   }
 
   // 4. ループと資産 — 三重ループ図解はハーネスビューと共通コンポーネント
@@ -2110,7 +2399,7 @@ function renderWorldMapView() {
   if (DATA.plugins && DATA.plugins.length) assets += asset('plugins', 'plugins', DATA.plugins.length);
   if (DATA.ops) assets += asset('ops', 'パイプライン', DATA.ops.pipelines.length);
   assets += '</div>';
-  html += panel('ループと資産 — 機械の間', '三重ループが事業を回す。数字クリックで各ビューへ', loops + assets, '', 'sec-wm-loops');
+  html += panel('ループと資産 — 機械の間', '三重ループが事業を回す。数字クリックで各ビューへ', loops + assets, 'layer-foundation', 'sec-wm-loops');
 
   return html;
 }
@@ -2122,14 +2411,50 @@ function trendArrow(now, prev) {
 }
 
 // ---- 週次KPIサマリーカード（全体タブ最上部・ハーネス構造タブの母数ダッシュボードと同じデータ源）----
-// 「変数」（人間指定・最大3個・目標のみで実測値は無い）と「自動集計した母数」（Larkタスク数・
-// git commit数など7項目・今週/前週の実数あり）は名前が一致しない別リストなので、突き合わせず
-// 両方をそのまま並べる（emb が火曜週次でこの母数を見て変数の達成を定性判断する運用のため）。
+// 達成バッジ（◎○△×）は emb-weekly-review.md の「母数ダッシュボード」判定を変数名で突合して出す
+// （成果変数.md 自体は目標のみで実測値を持たないため、判定は毎週火曜のemb判断が正本）。
+// 「自動集計した母数」（Larkタスク完了数など）は判定に使った生データの一部を参考表示するだけで、
+// 名前が変数と1:1で一致しないため突き合わせない（emb が weekly-report の事実から数える運用のため）。
+function kpiVerdictClass(symbol) {
+  if (symbol === '◎') return 'good';
+  if (symbol === '○') return 'ok';
+  if (symbol === '△') return 'warn';
+  if (symbol === '×') return 'bad';
+  return 'unknown';
+}
+function findKpiVerdict(verdicts, varName) {
+  for (var i = 0; i < verdicts.length; i++) {
+    var v = verdicts[i];
+    if (varName.indexOf(v.name) >= 0 || v.name.indexOf(varName) >= 0) return v;
+  }
+  return null;
+}
 function renderKpiSummaryCard() {
   var hv = DATA.harness && DATA.harness.variables;
   if (!hv || (!hv.vars.length && !hv.counts.length)) return '';
-  var varsLine = hv.vars.length
-    ? hv.vars.map(function (v) { return '<span class="kpi-var-chip">' + esc(v.name) + ' <b>目標' + esc(v.target) + '</b></span>'; }).join('')
+  var verdicts = hv.verdicts || [];
+  var verdictCards = hv.vars.length
+    ? hv.vars.map(function (v) {
+        var match = findKpiVerdict(verdicts, v.name);
+        var cls = match ? kpiVerdictClass(match.symbol) : 'unknown';
+        var badgeChar = match ? (match.symbol || '?') : '—';
+        var actual;
+        if (!match) {
+          actual = '目標 ' + esc(v.target) + ' <span class="kpi-verdict-prev">（判定待ち）</span>';
+        } else if (match.thisWeek === '計測不能') {
+          actual = '計測不能';
+        } else {
+          actual = esc(match.thisWeek) + ' <span class="kpi-verdict-target">/ 目標 ' + esc(match.target || v.target) + '</span>' +
+            (match.prevWeek ? ' <span class="kpi-verdict-prev">（前週 ' + esc(match.prevWeek) + '）</span>' : '');
+        }
+        var note = match && match.note ? match.note : '';
+        if (note.length > 90) note = note.slice(0, 90) + '…';
+        return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
+          '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
+          '<div class="kpi-verdict-actual">' + actual + '</div>' +
+          (note ? '<div class="kpi-verdict-note">' + esc(note) + '</div>' : '') +
+          '</div>';
+      }).join('')
     : '<span class="empty-note">成果変数.md が未設定</span>';
   var tiles = hv.counts.map(function (c) {
     return '<div class="kpi-tile">' +
@@ -2138,14 +2463,35 @@ function renderKpiSummaryCard() {
       '<div class="kpi-prev">前週 ' + esc(c.prevWeek) + '</div>' + hzPairBars(c.thisWeek, c.prevWeek) +
       '</div>';
   }).join('');
-  var sub = hv.digestStale
-    ? '⚠ 8日超・週次更新が止まっている'
-    : (hv.digestDate ? '集計 ' + hv.digestDate : '未生成（variables-digest.sh の出力待ち）');
+  var digestSub = hv.digestStale ? '⚠ 母数8日超' : (hv.digestDate ? '母数 ' + hv.digestDate : '母数未生成');
+  var verdictSub = hv.verdictStale ? '⚠ 判定8日超・週次レビューが止まっている' : (hv.verdictDate ? '判定 ' + hv.verdictDate : '判定未生成（emb週次レビュー待ち）');
+  var sub = verdictSub + ' ・ ' + digestSub;
   var body =
-    '<div class="kpi-vars-row">変数（人間指定・目標）: ' + varsLine + '</div>' +
-    (tiles ? '<div class="kpi-tiles">' + tiles + '</div>' : '<div class="empty-note">自動集計した母数が未生成</div>') +
+    '<div class="kpi-verdict-grid">' + verdictCards + '</div>' +
+    (tiles ? '<div class="kpi-tiles-label">参考: 自動集計した母数（判定材料の一部）</div><div class="kpi-tiles">' + tiles + '</div>' : '<div class="empty-note">自動集計した母数が未生成</div>') +
     '<div class="wm-goview" data-goview="harness" style="margin-top:10px;cursor:pointer;font-size:0.78rem;color:var(--muted)">詳細（母数ダッシュボード）を見る →</div>';
-  return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary', 'sec-kpi-summary');
+  return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary layer-command', 'sec-kpi-summary');
+}
+
+// ---- 判断待ちリスト（emb-weekly-review.md「人間ループへの差し戻し」を永続表示）----
+// 従来は火曜のLark通知カードに流れて消えていた。画面に固定表示することで
+// 「あの判断もう答えたっけ」を無くす。carriedOver は直前runとの完全一致のみで判定
+// （文言が変わった継続案件は拾えない・保守的な判定）。
+function renderPendingDecisionsCard() {
+  var pd = DATA.harness && DATA.harness.pendingDecisions;
+  if (!pd) return '';
+  var rows = pd.items.length
+    ? pd.items.map(function (d) {
+        return '<div class="pd-item">' +
+          (d.carriedOver ? '<span class="pd-flag" title="前回runにも同じ判断事項が出ていた（完全一致判定）">🔁 持ち越し</span>' : '') +
+          '<span class="pd-text">' + esc(d.text) + '</span>' +
+          '</div>';
+      }).join('')
+    : '<div class="empty-note">今週の差し戻しなし（emb判断: 全て委譲可 or 判断済み）</div>';
+  var sub = pd.reviewStale
+    ? '⚠ 8日超・週次レビューが止まっている'
+    : (pd.reviewDate ? '判定 ' + pd.reviewDate : '未生成');
+  return panel('🧭 人間の判断待ち（' + pd.items.length + ' 件）', sub, '<div class="pd-list">' + rows + '</div>', 'pending-decisions layer-command', 'sec-pending-decisions');
 }
 
 function renderView(keepScroll) {
@@ -2190,6 +2536,14 @@ function renderView(keepScroll) {
     document.getElementById('view-title').textContent = 'launchd ジョブ';
     document.getElementById('view-root').textContent = '~/Library/LaunchAgents';
     html = renderLaunchdPanel() || '<div class="empty-note">launchd ジョブなし</div>';
+  } else if (activeView === 'pipelines' && DATA.ops) {
+    document.getElementById('view-title').textContent = 'パイプライン';
+    document.getElementById('view-root').textContent = 'launchd → スクリプト/takt → 成果物 → 消費先';
+    html = renderPipelinesView();
+  } else if (activeView === 'skillflow' && DATA.skillFlows) {
+    document.getElementById('view-title').textContent = 'スキル連携';
+    document.getElementById('view-root').textContent = '複数ファイル・他skillを跨ぐ複雑なskillの参照関係';
+    html = renderSkillFlowView();
   } else if (activeView === 'plugins') {
     document.getElementById('view-title').textContent = 'プラグイン';
     document.getElementById('view-root').textContent = '~/.claude/plugins ・ ~/.codex/config.toml';
@@ -2205,19 +2559,27 @@ function renderView(keepScroll) {
       activeView === 'all' ? DATA.scopes.length + ' スコープ' : scopes[0].root;
 
     const stats = computeStats(scopes);
-    html = renderTiles(stats, activeView === 'all');
     if (activeView === 'all') {
       // 週次KPIは毎回タブ切替+スクロールしないと見えなかった不満に対応し、最上部に固定表示
-      html = renderKpiSummaryCard() + html;
-      // 例外ファースト: 要注意パネルに異常を集約し、正常なパネルは畳んで出す（チャンク数を7±2に抑える）
-      html += renderDiffStrip();
-      html += renderAttentionPanel(scopes, stats);
-      html += '<div class="panel-row">' + renderDistPanel(DATA.scopes) + renderMatrixPanel(scopes) + '</div>';
-      html += renderLaunchdPanel(launchdCalm());
-      html += renderPluginsPanel(pluginsCalm());
-      html += renderLinksPanel(scopes, true);
+      // 階層: ①指令 → ②稼働 → ③基盤 → ④保管（添付アーキ図の視覚言語）
+      html =
+        '<div class="view-group"><span class="vg-num">①</span>指令 — 見るべき異常とKPI<span class="vg-sub">Direction &amp; Judgment</span></div>' +
+        renderKpiSummaryCard() +
+        renderPendingDecisionsCard() +
+        renderAttentionPanel(scopes, stats) +
+        '<div class="view-group"><span class="vg-num">②</span>稼働 — 資産の現在値<span class="vg-sub">Working state</span></div>' +
+        renderTiles(stats, true) +
+        renderDiffStrip() +
+        '<div class="panel-row">' + renderDistPanel(DATA.scopes) + renderMatrixPanel(scopes) + '</div>' +
+        '<div class="view-group"><span class="vg-num">③</span>基盤 — 実行と接続<span class="vg-sub">Foundation</span></div>' +
+        '<div class="foundation-bar"><div class="fb-label">実行基盤</div>launchd・プラグイン・リンク関係。正常なものは畳んである。異常は上の要注意ゲートへ集約。</div>' +
+        renderLaunchdPanel(launchdCalm()) +
+        renderPluginsPanel(pluginsCalm()) +
+        renderLinksPanel(scopes, true) +
+        '<div class="view-group"><span class="vg-num">④</span>保管 — スコープ別カタログ<span class="vg-sub">Storage</span></div>';
       scopes.forEach(function (s) { html += renderScopePanel(s, scopeCalm(s)); });
     } else {
+      html = renderTiles(stats, false);
       html += renderMatrixPanel(scopes);
       html += renderLinksPanel(scopes);
       scopes.forEach(function (s) { html += renderScopePanel(s); });
@@ -2230,6 +2592,13 @@ function renderView(keepScroll) {
 }
 
 // ---- サイドバーナビ ----
+var NAV_COLLAPSE_KEY = 'agentAssetsNavCollapsed';
+function loadNavCollapsed() {
+  try { return JSON.parse(localStorage.getItem(NAV_COLLAPSE_KEY) || '{}'); } catch (e) { return {}; }
+}
+function saveNavCollapsed(c) {
+  try { localStorage.setItem(NAV_COLLAPSE_KEY, JSON.stringify(c)); } catch (e) { /* localStorage無効環境は無視 */ }
+}
 function renderNav() {
   const nav = document.getElementById('nav');
   function dots(s) {
@@ -2238,30 +2607,41 @@ function renderNav() {
     if (s.skills.some(function (e) { return dupCrossReal(e); })) d += '<span class="dot red" title="スコープ間重複あり"></span>';
     return d;
   }
-  let html = '';
+  const navCollapsed = loadNavCollapsed();
+  // 大項目（地図/スコープ/システム/ハーネス）ごとに開閉できるグループとして描画する。
+  // 中身が空のグループは見出しごと出さない（既存の条件分岐と同じ扱い）
+  function group(key, label, itemsHtml) {
+    if (!itemsHtml) return '';
+    const isCollapsed = !!navCollapsed[key];
+    return '<div class="nav-head" data-group-toggle="' + key + '">' +
+      '<span class="nav-head-chevron' + (isCollapsed ? ' collapsed' : '') + '"></span>' + esc(label) + '</div>' +
+      '<div class="nav-group' + (isCollapsed ? ' collapsed' : '') + '" data-group="' + key + '">' + itemsHtml + '</div>';
+  }
+
+  let mapHtml = '';
   if (DATA.business) {
     var strictPct = DATA.business.firstGoal.living
       ? Math.round((DATA.business.firstGoal.strict / DATA.business.firstGoal.living) * 100)
       : null;
-    html += '<div class="nav-head">地図</div>' +
-      '<button class="nav-item" data-view="worldmap"><span>全体地図</span>' +
+    mapHtml += '<button class="nav-item" data-view="worldmap"><span>全体地図</span>' +
       '<span class="nav-right">' + (strictPct !== null ? '<span class="nav-cnt" title="厳格ゴール（①のみ）進捗">①' + strictPct + '%</span>' : '') + '</span></button>';
   }
-  html += '<div class="nav-head">スコープ</div>' +
-    '<button class="nav-item active" data-view="all"><span>全体</span>' +
+
+  let scopeHtml = '<button class="nav-item active" data-view="all"><span>全体</span>' +
     '<span class="nav-right"><span class="nav-cnt">' + uniqueReals(allSkills(DATA.scopes)) + '</span></span></button>';
   DATA.scopes.forEach(function (s) {
-    html += '<button class="nav-item" data-view="' + esc(s.id) + '"><span>' + esc(s.label) + '</span>' +
+    scopeHtml += '<button class="nav-item" data-view="' + esc(s.id) + '"><span>' + esc(s.label) + '</span>' +
       '<span class="nav-right">' + dots(s) + '<span class="nav-cnt">' + uniqueReals(s.skills) + '</span></span></button>';
   });
+
+  let systemHtml = '';
   const hasLaunchd = DATA.launchd && DATA.launchd.length > 0;
   const hasPlugins = DATA.plugins && DATA.plugins.length > 0;
-  if (hasLaunchd || hasPlugins) html += '<div class="nav-head">システム</div>';
   if (hasLaunchd) {
     let jdots = '';
     if (DATA.launchd.some(function (j) { return j.status === 'error'; })) jdots += '<span class="dot red" title="エラーあり"></span>';
     if (DATA.launchd.some(function (j) { return j.status === 'unloaded'; })) jdots += '<span class="dot amber" title="未ロードあり"></span>';
-    html += '<button class="nav-item" data-view="launchd"><span>launchd</span>' +
+    systemHtml += '<button class="nav-item" data-view="launchd"><span>launchd</span>' +
       '<span class="nav-right">' + jdots + '<span class="nav-cnt">' + DATA.launchd.length + '</span></span></button>';
   }
   if (hasPlugins) {
@@ -2269,9 +2649,11 @@ function renderNav() {
     if (DATA.plugins.some(function (p) { return (p.inClaude && !p.claudeEnabled) || (p.inCodex && !p.codexEnabled); })) {
       pdots += '<span class="dot amber" title="無効化されたプラグインあり"></span>';
     }
-    html += '<button class="nav-item" data-view="plugins"><span>plugins</span>' +
+    systemHtml += '<button class="nav-item" data-view="plugins"><span>plugins</span>' +
       '<span class="nav-right">' + pdots + '<span class="nav-cnt">' + DATA.plugins.length + '</span></span></button>';
   }
+
+  let harnessHtml = '';
   if (DATA.harness) {
     let hdots = '';
     if (DATA.harness.runs.some(function (r) { return r.status === 'failed' || r.status === 'aborted' || r.stuck; })) {
@@ -2282,8 +2664,7 @@ function renderNav() {
     }
     const hwip = DATA.harness.runs.filter(function (r) { return !HZ_TERMINAL[r.status] && !r.zombie; }).length;
     if (hwip > 3) hdots += '<span class="dot amber" title="WIP が 3 本超"></span>';
-    html += '<div class="nav-head">ハーネス</div>' +
-      '<button class="nav-item" data-view="harness"><span>ハーネス構造</span>' +
+    harnessHtml += '<button class="nav-item" data-view="harness"><span>ハーネス構造</span>' +
       '<span class="nav-right">' + hdots + '<span class="nav-cnt">' + DATA.harness.runs.length + '</span></span></button>';
   }
   if (DATA.ops) {
@@ -2293,16 +2674,43 @@ function renderNav() {
     if (DATA.ops.pipelines.some(function (p) { return p.lastMs == null; })) odots += '<span class="dot red" title="成果物が見つからないパイプラインあり"></span>';
     else if (opsStale > 0) odots += '<span class="dot red" title="鮮度遅延のパイプラインあり"></span>';
     if (opsCleanup > 0) odots += '<span class="dot amber" title="棚卸し候補あり"></span>';
-    if (!DATA.harness) html += '<div class="nav-head">ハーネス</div>';
-    html += '<button class="nav-item" data-view="ops"><span>運用ヘルス</span>' +
+    harnessHtml += '<button class="nav-item" data-view="ops"><span>運用ヘルス</span>' +
       '<span class="nav-right">' + odots + '<span class="nav-cnt">' + DATA.ops.pipelines.length + '</span></span></button>';
+    var flowN = DATA.ops.pipelines.filter(function (p) { return p.chain && p.chain.length; }).length;
+    if (flowN > 0) {
+      harnessHtml += '<button class="nav-item" data-view="pipelines"><span>パイプライン</span>' +
+        '<span class="nav-right"><span class="nav-cnt">' + flowN + '</span></span></button>';
+    }
   }
+  if (DATA.skillFlows && DATA.skillFlows.length) {
+    harnessHtml += '<button class="nav-item" data-view="skillflow"><span>スキル連携</span>' +
+      '<span class="nav-right"><span class="nav-cnt">' + DATA.skillFlows.length + '</span></span></button>';
+  }
+
+  let html = '';
+  html += group('map', '地図', mapHtml);
+  html += group('scope', 'スコープ', scopeHtml);
+  html += group('system', 'システム', systemHtml);
+  html += group('harness', 'ハーネス', harnessHtml);
   nav.innerHTML = html;
+
   nav.querySelectorAll('.nav-item').forEach(function (b) {
     b.addEventListener('click', function () {
       activeView = b.getAttribute('data-view');
       nav.querySelectorAll('.nav-item').forEach(function (x) { x.classList.toggle('active', x === b); });
       renderView();
+    });
+  });
+  nav.querySelectorAll('[data-group-toggle]').forEach(function (h) {
+    h.addEventListener('click', function () {
+      const key = h.getAttribute('data-group-toggle');
+      const c = loadNavCollapsed();
+      c[key] = !c[key];
+      saveNavCollapsed(c);
+      const g = nav.querySelector('.nav-group[data-group="' + key + '"]');
+      if (g) g.classList.toggle('collapsed', c[key]);
+      const chevron = h.querySelector('.nav-head-chevron');
+      if (chevron) chevron.classList.toggle('collapsed', c[key]);
     });
   });
 }
