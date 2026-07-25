@@ -1094,7 +1094,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/7/24 18:45:05","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783741621545.5608,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"plugins":[],"harness":null,"ops":null,"business":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/7/25 18:45:07","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1783490846194.425,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（com.shoma.auto-meeting-workflow）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1783382499171.4736,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1783741621545.5608,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":7,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1783382467321.07,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"plugins":[],"harness":null,"ops":null,"business":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1695,8 +1695,10 @@ function hzFlow(down, up) {
 /* 母数ペアバー: 今週（青）と前週（灰）を行内最大値で正規化 */
 function hzPairBars(now, prev) {
   var a = parseInt(now, 10), b = parseInt(prev, 10);
-  if (isNaN(a) && isNaN(b)) return '';
-  a = isNaN(a) ? 0 : a; b = isNaN(b) ? 0 : b;
+  // 片方でも数値でない（「定義前」「取得失敗」等）なら比較バーを描かない。
+  // 非数値を 0 とみなして棒を出すと「相手は0件だった」と読めてしまい、
+  // 計測前・取得不能を実績0に化けさせる（trendArrow が矢印を出さないのと同じ理由）
+  if (isNaN(a) || isNaN(b)) return '';
   var m = Math.max(a, b, 1);
   return '<div class="hz-bars" title="上=今週 / 下=前週">' +
     '<span class="bar now" style="width:' + Math.max(2, Math.round(a / m * 100)) + '%"></span>' +
@@ -1859,7 +1861,7 @@ function renderOpsView() {
   var igWarn = ig.filter(function (f) { return f.level === 'warn'; }).length;
   var igBody;
   if (ig.length === 0) {
-    igBody = '<div class="empty-note">宣言（パス・launchdラベル・期待周期・単価・文字列結合・クロススクリプト）と実体の乖離なし ✅</div>';
+    igBody = '<div class="empty-note">宣言（パス・launchdラベル・期待周期・単価・文字列結合・母数突合・クロススクリプト）と実体の乖離なし ✅</div>';
   } else {
     igBody = ig.map(function (f) {
       var cls = f.level === 'fail' ? 'failed' : f.level === 'warn' ? 'other' : 'completed';
@@ -2222,7 +2224,13 @@ function renderHarnessView() {
       ? '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>変数（人間指定・最大3個）</th><th>週次母数目標</th><th>数え方</th><th>今週の判定（emb）</th></tr></thead><tbody>' +
         hv.vars.map(function (v) {
           var match = findKpiVerdict(verdictsForTable, v.name);
-          var verdictCell = match
+          // 決定的集計がある変数は digest のライブ値＋機械判定（KPIカードと同じ源）を出す。
+          // ここで emb 判定を使うとカードと数字が食い違うため、優先順位を揃えておく
+          var liveRow = findLiveCount(hv.counts, v.name);
+          var verdictCell = liveRow
+            ? esc(liveRow.thisWeek) + (kpiSymbolFor(liveRow.thisWeek, v.target) ? ' ' + esc(kpiSymbolFor(liveRow.thisWeek, v.target)) : '') +
+              ' <span style="color:var(--muted)">（前週 ' + esc(liveRow.prevWeek) + '・自動集計）</span>'
+            : match
             ? (match.thisWeek === '計測不能'
                 ? '計測不能'
                 : esc(match.thisWeek) + (match.symbol ? ' ' + esc(match.symbol) : '') + (match.prevWeek ? ' <span style="color:var(--muted)">（前週 ' + esc(match.prevWeek) + '）</span>' : ''))
@@ -2433,6 +2441,33 @@ function findKpiVerdict(verdicts, varName) {
   }
   return null;
 }
+// ---- 決定的集計に昇格した変数のライブ突合 ----
+// 規約: digest のラベルが変数名で「始まる」行（例「顧問パイプライン行動数（完了ベース）」）は
+// その変数そのものの母数とみなす。前方一致に限定するのは「Larkタスク完了数」のような
+// 判定材料が偶然マッチして誤って変数扱いされるのを防ぐため。
+// ライブ値がある変数は、KPIカードの実測値・前週・バッジをすべて digest から出す
+// （emb の火曜判定を待たずに常に最新）。emb の担当はバッジではなく注記（記録漏れ疑い）に移る。
+function findLiveCount(counts, varName) {
+  for (var i = 0; i < counts.length; i++) {
+    if (counts[i].label.indexOf(varName) === 0) return counts[i];
+  }
+  return null;
+}
+function isLiveCountLabel(counts, vars, label) {
+  for (var i = 0; i < vars.length; i++) {
+    if (label.indexOf(vars[i].name) === 0) return true;
+  }
+  return false;
+}
+/** 判定基準は emb-weekly-review instruction と同一: ◎達成 / ○8割 / △半分 / ×半分未満 */
+function kpiSymbolFor(actual, target) {
+  var a = parseInt(actual, 10), t = parseInt(target, 10);
+  if (isNaN(a) || isNaN(t) || t <= 0) return null;
+  if (a >= t) return '◎';
+  if (a >= t * 0.8) return '○';
+  if (a >= t * 0.5) return '△';
+  return '×';
+}
 function renderKpiSummaryCard() {
   var hv = DATA.harness && DATA.harness.variables;
   if (!hv || (!hv.vars.length && !hv.counts.length)) return '';
@@ -2440,18 +2475,43 @@ function renderKpiSummaryCard() {
   var verdictCards = hv.vars.length
     ? hv.vars.map(function (v) {
         var match = findKpiVerdict(verdicts, v.name);
-        var cls = match ? kpiVerdictClass(match.symbol) : 'unknown';
-        var badgeChar = match ? (match.symbol || '?') : '—';
-        var actual;
+        var live = findLiveCount(hv.counts, v.name);
+        var actual, cls, badgeChar, note;
+        if (live) {
+          // 決定的集計あり: 数字もバッジも digest から。emb 由来は注記だけ使う
+          var liveSymbol = kpiSymbolFor(live.thisWeek, v.target);
+          cls = kpiVerdictClass(liveSymbol);
+          badgeChar = liveSymbol || '?';
+          actual = esc(live.thisWeek) + ' <span class="kpi-verdict-target">/ 目標 ' + esc(v.target) + '</span>' +
+            ' <span class="kpi-verdict-prev">（前週 ' + esc(live.prevWeek) + '）</span>';
+          note = hv.omissions
+            ? '記録漏れ疑い: ' + hv.omissions
+            : (match && match.note && match.thisWeek === live.thisWeek ? match.note : '');
+          if (!note && match) note = '記録漏れ疑い: なし（' + esc(hv.verdictDate || '前回') + ' 判定）';
+          return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
+            '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
+            '<div class="kpi-verdict-actual">' + actual + '</div>' +
+            (note ? '<div class="kpi-verdict-note">' + esc(note.slice(0, 90)) + (note.length > 90 ? '…' : '') + '</div>' : '') +
+            '</div>';
+        }
+        cls = match ? kpiVerdictClass(match.symbol) : 'unknown';
+        badgeChar = match ? (match.symbol || '?') : '—';
         if (!match) {
           actual = '目標 ' + esc(v.target) + ' <span class="kpi-verdict-prev">（判定待ち）</span>';
         } else if (match.thisWeek === '計測不能') {
           actual = '計測不能';
         } else {
-          actual = esc(match.thisWeek) + ' <span class="kpi-verdict-target">/ 目標 ' + esc(match.target || v.target) + '</span>' +
+          // 目標の正本は成果変数.md（v.target）。判定由来（match.target）はレビュー実行時点の
+          // スナップショットなので、目標を引き上げた週は1週間古い値になる。正本を優先し、
+          // 判定時と食い違っていれば黙って上書きせず「判定時 n」と併記して乖離を自己申告する
+          var targetHtml = esc(v.target || match.target);
+          if (v.target && match.target && v.target !== match.target) {
+            targetHtml += ' <span class="kpi-verdict-prev">（判定時 ' + esc(match.target) + '）</span>';
+          }
+          actual = esc(match.thisWeek) + ' <span class="kpi-verdict-target">/ 目標 ' + targetHtml + '</span>' +
             (match.prevWeek ? ' <span class="kpi-verdict-prev">（前週 ' + esc(match.prevWeek) + '）</span>' : '');
         }
-        var note = match && match.note ? match.note : '';
+        note = match && match.note ? match.note : '';
         if (note.length > 90) note = note.slice(0, 90) + '…';
         return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
           '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
@@ -2460,7 +2520,11 @@ function renderKpiSummaryCard() {
           '</div>';
       }).join('')
     : '<span class="empty-note">成果変数.md が未設定</span>';
-  var tiles = hv.counts.map(function (c) {
+  // 変数そのものの母数（ライブ突合済み）は上の判定カードに出ているので、参考タイルからは外す。
+  // 同じ画面に同じ指標が2つ並ぶと、週の途中で digest だけ動いたとき数字が食い違って見える
+  var tiles = hv.counts.filter(function (c) {
+    return !isLiveCountLabel(hv.counts, hv.vars, c.label);
+  }).map(function (c) {
     return '<div class="kpi-tile">' +
       '<div class="kpi-name">' + esc(c.label) + '</div>' +
       '<div class="kpi-num">' + esc(c.thisWeek) + trendArrow(c.thisWeek, c.prevWeek) + '</div>' +
