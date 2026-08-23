@@ -851,6 +851,29 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 .flow-arrow svg { width: 24px; height: 24px; }
 .flow-legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.72rem; color: var(--muted); margin: 2px 0 14px; }
 .flow-legend span.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.flow-takt {
+  border: 1px dashed var(--blue);
+  border-radius: 12px;
+  background: var(--blue-tint);
+  padding: 8px 10px 6px;
+  min-width: 240px;
+  max-width: 100%;
+}
+.flow-takt-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--blue);
+  cursor: default;
+}
+.flow-takt-head[data-open] { cursor: pointer; }
+.flow-takt-head[data-open]:hover { text-decoration: underline; }
+.flow-takt-note { font-size: 0.7rem; color: var(--ink-2); margin-top: 2px; line-height: 1.35; }
+.flow-takt-miss { border-color: var(--red); background: var(--red-tint); }
+.flow-takt-miss .flow-takt-head { color: var(--red); }
+.flow-takt-miss-body { font-size: 0.74rem; color: var(--red); margin-top: 4px; }
+.flow-takt .il-spine { margin: 6px 0 0; }
+.il-par-col .flow-takt { width: 100%; min-width: 0; }
 /* ハーネスビュー（三重ループ構造） */
 .hz-stack { display: flex; flex-direction: column; margin: 2px 0 6px; }
 .hz-layer {
@@ -886,6 +909,307 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 .hz-chip.miss { border-color: var(--red); background: var(--red-tint); color: var(--red); }
 .hz-chip.hero { border-color: var(--blue); background: var(--blue-tint); }
 .hz-chip[data-open]:hover { border-color: var(--blue); color: var(--blue); }
+
+/* 内ループ: Jinba 風 Workspace → Flow → Step。辺は takt YAML の rules.next */
+.il-ws {
+  margin-top: 4px;
+  background: var(--blue-tint);
+  border: 1px dashed var(--blue);
+  border-radius: 14px;
+  padding: 14px 16px 16px;
+}
+.il-ws-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.il-callout {
+  font-size: 0.75rem;
+  color: var(--layer-process-ink);
+  background: var(--layer-process-tint);
+  border: 1px solid var(--layer-process);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+.il-callout code { font-size: 0.7rem; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.il-scope { margin-top: 18px; }
+.il-scope:first-child { margin-top: 0; }
+.il-scope-head {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-2);
+  margin: 0 0 8px;
+}
+.il-flows {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.il-flow {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.il-flow-head {
+  background: var(--blue);
+  color: #fff;
+  padding: 8px 12px 7px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.il-flow-head::-webkit-details-marker { display: none; }
+.il-flow-head::marker { content: ''; }
+.il-flow-chevron {
+  display: inline-block;
+  font-size: 0.7rem;
+  transform: rotate(90deg);
+  transition: transform 0.15s ease;
+  flex: none;
+  opacity: 0.88;
+}
+.il-flow-chevron::before { content: '▸'; }
+details.il-flow:not([open]) > .il-flow-head .il-flow-chevron { transform: rotate(0deg); }
+details.il-flow:not([open]) > .il-flow-head { border-bottom: none; }
+/* overflow:hidden を details に付けると、閉じた中身が描画され続けるブラウザがある */
+details.il-flow:not([open]) > :not(summary) { display: none; }
+.il-flow-name { font-weight: 700; font-size: 0.88rem; }
+.il-flow-name[data-open] { cursor: pointer; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.45); text-underline-offset: 3px; }
+.il-flow-meta { font-size: 0.68rem; opacity: 0.88; }
+.il-flow-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 999px;
+  padding: 0 7px;
+  opacity: 0.92;
+}
+.il-flow-tag.mute { opacity: 0.7; font-weight: 600; }
+.il-flow-desc {
+  font-size: 0.74rem;
+  color: var(--ink-2);
+  margin: 8px 12px 0;
+  line-height: 1.45;
+}
+.il-spine { margin: 8px 12px 14px; overflow-x: auto; }
+.il-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.35fr) minmax(200px, 1fr);
+  gap: 4px 12px;
+  align-items: start;
+}
+.il-row-solo { grid-template-columns: minmax(260px, 640px); }
+.il-main { min-width: 0; }
+.il-side {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 0 8px 4px;
+}
+.il-side-item { display: flex; align-items: flex-start; gap: 6px; }
+.il-elbow {
+  flex: none;
+  width: 16px;
+  height: 12px;
+  margin-top: 10px;
+  border-top: 2px solid var(--blue);
+  border-right: 2px solid var(--blue);
+}
+.il-side-item.ok .il-elbow { border-color: var(--st-good); }
+.il-side-item.bad .il-elbow { border-color: var(--red); }
+.il-side-item.back .il-elbow { border-color: var(--amber); }
+.il-side-body { min-width: 0; flex: 1; }
+.il-side-body .il-step { margin-top: 4px; }
+.il-par {
+  --n: 2;
+  margin: 0 8px 2px;
+}
+.il-par-from {
+  width: 2px;
+  height: 12px;
+  background: var(--blue);
+  margin: 0 auto;
+}
+.il-par-bar {
+  height: 2px;
+  background: var(--blue);
+  margin-left: calc(100% / (2 * var(--n)));
+  margin-right: calc(100% / (2 * var(--n)));
+}
+.il-par-boxes { display: flex; align-items: stretch; gap: 10px; }
+.il-par-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.il-par-stem {
+  width: 2px;
+  height: 12px;
+  background: var(--blue);
+  flex: none;
+}
+.il-par-col .il-step,
+.il-par-col .flow-step { width: 100%; max-width: none; min-width: 0; }
+.il-join { margin-top: 0; }
+.il-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue);
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 0 6px;
+  gap: 2px;
+}
+.il-v-arr { font-size: 1.05rem; }
+.il-v-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.il-v-cond {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100%;
+}
+.il-fork {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  padding: 1px 0;
+  line-height: 1.35;
+}
+.il-fork.ok { color: var(--st-good); }
+.il-fork.bad { color: var(--red); }
+.il-fork.back { color: var(--amber); }
+.il-fork-arr {
+  flex: none;
+  width: 1.1em;
+  text-align: center;
+  font-weight: 700;
+}
+.il-fork-to {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+}
+.il-fork-cond { color: var(--muted); font-weight: 400; }
+.il-offpath {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--hairline);
+}
+.il-offpath-h {
+  font-size: 0.66rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+.il-step {
+  background: var(--page);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 8px 10px 7px;
+  position: relative;
+  min-width: 0;
+}
+.il-step-call { border-color: var(--blue); background: var(--blue-tint); }
+.il-step-name {
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  word-break: break-all;
+}
+.il-start {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid var(--amber);
+  background: var(--amber-tint);
+  border-radius: 999px;
+  padding: 0 6px;
+  margin-left: 6px;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.il-step-tool { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.il-nested {
+  margin-top: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--surface);
+  border: 1px dashed var(--blue);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.il-shared {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.il-callout-label { font-size: 0.7rem; color: var(--muted); }
+.il-spine.compact .il-step { padding: 5px 8px; }
+.il-spine.compact .il-fork-cond,
+.il-spine.compact .il-v-cond { font-size: 0.66rem; }
+.il-spine.compact .il-row {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+.il-monitors {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  background: var(--amber-tint);
+  border: 1px dashed var(--amber);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.il-mon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-size: 0.72rem;
+}
+.il-mon-arr { color: var(--amber); font-weight: 700; }
+.il-mon-cycle {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+}
+.il-mon-th { font-weight: 700; color: var(--amber); }
+.il-mon-who { color: var(--muted); }
+.flow-spine { overflow-x: auto; margin: 4px 0 2px; }
 .hz-flow {
   display: flex; justify-content: space-between; align-items: center;
   padding: 4px 30px; font-size: 0.72rem; color: var(--muted);
@@ -932,6 +1256,29 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 /* 全体タブ最上部: 週次KPIサマリーカード（成果変数・毎回スクロール不要で見える） */
 .kpi-summary .panel-body { padding-top: 4px; }
 .kpi-summary.layer-command > .panel-body { background: var(--layer-command-tint); }
+.kpi-summary.kpi-stale > .panel-head { background: var(--amber-tint); }
+.kpi-freshness {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 0 0 12px;
+}
+.kpi-freshness.asof {
+  background: var(--page);
+  border: 1px solid var(--hairline);
+  color: var(--ink-2);
+}
+.kpi-freshness.stale {
+  background: var(--amber-tint);
+  border: 1px solid var(--amber);
+  color: var(--ink);
+}
+.kpi-freshness.miss {
+  background: var(--red-tint);
+  border: 1px solid var(--red);
+  color: var(--ink);
+}
 .kpi-vars-row { font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .kpi-var-chip {
   display: inline-block; padding: 3px 9px; border-radius: 999px;
@@ -1117,7 +1464,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/8/22 18:45:41","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1786432756494.6602,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1784974730630.7336,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1786976624604.8735,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1786432823658.4875,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/8/23 18:45:06","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1786432756494.6602,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1784974730630.7336,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1786976624604.8735,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1786432823658.4875,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1348,6 +1695,13 @@ function renderAttentionPanel(scopes, stats) {
     var hZombie = DATA.harness.runs.filter(function (r) { return r.zombie; }).length;
     if (hFail + hStuck + hZombie > 0) {
       add(hFail + hStuck > 0 ? 'red' : 'amber', 'ハーネス run: 失敗/中断 ' + hFail + ' / 滞留 ' + hStuck + ' / 放置 ' + hZombie, 'harness', null);
+    }
+    var hvAttn = DATA.harness.variables;
+    if (hvAttn && hvAttn.digestStale) {
+      add('red', '母数digestが8日超（' + (hvAttn.digestDate || '日付不明') + '）— 全体タブのKPIは止まっている', null, '#sec-kpi-summary');
+    }
+    if (hvAttn && hvAttn.verdictStale) {
+      add('amber', 'emb週次判定が8日超（' + (hvAttn.verdictDate || '日付不明') + '）', null, '#sec-kpi-summary');
     }
   }
   if (DATA.ops) {
@@ -1723,21 +2077,24 @@ function renderWorkflowCard(w, personaFiles, scopeLabel, taktRoot) {
     const exists = personaFiles.indexOf(p) !== -1;
     chips += '<span class="chip' + (exists ? '' : ' missing') + '">' + esc(p) + (exists ? '' : ' (未定義/ビルトイン)') + '</span>';
   });
-  let steps = '';
-  w.stepNames.forEach(function (n) { steps += '<li>' + esc(n) + '</li>'; });
+  const branched = ilFlowHasBranch(w);
+  if (branched) chips = '<span class="chip wf">分岐</span>' + chips;
+  const popRail = renderIlRail(w, taktRoot, false);
 
   const popHtml = '<div class="pop-title">' + esc(w.name) + '</div>' +
     (w.desc ? '<div class="pop-desc">' + esc(w.desc) + '</div>' : '') +
-    (steps ? '<div class="pop-sec">ステップ</div><ol class="pop-steps">' + steps + '</ol>' : '') +
+    (popRail ? '<div class="pop-sec">ステップと流れ（正本はハーネス「内ループの流れ」）</div>' + popRail : '') +
     (chips ? '<div class="pop-sec">ペルソナ</div><div>' + chips + '</div>' : '') +
     '<div class="pop-meta">' + esc(scopeLabel) + ' / <b>' + esc(w.file) + '</b>' +
     (w.maxSteps !== null ? '　max_steps: <b>' + w.maxSteps + '</b>' : '') + '</div>';
   const popId = reg('mute', popHtml);
 
-  const searchText = (w.name + ' ' + (w.desc || '')).toLowerCase();
+  const searchText = (w.name + ' ' + (w.desc || '') + ' ' + (w.stepNames || []).join(' ') + ' ' +
+    (w.loopMonitors || []).map(function (m) { return (m.cycle || []).join(' '); }).join(' ')).toLowerCase();
   return '<article class="card" data-pop="' + popId + '" tabindex="0" data-search="' + esc(searchText) + '"' + openAttr(taktRoot + '/workflows/' + w.file) + '>' +
     '<div class="name">' + esc(w.name) + '</div>' +
     '<div class="meta-row"><span>steps: ' + w.steps + '</span>' +
+    (w.initialStep ? '<span>start: ' + esc(w.initialStep) + '</span>' : '') +
     (w.maxSteps !== null ? '<span>max_steps: ' + w.maxSteps + '</span>' : '') +
     '<span>' + esc(w.file) + '</span></div>' +
     (w.desc ? '<p class="desc">' + esc(w.desc) + '</p>' : '') +
@@ -1837,6 +2194,268 @@ function hzLayer(cls, name, title, principle, chipsHtml, searchWords) {
 }
 function hzFlow(down, up) {
   return '<div class="hz-flow"><span class="fdown">' + esc(down) + '</span><span class="fup">' + esc(up) + '</span></div>';
+}
+
+/** when(structured.x.y == "z") → y=z。埋め込み <script> はテンプレなので regex リテラルを使わない */
+function shortTaktCondition(c) {
+  var s = String(c || '');
+  if (s.slice(0, 5) === 'when(' && s.slice(-1) === ')') s = s.slice(5, -1);
+  var prefix = 'structured.';
+  var i = s.indexOf(prefix);
+  while (i !== -1) {
+    var rest = s.slice(i + prefix.length);
+    var dot = rest.indexOf('.');
+    if (dot === -1) break;
+    s = s.slice(0, i) + rest.slice(dot + 1);
+    i = s.indexOf(prefix);
+  }
+  s = s.split('"').join('');
+  s = s.split(' == ').join('=');
+  s = s.split('==').join('=');
+  var ascii = true;
+  for (var ci = 0; ci < s.length; ci++) { if (s.charCodeAt(ci) > 127) { ascii = false; break; } }
+  var max = ascii ? 24 : 14;
+  if (s.length > max) s = s.slice(0, max - 1) + '…';
+  return s;
+}
+function spineOrder(w) {
+  var graph = w.graph || [];
+  var byName = {};
+  graph.forEach(function (st) { byName[st.name] = st; });
+  var start = w.initialStep && byName[w.initialStep] ? w.initialStep : (graph[0] ? graph[0].name : null);
+  var path = [];
+  var inPath = {};
+  var cur = start;
+  while (cur && byName[cur] && !inPath[cur]) {
+    path.push(cur);
+    inPath[cur] = true;
+    var nxt = null;
+    (byName[cur].rules || []).forEach(function (r) {
+      if (nxt) return;
+      if (!r.next || r.next === 'COMPLETE' || r.next === 'ABORT') return;
+      if (!byName[r.next] || inPath[r.next]) return;
+      nxt = r.next;
+    });
+    cur = nxt;
+  }
+  var leftovers = [];
+  graph.forEach(function (st) {
+    if (!inPath[st.name]) leftovers.push(st.name);
+  });
+  return { path: path, leftovers: leftovers, byName: byName, start: start };
+}
+/** 図を最初から開く例外。COMPLETE/ABORT だけの終端は直線とみなす */
+function ilFlowHasBranch(w) {
+  if ((w.loopMonitors || []).length) return true;
+  var graph = w.graph || [];
+  var i;
+  for (i = 0; i < graph.length; i++) {
+    if ((graph[i].parallel || []).length) return true;
+  }
+  var spine = spineOrder(w);
+  if (spine.leftovers.length) return true;
+  for (i = 0; i < spine.path.length; i++) {
+    var st = spine.byName[spine.path[i]];
+    var nextSpine = spine.path[i + 1] || null;
+    var rules = (st && st.rules) || [];
+    for (var j = 0; j < rules.length; j++) {
+      var n = rules[j].next;
+      if (!n || n === 'COMPLETE' || n === 'ABORT') continue;
+      if (n !== nextSpine && spine.byName[n]) return true;
+    }
+  }
+  return false;
+}
+function renderIlNode(name, byName, start, taktRoot, compact) {
+  var st = byName[name];
+  if (!st) return '';
+  var isStart = start && name === start;
+  var tool = st.kind === 'workflow_call'
+    ? ('call ' + (st.call || '?'))
+    : [st.persona, st.instruction, st.capabilities].filter(Boolean).join(' · ');
+  var insPath = st.instruction ? taktRoot + '/facets/instructions/' + st.instruction + '.md' : null;
+  return '<div class="il-step' + (st.kind === 'workflow_call' ? ' il-step-call' : '') + '" data-step="' + esc(name) + '"' + openAttr(insPath) + '>' +
+    '<div class="il-step-name">' + esc(name) +
+    (isStart ? ' <span class="il-start">start</span>' : '') + '</div>' +
+    (compact ? '' : '<div class="il-step-tool">' + esc(tool || 'persona / instruction なし') + '</div>') +
+    (st.kind === 'workflow_call' && st.call
+      ? '<div class="il-nested">Flow: ' + esc(st.call) + '</div>'
+      : '') +
+    '</div>';
+}
+function forkClass(next, pathSet, pathIndex) {
+  if (next === 'COMPLETE') return 'ok';
+  if (next === 'ABORT') return 'bad';
+  if (pathSet[next] != null && pathSet[next] <= pathIndex) return 'back';
+  return 'side';
+}
+function renderIlForkLine(r, pathSet, pathIndex) {
+  var cls = forkClass(r.next, pathSet, pathIndex);
+  var mark = cls === 'back' ? '↻' : '→';
+  var label = shortTaktCondition(r.condition);
+  return '<div class="il-fork ' + cls + '"><span class="il-fork-arr">' + mark + '</span>' +
+    '<span class="il-fork-to">' + esc(r.next) + '</span>' +
+    (label ? '<span class="il-fork-cond">' + esc(label) + '</span>' : '') +
+    '</div>';
+}
+function renderIlOutbound(st, pathSet, pathIndex) {
+  if (!st) return '';
+  return (st.rules || []).map(function (r) {
+    if (!r.next) return '';
+    return renderIlForkLine(r, pathSet, pathIndex);
+  }).join('');
+}
+function renderIlParallel(st, taktRoot, compact) {
+  var kids = st && st.parallel ? st.parallel : [];
+  if (!kids.length) return '';
+  var n = kids.length;
+  var cols = kids.map(function (ch) {
+    var tool = [ch.persona, ch.instruction].filter(Boolean).join(' · ');
+    var insPath = ch.instruction ? taktRoot + '/facets/instructions/' + ch.instruction + '.md' : null;
+    return '<div class="il-par-col">' +
+      '<div class="il-par-stem"></div>' +
+      '<div class="il-step il-step-par" data-step="' + esc(ch.name) + '"' + openAttr(insPath) + '>' +
+        '<div class="il-step-name">' + esc(ch.name) + '</div>' +
+        (compact || !tool ? '' : '<div class="il-step-tool">' + esc(tool) + '</div>') +
+      '</div>' +
+      '<div class="il-par-stem"></div>' +
+    '</div>';
+  }).join('');
+  return '<div class="il-par" style="--n:' + n + '">' +
+    '<div class="il-par-from"></div>' +
+    '<div class="il-par-bar"></div>' +
+    '<div class="il-par-boxes">' + cols + '</div>' +
+    '<div class="il-par-bar il-join"></div>' +
+    '</div>';
+}
+function renderIlRail(w, taktRoot, compact) {
+  var spine = spineOrder(w);
+  if (!spine.path.length) return '';
+  var pathSet = {};
+  spine.path.forEach(function (n, i) { pathSet[n] = i; });
+  var leftoverSet = {};
+  spine.leftovers.forEach(function (n) { leftoverSet[n] = true; });
+  var placed = {};
+  var html = spine.path.map(function (name, i) {
+    var st = spine.byName[name];
+    var nextSpine = spine.path[i + 1] || null;
+    var side = '';
+    var primaryConds = [];
+    (st.rules || []).forEach(function (r) {
+      if (!r.next) return;
+      if (nextSpine && r.next === nextSpine) {
+        primaryConds.push(shortTaktCondition(r.condition));
+        return;
+      }
+      var extra = '';
+      if (leftoverSet[r.next] && !placed[r.next]) {
+        placed[r.next] = true;
+        extra = renderIlNode(r.next, spine.byName, spine.start, taktRoot, compact) +
+          renderIlOutbound(spine.byName[r.next], pathSet, 999);
+      }
+      var cls = forkClass(r.next, pathSet, i);
+      side += '<div class="il-side-item ' + cls + '"><span class="il-elbow" aria-hidden="true"></span>' +
+        '<div class="il-side-body">' + renderIlForkLine(r, pathSet, i) + extra + '</div></div>';
+    });
+    var down = '';
+    if (nextSpine && primaryConds.length) {
+      var conds = primaryConds.filter(function (c) { return c; }).map(function (c) {
+        return '<span class="il-v-cond">' + esc(c) + '</span>';
+      }).join('');
+      down = '<div class="il-v"><span class="il-v-arr">↓</span>' +
+        (conds ? '<span class="il-v-labels">' + conds + '</span>' : '') +
+        '</div>';
+    }
+    return '<div class="il-row' + (side ? '' : ' il-row-solo') + '">' +
+      '<div class="il-main">' +
+        renderIlNode(name, spine.byName, spine.start, taktRoot, compact) +
+        renderIlParallel(st, taktRoot, compact) +
+        down +
+      '</div>' +
+      (side ? '<div class="il-side">' + side + '</div>' : '') +
+    '</div>';
+  }).join('');
+  var orphan = '';
+  spine.leftovers.forEach(function (name) {
+    if (placed[name]) return;
+    orphan += renderIlNode(name, spine.byName, spine.start, taktRoot, compact) +
+      renderIlOutbound(spine.byName[name], pathSet, 999);
+  });
+  if (orphan) {
+    html += '<div class="il-offpath"><div class="il-offpath-h">主経路に乗らない step（ループ・戻り）</div>' + orphan + '</div>';
+  }
+  return '<div class="il-spine' + (compact ? ' compact' : '') + '">' + renderIlMonitors(w) + html + '</div>';
+}
+function renderIlMonitors(w) {
+  var ms = w.loopMonitors || [];
+  if (!ms.length) return '';
+  return '<div class="il-monitors"><div class="il-offpath-h">loop_monitors</div>' +
+    ms.map(function (m) {
+      var pathSet = {};
+      (m.cycle || []).forEach(function (n, idx) { pathSet[n] = idx; });
+      var nexts = (m.rules || []).map(function (r) {
+        return renderIlForkLine(r, pathSet, 999);
+      }).join('');
+      return '<div class="il-mon"><span class="il-mon-arr">↻</span>' +
+        '<span class="il-mon-cycle">' + esc((m.cycle || []).join(' → ')) + '</span>' +
+        (m.threshold != null ? '<span class="il-mon-th">×' + m.threshold + '</span>' : '') +
+        (m.persona ? '<span class="il-mon-who">' + esc(m.persona) + '</span>' : '') +
+        nexts + '</div>';
+    }).join('') + '</div>';
+}
+function renderIlShared(workflows) {
+  var count = {};
+  workflows.forEach(function (w) {
+    (w.personas || []).forEach(function (p) { count[p] = (count[p] || 0) + 1; });
+  });
+  var shared = Object.keys(count).filter(function (p) { return count[p] > 1; }).sort();
+  if (!shared.length) return '';
+  return '<div class="il-shared"><span class="il-callout-label">persona はフロー間で共有</span>' +
+    shared.map(function (p) { return '<span class="chip">' + esc(p) + ' ×' + count[p] + '</span>'; }).join('') +
+    '</div>';
+}
+function renderIlWorkspace(takt) {
+  if (!takt || !takt.workflows.length) {
+    return '<div class="empty-note">takt workflow なし</div>';
+  }
+  var flows = takt.workflows.map(function (w) {
+    var search = (w.name + ' ' + (w.desc || '') + ' ' + (w.stepNames || []).join(' ') + ' ' +
+      (w.graph || []).map(function (st) {
+        return ((st.parallel || []).map(function (p) { return p.name; }).join(' '));
+      }).join(' ') + ' ' +
+      (w.loopMonitors || []).map(function (m) { return (m.cycle || []).join(' '); }).join(' ')).toLowerCase();
+    var branched = ilFlowHasBranch(w);
+    var tag = branched ? '<span class="il-flow-tag">分岐</span>' : '<span class="il-flow-tag mute">直線</span>';
+    return '<details class="il-flow"' + (branched ? ' open' : '') + ' data-search="' + esc(search) + '">' +
+      '<summary class="il-flow-head"><span class="il-flow-chevron" aria-hidden="true"></span>' +
+      '<span class="il-flow-name"' + openAttr(takt.root + '/workflows/' + w.file) + '>' + esc(w.name) + '</span>' +
+      '<span class="il-flow-meta">start ' + esc(w.initialStep || w.stepNames[0] || '—') +
+      (w.maxSteps != null ? ' · max_steps ' + w.maxSteps : '') +
+      ' · ' + w.steps + ' steps</span>' + tag + '</summary>' +
+      (w.desc ? '<p class="il-flow-desc">' + esc(w.desc) + '</p>' : '') +
+      renderIlRail(w, takt.root, false) +
+      '</details>';
+  }).join('');
+  return '<div class="il-ws">' +
+    '<div class="il-ws-head">takt workspace · 内ループ</div>' +
+    '<p class="il-callout">主経路は縦（↓ に条件）。並列 step は横並び＋合流バー。分岐・ループは右へ直交展開する。<code>loop_monitors</code> は ↻ の帯。直線の Flow は畳む。名前で YAML、ステップで instruction を開く。</p>' +
+    '<div class="il-flows">' + flows + '</div>' +
+    renderIlShared(takt.workflows) +
+    '</div>';
+}
+function renderAllIlWorkspaces() {
+  var blocks = [];
+  DATA.scopes.forEach(function (s) {
+    if (!s.takt || !s.takt.workflows.length) return;
+    blocks.push(
+      '<div class="il-scope">' +
+      '<div class="il-scope-head">' + esc(s.label) + '</div>' +
+      renderIlWorkspace(s.takt) +
+      '</div>'
+    );
+  });
+  if (!blocks.length) return '<div class="empty-note">takt workflow なし</div>';
+  return blocks.join('');
 }
 /* 母数ペアバー: 今週（青）と前週（灰）を行内最大値で正規化 */
 function hzPairBars(now, prev) {
@@ -2270,14 +2889,46 @@ function renderPipelinesView() {
   }
   var KIND_LABEL = { trigger: '起動', exec: '実行', artifact: '成果物', consumer: '消費先' };
   // ステップのクリック先パスを解決する: 手書き path があればそれを最優先、
-  // trigger は jobLabel から launchd plist を、artifact は PipelineEntry.openPath をフォールバックに使う（重複定義を避ける）
+  // trigger は jobLabel から launchd plist を、単独の artifact だけ PipelineEntry.openPath を使う。
+  // 並列段の path なしを全部主成果物に倒すと、harness-digest クリックが週報になる。
+  function isTaktRef(n) { return n && typeof n.takt === 'string'; }
+  function findTaktWorkflow(name) {
+    var scopes = DATA.scopes || [];
+    for (var si = 0; si < scopes.length; si++) {
+      var t = scopes[si].takt;
+      if (!t || !t.workflows) continue;
+      for (var wi = 0; wi < t.workflows.length; wi++) {
+        if (t.workflows[wi].name === name) return { w: t.workflows[wi], root: t.root };
+      }
+    }
+    return null;
+  }
+  function renderEmbeddedTakt(ref) {
+    var name = ref.takt;
+    var hit = findTaktWorkflow(name);
+    var yamlPath = hit ? hit.root + '/workflows/' + hit.w.file : null;
+    var head = '<div class="flow-takt-head"' + openAttr(yamlPath) + '>takt -w ' + esc(name) + '（YAML正本）</div>' +
+      (ref.note ? '<div class="flow-takt-note">' + esc(ref.note) + '</div>' : '');
+    if (!hit) {
+      return '<div class="flow-takt flow-takt-miss">' + head +
+        '<div class="flow-takt-miss-body">workflow がスキャン結果に無い</div></div>';
+    }
+    return '<div class="flow-takt">' + head + renderIlRail(hit.w, hit.root, true) + '</div>';
+  }
+  function artifactInPar(s, chain) {
+    for (var i = 0; i < (chain || []).length; i++) {
+      var n = chain[i];
+      if (n.par && n.par.length > 1 && n.par.indexOf(s) !== -1) return true;
+    }
+    return false;
+  }
   function resolveStepPath(s, p) {
     if (s.path) return s.path;
     if (s.kind === 'trigger' && p.jobLabel) {
       var job = (DATA.launchd || []).filter(function (j) { return j.label === p.jobLabel; })[0];
       return job ? job.plist : null;
     }
-    if (s.kind === 'artifact') return p.openPath;
+    if (s.kind === 'artifact' && !artifactInPar(s, p.chain)) return p.openPath;
     return null;
   }
   function stepBox(s, p) {
@@ -2287,9 +2938,64 @@ function renderPipelinesView() {
       (s.detail ? '<div class="flow-step-detail">' + esc(s.detail) + '</div>' : '') +
       '<div class="flow-step-kind">' + esc(KIND_LABEL[s.kind]) + '</div></div>';
   }
+  function renderPipeNode(n, p) {
+    return isTaktRef(n) ? renderEmbeddedTakt(n) : stepBox(n, p);
+  }
+  function chainHasTakt(chain) {
+    for (var i = 0; i < chain.length; i++) {
+      var n = chain[i];
+      if (isTaktRef(n)) return true;
+      var kids = n.par || n.then || [];
+      for (var j = 0; j < kids.length; j++) {
+        if (isTaktRef(kids[j])) return true;
+      }
+    }
+    return false;
+  }
+  function chainHasBranch(chain) {
+    if (chainHasTakt(chain)) return true;
+    for (var i = 0; i < chain.length; i++) {
+      if (chain[i].par || chain[i].fork != null) return true;
+    }
+    return false;
+  }
+  function renderPipeSpine(chain, p) {
+    var rows = [];
+    var i = 0;
+    while (i < chain.length) {
+      var n = chain[i];
+      if (n.fork != null) { i += 1; continue; }
+      var main;
+      if (n.par) {
+        var cols = n.par.map(function (s) {
+          return '<div class="il-par-col"><div class="il-par-stem"></div>' + renderPipeNode(s, p) + '<div class="il-par-stem"></div></div>';
+        }).join('');
+        main = '<div class="il-par" style="--n:' + n.par.length + '">' +
+          '<div class="il-par-from"></div><div class="il-par-bar"></div>' +
+          '<div class="il-par-boxes">' + cols + '</div>' +
+          '<div class="il-par-bar il-join"></div></div>';
+      } else {
+        main = renderPipeNode(n, p);
+      }
+      var side = '';
+      while (i + 1 < chain.length && chain[i + 1].fork != null) {
+        i += 1;
+        var f = chain[i];
+        var boxes = (f.then || []).map(function (s) { return renderPipeNode(s, p); }).join('');
+        side += '<div class="il-side-item side"><span class="il-elbow" aria-hidden="true"></span>' +
+          '<div class="il-side-body"><div class="il-fork side"><span class="il-fork-arr">→</span>' +
+          '<span class="il-fork-cond">' + esc(f.fork) + '</span></div>' + boxes + '</div></div>';
+      }
+      var down = (i + 1 < chain.length) ? '<div class="il-v"><span class="il-v-arr">↓</span></div>' : '';
+      rows.push('<div class="il-row' + (side ? '' : ' il-row-solo') + '"><div class="il-main">' + main + down + '</div>' +
+        (side ? '<div class="il-side">' + side + '</div>' : '') + '</div>');
+      i += 1;
+    }
+    return '<div class="flow-spine">' + rows.join('') + '</div>';
+  }
   var body = '<div class="flow-legend">' +
     '<span><span class="sw" style="background:var(--amber)"></span>起動（launchd）</span>' +
-    '<span><span class="sw" style="background:var(--blue)"></span>実行（スクリプト・takt）</span>' +
+    '<span><span class="sw" style="background:var(--blue)"></span>実行（スクリプト・takt YAML）</span>' +
     '<span><span class="sw" style="background:var(--muted)"></span>成果物</span>' +
     '<span><span class="sw" style="background:var(--st-good)"></span>消費先</span>' +
     '<span>枠のあるboxはクリックで実ファイル/フォルダを開く</span></div>';
@@ -2297,15 +3003,22 @@ function renderPipelinesView() {
     var js = p.jobLabel ? jobStatus(p.jobLabel) : null;
     var stCls = js === 'error' ? 'failed' : js === 'ok' || js === 'running' ? 'completed' : 'other';
     var arrowHtml = '<div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"></line><polyline points="12 6 18 12 12 18"></polyline></svg></div>';
-    var chainHtml = p.chain.map(function (s) { return stepBox(s, p); }).join(arrowHtml);
-    return '<div class="flow-pipeline" data-search="' + esc((p.name + ' ' + (p.note || '')).toLowerCase()) + '">' +
+    var chainHtml = chainHasBranch(p.chain)
+      ? renderPipeSpine(p.chain, p)
+      : '<div class="flow-chain">' + p.chain.map(function (s) { return renderPipeNode(s, p); }).join(arrowHtml) + '</div>';
+    var searchBits = [p.name, p.note || ''];
+    (function walk(n) {
+      if (n && n.takt) { searchBits.push(n.takt); if (n.note) searchBits.push(n.note); }
+      (n.par || n.then || []).forEach(walk);
+    })({ then: p.chain });
+    return '<div class="flow-pipeline" data-search="' + esc(searchBits.join(' ').toLowerCase()) + '">' +
       '<div class="flow-pipeline-head"><span class="flow-pipeline-name">' + esc(p.name) + '</span>' +
       (js ? '<span class="hz-st ' + stCls + '">launchd: ' + esc(js) + '</span>' : '') +
       (p.note ? '<span class="flow-pipeline-note">' + esc(p.note) + '</span>' : '') + '</div>' +
-      '<div class="flow-chain">' + chainHtml + '</div></div>';
+      chainHtml + '</div>';
   }).join('');
   return panel('パイプライン詳細フロー（' + pipelines.length + '件）',
-    '起動条件→実行内容→成果物→消費先を1本ずつ図解。対象は運用ヘルスの鮮度監視10件のうち launchd 起点の自動パイプライン（手動起動の takt ワークフロー・個別 skill は対象外）',
+    '起動→実行→成果物→消費先。takt 内ループは YAML 正本（再生成で追従）。分岐・並列・takt 参照は縦＋合流バー、直線の外側だけ横列',
     body, 'layer-foundation', 'sec-pipelines');
 }
 
@@ -2354,17 +3067,6 @@ function renderHarnessView() {
   var mbStatus = jobStatus('com.shoma.claude-morning-brief');
   var wkStatus = jobStatus('com.shoma.weekly-report-emb');
 
-  // 全体takt（グローバルスコープ）の workflow / persona 数と weekly-report-emb のステップ鎖
-  var gTakt = null;
-  DATA.scopes.forEach(function (s) { if (s.id === 'global' && s.takt) gTakt = s.takt; });
-  var weekly = null;
-  if (gTakt) gTakt.workflows.forEach(function (w) { if (w.name === 'weekly-report-emb') weekly = w; });
-  var stepChain = weekly
-    ? weekly.stepNames.map(function (n) {
-        return n === 'harness-review' ? '<b>' + esc(n) + '</b>' : esc(n);
-      }).join(' → ')
-    : '(weekly-report-emb 不在)';
-
   // --- 思想レイヤー図 ---
   var layers = '';
   layers += hzLayer('l-mm', '人間ループ', '人間接点',
@@ -2382,7 +3084,7 @@ function renderHarnessView() {
     '内ループの結果を見て外ループの次の割り振りを変える。決定的な集計はスクリプト、判断だけ LLM',
     hzChip('harness-digest.sh: ' + (h.wiring.digestScript ? 'あり' : 'なし'),
       h.wiring.digestScript ? 'ok' : 'miss', '~/bin/harness/harness-digest.sh') +
-    hzChip('weekly-report-emb: ' + stepChain + (wkStatus ? '・job=' + esc(wkStatus) : ''),
+    hzChip('weekly-report-emb: ' + (h.wiring.weeklyHarnessStep ? '配線済' : '未配線') + (wkStatus ? '・job=' + esc(wkStatus) : ''),
       h.wiring.weeklyHarnessStep ? 'ok' : 'miss', '~/.takt/workflows/weekly-report-emb.yaml') +
     hzChip('knowledge: project-os（コンテキスト一貫性）' + (h.wiring.knowledgeProjectOs ? '' : ' なし'),
       h.wiring.knowledgeProjectOs ? 'ok' : 'miss', '~/.takt/facets/knowledge/project-os.md') +
@@ -2394,12 +3096,18 @@ function renderHarnessView() {
     'プロジェクトOS 接合部 digest 週次 再配分 knowledge fable macro micro');
   layers += hzFlow('実行（workflow へ委譲）', 'runs 集計（実績が判断材料）');
   layers += hzLayer('l-micro', '内ループ', 'takt workflow 群',
-    'Fable 前提で薄く作る。停止条件（スコア・回数・時間）は保険であり、監視は強化しない',
-    (gTakt
-      ? hzChip('workflows: <b>' + gTakt.workflows.length + '</b> 本', '', '~/.takt/workflows') +
-        hzChip('personas: <b>' + gTakt.personas.length + '</b> 体', '', '~/.takt/personas')
-      : hzChip('~/.takt なし', 'miss', null)),
-    'ミクロ workflow persona 停止条件 micro');
+    'Fable 前提で薄く作る。停止条件（スコア・回数・時間）は保険であり、監視は強化しない。step と分岐は直下のパネル',
+    (function () {
+      var chips = '';
+      DATA.scopes.forEach(function (s) {
+        if (!s.takt || !s.takt.workflows.length) return;
+        chips += hzChip(esc(s.label) + ': <b>' + s.takt.workflows.length + '</b> 本', '', s.takt.root + '/workflows');
+      });
+      return chips || hzChip('takt なし', 'miss', null);
+    }()),
+    'ミクロ workflow persona 停止条件 micro ' + DATA.scopes.map(function (s) {
+      return s.takt ? s.takt.workflows.map(function (w) { return w.name + ' ' + w.stepNames.join(' '); }).join(' ') : '';
+    }).join(' '));
   layers += hzFlow('実行ログを書き残す', '');
   layers += hzLayer('l-data', 'DATA', 'データ地盤（runs）',
     '実行ログが再配分の燃料。データの発生源を自分で持つ',
@@ -2422,6 +3130,10 @@ function renderHarnessView() {
     '<div class="hz-rail"><div class="bracket"></div>' +
     '<div class="rail-label">外ループ: runs 実績 → digest → 週次判断（火曜）→ 再配分</div></div></div>',
     'layer-foundation', 'sec-hz-layers');
+
+  html += panel('内ループの流れ（takt workflows）',
+    'Workspace → Flow → Step。分岐・並列・loop_monitors がある Flow だけ開く。直線は畳む。正本は各スコープの workflows YAML。実行基盤は takt のまま',
+    renderAllIlWorkspaces(), 'layer-foundation', 'sec-hz-inner-flows');
 
   // --- Vault ナレッジ参照マップ（層別） ---
   var vr = h.vaultRefs || [];
@@ -2494,7 +3206,7 @@ function renderHarnessView() {
         }).join('') + '</tbody></table></div>'
       : '<div class="empty-note">variables-digest-latest.md 未生成（variables-digest.sh 7 の出力を ~/.takt/logs/ に保存すると表示される）</div>';
     html += panel('母数ダッシュボード（数値化レイヤー）',
-      '『数値化の鬼』方式: 率でなく母数を見る。集計 ' + (hv.digestDate ? hv.digestDate + (hv.digestStale ? ' ⚠ 8日超・週次更新が止まっている' : '') : '未生成') +
+      '『数値化の鬼』方式: 率でなく母数を見る。集計 ' + (hv.digestDate ? hv.digestDate + (hv.digestAgeDays != null && hv.digestAgeDays > 0 ? '（' + hv.digestAgeDays + '日前）' : '') + (hv.digestStale ? ' ⚠ 8日超・週次更新が止まっている' : '') : '未生成') +
       '・判定と施策提案は火曜の emb 週次レビュー',
       varsHtml + countsHtml, 'layer-process', 'sec-hz-variables');
   }
@@ -2778,14 +3490,24 @@ function renderKpiSummaryCard() {
       '<div class="kpi-prev">前週 ' + esc(c.prevWeek) + '</div>' + hzPairBars(c.thisWeek, c.prevWeek) +
       '</div>';
   }).join('');
-  var digestSub = hv.digestStale ? '⚠ 母数8日超' : (hv.digestDate ? '母数 ' + hv.digestDate : '母数未生成');
-  var verdictSub = hv.verdictStale ? '⚠ 判定8日超・週次レビューが止まっている' : (hv.verdictDate ? '判定 ' + hv.verdictDate : '判定未生成（emb週次レビュー待ち）');
+  function ageLabel(days, date, stale, kind) {
+    if (!date) return kind + '未生成';
+    if (stale) return '⚠ ' + kind + ' ' + date + '（' + days + '日前・週次更新が止まっている）';
+    if (days == null || days <= 0) return kind + ' ' + date + '（今日更新）';
+    return kind + ' ' + date + '（' + days + '日前' + (kind === '母数' ? '・火曜週次。今日のライブではない' : '') + '）';
+  }
+  var digestSub = hv.digestStale ? '⚠ 母数' + (hv.digestAgeDays != null ? hv.digestAgeDays + '日前' : '8日超') : (hv.digestDate ? '母数 ' + hv.digestDate + (hv.digestAgeDays ? '・' + hv.digestAgeDays + '日前' : '') : '母数未生成');
+  var verdictSub = hv.verdictStale ? '⚠ 判定8日超・週次レビューが止まっている' : (hv.verdictDate ? '判定 ' + hv.verdictDate + (hv.verdictAgeDays ? '・' + hv.verdictAgeDays + '日前' : '') : '判定未生成（emb週次レビュー待ち）');
   var sub = verdictSub + ' ・ ' + digestSub;
+  var freshCls = (!hv.digestDate && !hv.verdictDate) ? 'miss' : ((hv.digestStale || hv.verdictStale) ? 'stale' : 'asof');
+  var freshText = ageLabel(hv.digestAgeDays, hv.digestDate, hv.digestStale, '母数') +
+    (hv.verdictDate ? ' ／ ' + ageLabel(hv.verdictAgeDays, hv.verdictDate, hv.verdictStale, '判定') : '');
   var body =
+    '<div class="kpi-freshness ' + freshCls + '"' + openAttr(hv.digestDate ? '~/.takt/logs/variables-digest-latest.md' : null) + '>' + esc(freshText) + '</div>' +
     '<div class="kpi-verdict-grid">' + verdictCards + '</div>' +
     (tiles ? '<div class="kpi-tiles-label">参考: 自動集計した母数（判定材料の一部）</div><div class="kpi-tiles">' + tiles + '</div>' : '<div class="empty-note">自動集計した母数が未生成</div>') +
     '<div class="wm-goview" data-goview="harness" style="margin-top:10px;cursor:pointer;font-size:0.78rem;color:var(--muted)">詳細（母数ダッシュボード）を見る →</div>';
-  return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary layer-command', 'sec-kpi-summary');
+  return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary layer-command' + (hv.digestStale || hv.verdictStale ? ' kpi-stale' : ''), 'sec-kpi-summary');
 }
 
 // ---- 判断待ちリスト（emb-weekly-review.md「人間ループへの差し戻し」を永続表示）----
@@ -3222,10 +3944,13 @@ function openInlineViewer(p, text) {
 document.addEventListener('click', function (ev) {
   const t = ev.target;
   if (!t || !t.closest) return;
-  // ボタン・タイル・折りたたみ見出しのクリックは既存動作を優先
-  if (t.closest('button') || t.closest('a') || t.closest('summary') || t.closest('.tile')) return;
+  // ボタン・タイル・折りたたみ見出しのクリックは既存動作を優先。
+  // summary 内の [data-open]（内ループ Flow 名）は YAML を開くので例外。
+  if (t.closest('a') || t.closest('.tile')) return;
+  if (t.closest('button') && !t.closest('[data-open]')) return;
   const el = t.closest('[data-open]');
   if (!el) return;
+  if (t.closest('summary')) ev.preventDefault();
   const p = el.getAttribute('data-open');
   if (!p) return;
   // ファイル実体があれば外部アプリ起動やダウンロードに頼らずブラウザ内にそのまま表示する
