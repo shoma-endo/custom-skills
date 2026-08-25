@@ -1464,7 +1464,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/8/23 18:45:06","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1786432756494.6602,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1784974730630.7336,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1786976624604.8735,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1786432823658.4875,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/8/25 18:45:02","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1786432756494.6602,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1784974730630.7336,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1786976624604.8735,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1786432823658.4875,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1510,6 +1510,23 @@ function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// 説明文はMarkdownファイル由来。カード内ではプレーンテキストとして表示する。
+function plainMd(s) {
+  return String(s == null ? '' : s)
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[\u0060]/g, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/~~(.*?)~~/g, '$1')
+    .replace(/(^|\s)[*_]([^*_]+)[*_](?=\s|$)/g, '$1$2')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+    .replace(/^\s{0,3}>\s?/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/\*\*|__/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }
 function uniqueReals(entries) {
   const set = new Set();
@@ -1729,7 +1746,7 @@ function renderAttentionPanel(scopes, stats) {
         (it.view ? ' data-goview="' + it.view + '"' : '') +
         (it.jump ? ' data-jump="' + it.jump + '"' : '') + '>' +
         '<span class="gate ' + it.sev + '" title="確認ゲート"></span>' +
-        '<span>' + esc(it.text) + '</span>' +
+        '<span>' + esc(plainMd(it.text)) + '</span>' +
         '<span class="go">→ 該当箇所へ</span></button>';
     }).join('');
   }
@@ -1862,7 +1879,7 @@ function renderLaunchdPanel(closed) {
     '</tr></thead><tbody>';
   jobs.forEach(function (j) {
     let popHtml = '<div class="pop-title">' + esc(j.label) + '</div>' +
-      (j.desc ? '<div class="pop-desc">' + esc(j.desc) + '</div>' : '') +
+      (j.desc ? '<div class="pop-desc">' + esc(plainMd(j.desc)) + '</div>' : '') +
       (j.errTail ? '<div class="pop-sec">stderr 末尾</div><pre class="pop-err">' + esc(j.errTail) + '</pre>' : '') +
       '<div class="pop-meta">plist: <b>' + esc(j.plist) + '</b><br>' +
       'コマンド: <b>' + esc(j.command) + '</b>' +
@@ -1876,7 +1893,7 @@ function renderLaunchdPanel(closed) {
       '<td>' + jobBadge(j) + '</td>' +
       '<td>' + runBtn(j) + '</td>' +
       '<td class="job-label">' + esc(j.label) + '</td>' +
-      '<td class="job-desc">' + (j.desc ? esc(j.desc) : '<span class="cmd">' + esc(j.command) + '</span>') + '</td>' +
+      '<td class="job-desc">' + (j.desc ? esc(plainMd(j.desc)) : '<span class="cmd">' + esc(j.command) + '</span>') + '</td>' +
       '<td class="mono-cell">' + esc(j.schedule) + '</td>' +
       '<td class="mono-cell">' + fmtWhen(j.lastRunMs) + '</td>' +
       '<td class="mono-cell">' + (j.lastExit === null ? '—' : 'exit ' + j.lastExit) + '</td>' +
@@ -1961,7 +1978,7 @@ function renderBinPanel(closed) {
   sorted.forEach(function (b) {
     const kb = (b.sizeBytes / 1024).toFixed(1);
     const popHtml = '<div class="pop-title">' + esc(b.rel) + '</div>' +
-      (b.desc ? '<div class="pop-desc">' + esc(b.desc) + '</div>' : '<div class="pop-desc">（先頭コメントなし）</div>') +
+      (b.desc ? '<div class="pop-desc">' + esc(plainMd(b.desc)) + '</div>' : '<div class="pop-desc">（先頭コメントなし）</div>') +
       '<div class="pop-sec">呼び出し元</div>' +
       (b.callers.length === 0
         ? '<div class="pop-desc">見つからない（launchd・Claude hooks・Raycast・他スクリプトのいずれからも参照なし）</div>'
@@ -1974,7 +1991,7 @@ function renderBinPanel(closed) {
     html += '<tr data-pop="' + popId + '" tabindex="0" data-search="' + esc(searchText) + '"' + openAttr(b.path) + '>' +
       '<td><span class="badge b-mute">' + esc(BIN_GROUP_LABEL[b.group] || b.group) + '</span></td>' +
       '<td class="job-label">' + esc(b.rel) + '</td>' +
-      '<td class="job-desc">' + (b.desc ? esc(b.desc) : '<span class="cmd">（説明なし）</span>') + '</td>' +
+      '<td class="job-desc">' + (b.desc ? esc(plainMd(b.desc)) : '<span class="cmd">（説明なし）</span>') + '</td>' +
       '<td class="bin-callers"><div class="bin-callers-in">' + binCallerBadges(b) + '</div></td>' +
       '<td class="mono-cell">' + fmtWhen(b.mtimeMs) + '</td>' +
       '</tr>';
@@ -1998,7 +2015,7 @@ function pluginBadges(p) {
 }
 function renderPluginCard(p) {
   var popHtml = '<div class="pop-title">' + esc(p.key) + '</div>' +
-    (p.desc ? '<div class="pop-desc">' + esc(p.desc) + '</div>' : '') +
+    (p.desc ? '<div class="pop-desc">' + esc(plainMd(p.desc)) + '</div>' : '') +
     '<div class="pop-meta">marketplace: <b>' + esc(p.marketplace) + '</b>' +
     (p.inClaude
       ? '<br>Claude Code: <b>v' + esc(p.claudeVersion || '?') + (p.claudeEnabled ? '（有効）' : '（無効）') + '</b>' +
@@ -2016,7 +2033,7 @@ function renderPluginCard(p) {
     '<div class="name">' + esc(p.name) + '</div>' +
     '<div class="fm">@' + esc(p.marketplace) + '</div>' +
     '<div class="badges">' + pluginBadges(p) + '</div>' +
-    (p.desc ? '<p class="desc">' + esc(p.desc) + '</p>' : '') +
+    (p.desc ? '<p class="desc">' + esc(plainMd(p.desc)) + '</p>' : '') +
     '</article>';
 }
 function renderPluginsPanel(closed) {
@@ -2047,7 +2064,7 @@ function renderSkillCard(e, scopeLabel) {
 
   // カードと重複するバッジ類は出さず、全文説明＋フルパスに絞る
   let popHtml = '<div class="pop-title">' + esc(e.dir) + '</div>' +
-    (e.desc ? '<div class="pop-desc">' + esc(e.desc) + '</div>' : '') +
+    (e.desc ? '<div class="pop-desc">' + esc(plainMd(e.desc)) + '</div>' : '') +
     '<div class="pop-meta">' +
     (e.fmName ? 'name: <b>' + esc(e.fmName) + '</b><br>' : '') +
     esc(scopeLabel) + ' / ' + (e.tree === 'claude' ? '.claude' : '.agents') + '　<b>' + esc(e.path) + '</b>' +
@@ -2063,7 +2080,7 @@ function renderSkillCard(e, scopeLabel) {
     '<div class="name">' + esc(e.dir) + '</div>' +
     (e.fmName ? '<div class="fm">name: ' + esc(e.fmName) + '</div>' : '') +
     (badges ? '<div class="badges">' + badges + '</div>' : '') +
-    (e.desc ? '<p class="desc">' + esc(e.desc) + '</p>' : '') +
+    (e.desc ? '<p class="desc">' + esc(plainMd(e.desc)) + '</p>' : '') +
     (sortMode !== 'name' && e.mtimeMs != null ? '<div class="fm">更新: ' + fmtDate(e.mtimeMs) + '</div>' : '') +
     '<div class="path">' + esc(e.path) +
     (gh ? ' <a class="gh-link" href="' + esc(gh) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">GitHub ↗</a>' : '') +
@@ -2082,7 +2099,7 @@ function renderWorkflowCard(w, personaFiles, scopeLabel, taktRoot) {
   const popRail = renderIlRail(w, taktRoot, false);
 
   const popHtml = '<div class="pop-title">' + esc(w.name) + '</div>' +
-    (w.desc ? '<div class="pop-desc">' + esc(w.desc) + '</div>' : '') +
+    (w.desc ? '<div class="pop-desc">' + esc(plainMd(w.desc)) + '</div>' : '') +
     (popRail ? '<div class="pop-sec">ステップと流れ（正本はハーネス「内ループの流れ」）</div>' + popRail : '') +
     (chips ? '<div class="pop-sec">ペルソナ</div><div>' + chips + '</div>' : '') +
     '<div class="pop-meta">' + esc(scopeLabel) + ' / <b>' + esc(w.file) + '</b>' +
@@ -2097,7 +2114,7 @@ function renderWorkflowCard(w, personaFiles, scopeLabel, taktRoot) {
     (w.initialStep ? '<span>start: ' + esc(w.initialStep) + '</span>' : '') +
     (w.maxSteps !== null ? '<span>max_steps: ' + w.maxSteps + '</span>' : '') +
     '<span>' + esc(w.file) + '</span></div>' +
-    (w.desc ? '<p class="desc">' + esc(w.desc) + '</p>' : '') +
+    (w.desc ? '<p class="desc">' + esc(plainMd(w.desc)) + '</p>' : '') +
     (chips ? '<div>' + chips + '</div>' : '<div class="fm">ペルソナ参照なし</div>') +
     '</article>';
 }
@@ -2109,7 +2126,7 @@ function renderPersonaCard(p, scopeLabel, taktRoot) {
   const chips = workflowChips + manualChips;
 
   const popHtml = '<div class="pop-title">' + esc(p.title) + '</div>' +
-    (p.summary ? '<div class="pop-desc">' + esc(p.summary) + '</div>' : '') +
+    (p.summary ? '<div class="pop-desc">' + esc(plainMd(p.summary)) + '</div>' : '') +
     '<div class="pop-sec">参照元ワークフロー</div>' +
     (workflowChips ? '<div>' + workflowChips + '</div>' : '<div class="pop-desc">なし（手動入口のみの可能性あり）</div>') +
     (manualChips ? '<div class="pop-sec">手動入口</div><div>' + manualChips + '</div>' : '') +
@@ -2120,7 +2137,7 @@ function renderPersonaCard(p, scopeLabel, taktRoot) {
   return '<article class="card" data-pop="' + popId + '" tabindex="0" data-search="' + esc(searchText) + '"' + openAttr(taktRoot + '/personas/' + p.file) + '>' +
     '<div class="name">' + esc(p.title) + '</div>' +
     '<div class="meta-row"><span>' + esc(p.file) + '</span><span>' + p.sizeKb + ' KB</span></div>' +
-    (p.summary ? '<p class="desc">' + esc(p.summary) + '</p>' : '') +
+    (p.summary ? '<p class="desc">' + esc(plainMd(p.summary)) + '</p>' : '') +
     (chips ? '<div>' + chips + '</div>' : '<div class="fm">参照元なし</div>') +
     '</article>';
 }
@@ -2432,7 +2449,7 @@ function renderIlWorkspace(takt) {
       '<span class="il-flow-meta">start ' + esc(w.initialStep || w.stepNames[0] || '—') +
       (w.maxSteps != null ? ' · max_steps ' + w.maxSteps : '') +
       ' · ' + w.steps + ' steps</span>' + tag + '</summary>' +
-      (w.desc ? '<p class="il-flow-desc">' + esc(w.desc) + '</p>' : '') +
+      (w.desc ? '<p class="il-flow-desc">' + esc(plainMd(w.desc)) + '</p>' : '') +
       renderIlRail(w, takt.root, false) +
       '</details>';
   }).join('');
@@ -3450,7 +3467,7 @@ function renderKpiSummaryCard() {
           return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
             '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
             '<div class="kpi-verdict-actual">' + actual + '</div>' +
-            (note ? '<div class="kpi-verdict-note">' + esc(note.slice(0, 90)) + (note.length > 90 ? '…' : '') + '</div>' : '') +
+            (note ? '<div class="kpi-verdict-note">' + esc(plainMd(note.slice(0, 90))) + (note.length > 90 ? '…' : '') + '</div>' : '') +
             '</div>';
         }
         cls = match ? kpiVerdictClass(match.symbol) : 'unknown';
@@ -3475,7 +3492,7 @@ function renderKpiSummaryCard() {
         return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
           '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
           '<div class="kpi-verdict-actual">' + actual + '</div>' +
-          (note ? '<div class="kpi-verdict-note">' + esc(note) + '</div>' : '') +
+          (note ? '<div class="kpi-verdict-note">' + esc(plainMd(note)) + '</div>' : '') +
           '</div>';
       }).join('')
     : '<span class="empty-note">成果変数.md が未設定</span>';
@@ -3521,7 +3538,7 @@ function renderPendingDecisionsCard() {
     ? pd.items.map(function (d) {
         return '<div class="pd-item">' +
           (d.carriedOver ? '<span class="pd-flag" title="前回runにも同じ判断事項が出ていた（完全一致判定）">🔁 持ち越し</span>' : '') +
-          '<span class="pd-text">' + esc(d.text) + '</span>' +
+          '<span class="pd-text">' + esc(plainMd(d.text)) + '</span>' +
           '</div>';
       }).join('')
     : '<div class="empty-note">今週の差し戻しなし（emb判断: 全て委譲可 or 判断済み）</div>';
