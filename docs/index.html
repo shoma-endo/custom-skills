@@ -1464,7 +1464,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/8/25 18:45:02","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1786432756494.6602,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1784974730630.7336,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1786976624604.8735,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1786432823658.4875,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1784573535258.2146,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/9/1 18:45:01","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1783382056243.3103,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1783488406410.213,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の見積もり（工数・金額・スケジュール・見積書）を作成する。「見積もりして」「見積書作って」「この案件いくらでやるべき？」「/estimate」で起動。実績記録モード（「見積もり実績を記録して」）で見積vs実績を蓄積しレートカードを校正する。不負責：提案書全体の作成、契約書レビュー、マーケ施策の実行（分離方針の明記のみ）。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1786432756494.6602,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1783342668652.282,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1784300482171.0288,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1784974730630.7336,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間ぶりに戻るプロジェクトの全体像を「意味（MD正本）＋見せ方（ペライチHTML）」の二層で生成し、30分で開発再開できる状態を作る。「この案件キャッチアップして」「プロジェクト把握して」「オンボーディングドキュメント作って」「/project-catchup」で起動。不負責：コードの修正・リファクタ（把握のみ）、講義資料化（lecture-builder）、リポジトリ健全性の定期監視（repo-health）。","tools":12,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1786976624604.8735,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1786432823658.4875,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"月次のスキルシート（SES技術経歴書）更新支援。直近1ヶ月の全行動（gitリポジトリ履歴・ノートアプリ・Larkカレンダー/VC/タスク・コーディングエージェント履歴・発信実績）を収集・分析し、シートに書ける業務内容・技術・技術以外の強みを優先度付き＋転記可能な文面案で提案する。「スキルシート更新」「技術経歴書 更新」「/skill-sheet-scout」で起動。毎月の定期タスクの実行手順。不負責：シートへの書き込み（提案専用。転記は本人が手動で行う）、週次サマリー（weekly-report）。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1788242968075.03,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1562,7 +1562,7 @@ function absPath(p) { return p && p.charAt(0) === '~' && DATA.home ? DATA.home +
 /** data-open 属性（共有用HTMLでは実パスを埋め込まないため無効化） */
 function openAttr(p) {
   if (DATA.redacted || !p) return '';
-  return ' data-open="' + esc(absPath(p)) + '" title="クリックでファイル/フォルダを開く"';
+  return ' data-open="' + esc(absPath(p)) + '" tabindex="0" title="クリックまたは Enter / Space でファイル/フォルダを開く"';
 }
 function daysSince(ms) { return Math.floor((Date.now() - ms) / 86400000); }
 function isStale(e) { return !e.broken && e.mtimeMs != null && daysSince(e.mtimeMs) >= DATA.staleDays; }
@@ -2631,22 +2631,6 @@ function fmtAge(ms) {
   if (h < 48) return h + 'h前';
   return Math.floor(h / 24) + 'd前';
 }
-/**
- * Orca ハブの異常判定（規約3: 述語は一元化）。
- * ナビの dot と パネルの畳み判定・見出しが全部これを呼ぶ。片方にだけ条件を
- * 足すと「ナビは赤いのにパネルは畳まれている」嘘UIになる（実際に一度なった）。
- * 重い順に返す。null は正常。
- */
-function hubTrouble(h) {
-  if (!h) return null;
-  if (h.missing) return { level: 'amber', why: 'Orca ハブの状態を収集できていない', label: '状態ファイル無し' };
-  if (h.stale) return { level: 'amber', why: 'Orca ハブの状態を収集できていない（毎時のはずが止まっている）', label: '収集停止' };
-  if (!h.reachable) return { level: 'red', why: 'Orca ハブ（サブPC）に到達できない', label: '到達不可' };
-  if (h.stat && h.stat.orca_running !== 'yes') return { level: 'red', why: 'Orca ハブでプロセスが落ちている', label: 'Orca 停止' };
-  var bad = (h.repos || []).filter(function (r) { return r.status === 'DIVERGED' || r.status === 'FETCHFAIL'; });
-  if (bad.length) return { level: 'amber', why: 'Orca ハブに同期エラーのリポジトリあり', label: '同期エラー ' + bad.length };
-  return null;
-}
 function renderOpsView() {
   var o = DATA.ops;
   function jobStatus(label) {
@@ -2669,89 +2653,7 @@ function renderOpsView() {
         '</div>';
     }).join('');
   }
-  // --- Orca ハブ（サブPC） ---
-  // 「別マシンの今」なので、値そのものより「いつの値か」を先に出す。
-  // 落ちている・止まっている時だけ開き、正常なら畳む。
-  var h = o.hub;
-  var ht = hubTrouble(h);
-  var hubBody;
-  if (h.missing) {
-    hubBody = '<div class="empty-note">状態ファイルが無い（' + esc(h.path) + '）。' +
-      'ハブが落ちているのではなく、<b>orca-hub-sync がまだ一度も書いていない</b>か、書き出し先がズレている。' +
-      '<code>~/bin/orca-hub-sync.sh</code> を手で叩くと出る</div>';
-  } else {
-    // バッジも hubTrouble から作る。ここだけ別条件にすると
-    // 「見出しは ORCA 停止 なのにバッジは OK」という矛盾が出る（実際に出た）
-    var badge = ht
-      ? '<span class="hz-st ' + (ht.level === 'red' ? 'failed' : 'other') + '">' +
-        (ht.level === 'red' ? '' : '⚠ ') + esc(ht.label) + '</span>'
-      : '<span class="hz-st completed">OK</span>';
-    var st = h.stat || {};
-    var chip = function (label, val, warn) {
-      if (val === undefined || val === null || val === '') return '';
-      return '<div class="roi-line"><span>' + esc(label) + '</span><span class="v"' +
-        (warn ? ' style="color:var(--danger)"' : '') + '>' + esc(String(val)) + '</span></div>';
-    };
-    var repoRows = (h.repos || []).map(function (r) {
-      var cls = (r.status === 'DIVERGED' || r.status === 'FETCHFAIL') ? 'failed'
-        : r.status === 'DIRTY' ? 'other' : 'completed';
-      return '<tr data-search="' + esc((r.name + ' ' + r.status).toLowerCase()) + '">' +
-        '<td><b>' + esc(r.name) + '</b></td>' +
-        '<td><span class="hz-st ' + cls + '">' + esc(r.status) + '</span></td>' +
-        '<td style="font-size:0.72rem;color:var(--muted)">' + esc(r.detail) + '</td></tr>';
-    }).join('');
-
-    hubBody =
-      '<div style="margin-bottom:10px">' + badge +
-        ' <span style="font-size:0.75rem;color:var(--muted)">' + esc(h.host) +
-        ' ／ 収集 ' + fmtAge(h.ageMs == null ? null : Date.now() - h.ageMs) +
-        (h.stale ? '（毎時更新のはずが止まっている）' : '') + '</span></div>' +
-      (h.reachable
-        ? '<div>' +
-            chip('Orca', (st.orca_running === 'yes' ? '起動中 ' : '⚠ 停止 ') + (st.orca_version || ''), st.orca_running !== 'yes') +
-            chip('Claude Code', st.claude_version) +
-            chip('launchd（サブPC）', st.agents + ' 本', st.agents !== '2') +
-            chip('skills', st.skills) +
-            chip('brew outdated', st.brew_outdated, st.brew_outdated !== '0') +
-            chip('空き容量', st.disk_free) +
-          '</div>'
-        : '<div class="empty-note">前回の収集時にサブPCへ ssh できなかった。値は出さない（古い値を今の状態として見せないため）。' +
-          'L3/L7 の切り分けは死活監視 <code>com.shoma.orca-hub-health</code> が通知している</div>') +
-      // 実稼働の計測。設備を足すかどうかの判断材料なので、値そのものより
-      // 「母数が判断に足りているか」を先に言う（少ないうちに率を読ませない）
-      (function () {
-        var u = h.usage;
-        if (!u) return '';
-        var pct = function (n) { return u.samples ? Math.round((n / u.samples) * 1000) / 10 : 0; };
-        var enough = u.samples >= 14 * 24 * 0.8;  // 14日分ためたら読み始める
-        return '<div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--hairline)">' +
-          '<div style="font-size:0.74rem;color:var(--muted);margin-bottom:4px">実稼働（毎時サンプリング・直近' + u.days + '日）</div>' +
-          (enough
-            // 「どちらかに繋いだか」を先頭に置く。母艦をどちらにするかの前に、
-            // そもそも外から繋ぐ習慣があるかを決めるのがこの数字
-            ? '<div class="roi-line"><span><b>どちらかの母艦に繋いだ割合</b></span><span class="v">' +
-              pct(u.connectedAny) + '%（' + u.connectedAny + '/' + u.samples + '）</span></div>' +
-              '<div class="roi-line"><span>├ メインPC（Host 1）</span><span class="v">' +
-              pct(u.connectedMain) + '%（' + u.connectedMain + '）</span></div>' +
-              '<div class="roi-line"><span>└ サブPC（Host 2）</span><span class="v">' +
-              pct(u.connectedSub) + '%（' + u.connectedSub + '）</span></div>'
-            : '<div class="empty-note">母数 ' + u.samples + ' / ' + (14 * 24) + ' サンプル。判断できる量になるまで率は出さない</div>') +
-          '<div class="roi-line"><span>最後に繋がった時刻</span><span class="v">' +
-            (u.lastConnectedAt ? esc(u.lastConnectedAt.slice(0, 16).replace('T', ' ')) : 'まだ無い') + '</span></div>' +
-          '<div style="font-size:0.7rem;color:var(--muted);margin-top:6px">' +
-            '毎時1点なので、サンプル間に収まる短い接続は数えていない（＝実利用の下限）。' +
-            '<b>片側だけ見ない</b> — Orca モバイルは両ホストを1画面に持つので、サブPCだけ数えると Host 1 を使っていた分が丸ごと落ちる</div>' +
-        '</div>';
-      })() +
-      (repoRows
-        ? '<div style="overflow:auto;margin-top:10px"><table class="hz-runs">' +
-          '<thead><tr><th>リポジトリ</th><th>同期</th><th>HEAD</th></tr></thead><tbody>' + repoRows + '</tbody></table></div>'
-        : '');
-  }
-  var hubTitle = 'Orca ハブ（サブPC）' + (ht ? '（' + ht.label + '）' : '');
-  var html = panel(hubTitle,
-    '外出時の母艦。メインPCを持ち出しても Orca モバイルが繋がり続けるための常駐機。値は orca-hub-sync（毎時）が置いた status.json を読むだけで、生成時に ssh はしない。skills / takt はメインPCと同一物（~/.agents の symlink）なので重複表示していない',
-    hubBody, ht ? 'layer-command' : '', 'sec-ops-hub', !ht);
+  var html = '';
 
   html += panel('整合性チェック（乖離検知）' + (igFail + igWarn > 0 ? '（FAIL ' + igFail + ' / WARN ' + igWarn + '）' : ''),
     'generate-skills-map.ts 冒頭「外部事実の宣言」を生成のたびに実体（ファイル・plist・workflow・単価・shellスクリプト）と突合。宣言と現実がズレたらここに自己申告される',
@@ -3361,7 +3263,7 @@ function renderWorldMapView() {
     });
     biz += '</div>';
   });
-  html += panel('事業 3層ポートフォリオ', '正本: ' + esc(b.contractsPath) + '。層分類は人間の判断事項（AIは転記のみ）', biz, 'layer-process', 'sec-wm-biz');
+  html += panel('事業 3層ポートフォリオ', '金額正本: Lark事業シート → 契約マスター ' + esc(b.contractMasterPath) + '。層分類・除外は人間の判断事項（AIは転記のみ）', biz, 'layer-process', 'sec-wm-biz');
 
   // 3. 事業優先度
   if (b.priorities.length) {
@@ -3537,6 +3439,7 @@ function renderPendingDecisionsCard() {
   var rows = pd.items.length
     ? pd.items.map(function (d) {
         return '<div class="pd-item">' +
+          (d.ledgerId ? '<code>' + esc(d.ledgerId) + '</code> ' : '') +
           (d.carriedOver ? '<span class="pd-flag" title="前回runにも同じ判断事項が出ていた（完全一致判定）">🔁 持ち越し</span>' : '') +
           '<span class="pd-text">' + esc(plainMd(d.text)) + '</span>' +
           '</div>';
@@ -3774,10 +3677,6 @@ function renderNav() {
     var opsCleanup = DATA.ops.cleanup.staleSkills.length + DATA.ops.cleanup.unusedPersonas.length + DATA.ops.cleanup.idleWorkflows.length;
     if (DATA.ops.pipelines.some(function (p) { return p.lastMs == null; })) odots += '<span class="dot red" title="成果物が見つからないパイプラインあり"></span>';
     else if (opsStale > 0) odots += '<span class="dot red" title="鮮度遅延のパイプラインあり"></span>';
-    // Orca ハブ: 外出時に作業できるかが直接かかっている。判定は hubTrouble に一元化
-    // （落ちている＝赤 / 状態が分からない・同期エラー＝琥珀）
-    var oht = hubTrouble(DATA.ops.hub);
-    if (oht) odots += '<span class="dot ' + oht.level + '" title="' + esc(oht.why) + '"></span>';
     if (opsCleanup > 0) odots += '<span class="dot amber" title="棚卸し候補あり"></span>';
     harnessHtml += '<button class="nav-item" data-view="ops"><span>運用ヘルス</span>' +
       '<span class="nav-right">' + odots + '<span class="nav-cnt">' + DATA.ops.pipelines.length + '</span></span></button>';
@@ -3958,16 +3857,8 @@ function openInlineViewer(p, text) {
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   window.open(URL.createObjectURL(blob), '_blank');
 }
-document.addEventListener('click', function (ev) {
-  const t = ev.target;
-  if (!t || !t.closest) return;
-  // ボタン・タイル・折りたたみ見出しのクリックは既存動作を優先。
-  // summary 内の [data-open]（内ループ Flow 名）は YAML を開くので例外。
-  if (t.closest('a') || t.closest('.tile')) return;
-  if (t.closest('button') && !t.closest('[data-open]')) return;
-  const el = t.closest('[data-open]');
-  if (!el) return;
-  if (t.closest('summary')) ev.preventDefault();
+function openDataTarget(el, ev) {
+  if (ev.type === 'keydown' || (ev.target && ev.target.closest && ev.target.closest('summary'))) ev.preventDefault();
   const p = el.getAttribute('data-open');
   if (!p) return;
   // ファイル実体があれば外部アプリ起動やダウンロードに頼らずブラウザ内にそのまま表示する
@@ -3990,6 +3881,27 @@ document.addEventListener('click', function (ev) {
     // 静的モード（file:// で閲覧中）: フォルダはブラウザのディレクトリ一覧を開く
     window.open('file://' + p.split('/').map(encodeURIComponent).join('/'), '_blank');
   }
+}
+document.addEventListener('click', function (ev) {
+  const t = ev.target;
+  if (!t || !t.closest) return;
+  // ボタン・タイル・折りたたみ見出しのクリックは既存動作を優先。
+  // summary 内の [data-open]（内ループ Flow 名）は YAML を開くので例外。
+  if (t.closest('a') || t.closest('.tile')) return;
+  if (t.closest('button')) return;
+  const el = t.closest('[data-open]');
+  if (!el) return;
+  openDataTarget(el, ev);
+});
+document.addEventListener('keydown', function (ev) {
+  if (ev.key !== 'Enter' && ev.key !== ' ') return;
+  const t = ev.target;
+  if (!t || !t.closest) return;
+  // ネイティブ操作要素のキーボード動作を奪わない。
+  if (t.closest('a') || t.closest('button') || t.closest('.tile')) return;
+  const el = t.closest('[data-open]');
+  if (!el) return;
+  openDataTarget(el, ev);
 });
 
 // ---- launchd 手動実行 ----
@@ -4014,14 +3926,26 @@ document.addEventListener('click', function (ev) {
   // 静的モード: kickstart コマンドをクリップボードへ
   const cmd = btn.getAttribute('data-cmd');
   if (cmd) {
-    const ta = document.createElement('textarea');
-    ta.value = cmd;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch (e) { /* noop */ }
-    document.body.removeChild(ta);
-    btn.textContent = '✓ コピー済み';
-    setTimeout(function () { btn.textContent = '⧉ コピー'; }, 2000);
+    const fallbackCopy = function () {
+      const ta = document.createElement('textarea');
+      ta.value = cmd;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch (e) { /* noop */ }
+      document.body.removeChild(ta);
+      return copied;
+    };
+    const copy = navigator.clipboard && window.isSecureContext
+      ? navigator.clipboard.writeText(cmd).then(function () { return true; }).catch(function () { return fallbackCopy(); })
+      : Promise.resolve(fallbackCopy());
+    copy.then(function (copied) {
+      btn.textContent = copied ? '✓ コピー済み' : '✖ コピー失敗';
+      setTimeout(function () { btn.textContent = '⧉ コピー'; }, 2000);
+    });
     return;
   }
 
