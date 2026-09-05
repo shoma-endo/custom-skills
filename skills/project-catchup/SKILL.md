@@ -23,7 +23,8 @@ allowed-tools:
 | 層 | ファイル | 役割 |
 |----|---------|------|
 | 意味（正本） | `docs/PROJECT_OVERVIEW.md` | grep・diff・AI読み込み用の構造化された事実。**次回更新はこれだけ読めばよい** |
-| 見せ方（ビュー） | `docs/project-overview.html` | 左サイドバー＋メインの6セクション（復帰・意図・人・設計・運用・穴）ダッシュボード型ペライチHTML。責務ごとに読み口を分け、初見の認知負荷を下げる。**MDから再生成可能な使い捨て** |
+| 見せ方（ビュー） | `docs/project-overview.html` | 左サイドバー＋メインの6セクション（復帰・意図・人・設計・運用・穴）ダッシュボード型ペライチHTML。責務ごとに読み口を分け、初見の認知負荷を下げる。**MDから再生成可能な使い捨て**。メインPCではこれを `open` する |
+| 見せ方（Artifact） | `docs/project-overview.artifact.html` | 上と同じ内容の **claude.ai Artifact 用派生**。doctype / html / head / body を持たず、`<title>` + `<style>` + 本文 + `<script>` だけ。スマホ／クラウドから見るときに Artifact として publish する（`spec-to-html` の `<slug>.artifact.html` と同じ約束） |
 
 読者は「数週間ぶりに戻ってきた自分」。ゴールは網羅ではなく**30分で開発再開できる**こと。技術スタックの列挙ではなく、リポジトリから読み取れる**背景・目的・関係者・作成者・気づいていないボトルネックや穴**まで掴ませる。
 
@@ -358,6 +359,38 @@ grep -c 'data-tab-panel=' docs/project-overview.html
 - **6件**ならOK（resume / intent / people / design / ops / gaps の各パネルが1つずつ）
 - 6件以外ならテンプレ構造を崩している。`templates/overview.html` を再読して、プレースホルダの中身だけを差し替え直す
 
+### Artifact 版の同時生成 `docs/project-overview.artifact.html`
+
+claude.ai の Artifact は publish 時に `<!doctype html>…<head></head><body>` を被せる。完結 HTML（`docs/project-overview.html`）をそのまま渡すと文書が二重になるため、**同じ内容から Artifact 版を必ず同時に書く**（`spec-to-html` / `scripts/spec-html.py` と同じ約束）。
+
+手順（完結 HTML の Write と自己完結性・プレースホルダ・セクション整合チェックの**あと**）:
+
+1. `docs/project-overview.html` を Read する
+2. 次だけを残した派生を組み立て、`docs/project-overview.artifact.html` に Write する:
+   - `<title>…</title>`（完結 HTML の `<title>` と同じ文言）
+   - `<style>…</style>`（`<head>` 内のスタイルブロックをそのまま）
+   - 本文（完結 HTML の `<body>…</body>` の**中身だけ**。サイドバー・メイン・ライトボックス・インライン SVG・末尾の `<script>…</script>` を含む）
+3. Artifact 版に次のタグが**1つも残っていない**ことを確認する（残っていたら変換ミス）:
+
+```bash
+grep -niE '<!doctype|<html|</html>|<head>|</head>|<body|</body>' docs/project-overview.artifact.html
+```
+
+- ノーヒット（exit 1）ならOK
+- ヒットしたら組み立て直す。`<html>` や `<body>` を残したまま publish しない
+
+4. 自己完結性チェックを Artifact 版にも同じ正規表現で再実行する（両方ノーヒットになるまで）:
+
+```bash
+grep -nE '<script[^>]*\ssrc=|<link[^>]*stylesheet|@import|<img[^>]*src=.{0,3}(https?:|//)|fetch\(|XMLHttpRequest|WebSocket|cdn\.|googleapis\.com|jsdelivr|unpkg\.com' docs/project-overview.artifact.html
+```
+
+5. プレースホルダ残存・セクション整合も Artifact 版で確認する（`{{` が0件、`data-tab-panel=` が6件）
+
+**閲覧の使い分け**:
+- メインPC: `open docs/project-overview.html`（完結 HTML）
+- スマホ／クラウド: `docs/project-overview.artifact.html` を Claude Artifact として publish（デフォルト非公開）。概要を更新して再生成したら、**同じファイルパスで再 publish**すれば同じ URL が更新される（新しい URL にはならない）
+
 ## Step 5: 台帳への反映（存在する場合のみ）
 
 `~/dev/projects.yaml` が存在すれば、該当プロジェクトのエントリ（説明・スタック・状態・overview パス）を更新する。無ければスキップ。
@@ -367,19 +400,20 @@ grep -c 'data-tab-panel=' docs/project-overview.html
 報告も視覚化ファーストの縮図にする — 判断材料を先頭に、作業ログは後ろに:
 
 - **冒頭に「次の一手」を1行ずつ**（読者が報告だけ読んでも動き出せるように）
-- 生成した2ファイルのパス、`open docs/project-overview.html` の案内（穴へ直接: `open docs/project-overview.html#gaps` のように hash で開けることも添える）
+- 生成した3ファイルのパス（`docs/PROJECT_OVERVIEW.md` / `docs/project-overview.html` / `docs/project-overview.artifact.html`）、`open docs/project-overview.html` の案内（穴へ直接: `open docs/project-overview.html#gaps` のように hash で開けることも添える）。スマホ／クラウド閲覧時は Artifact 版を publish する旨も1行添える
 - 前回キャッチアップ比（コミット数・変更ファイル数。初回・比較不能の場合はその旨）
 - 穴・発見事項のうち sev-critical と役割の穴の一覧（人・穴の要点。読者が報告だけで危険箇所を知れるように）
 - TBD として残した項目の一覧（ユーザーが埋めるべき箇所）
 - ドキュメントとコードの矛盾を見つけた場合はその一覧
-- 自己完結性チェックの結果（OK、またはヒットして対処した内容）
+- 自己完結性チェックの結果（完結 HTML と Artifact 版の両方。OK、またはヒットして対処した内容）
+- Artifact 版のシェル禁止タグチェックの結果（`<!doctype` / `<html` / `<head>` / `<body` が残っていないか）
 - 再開手順の逐語性チェックの結果（MD/HTMLの番号コメント件数が一致したか）
-- プレースホルダ残存チェックの結果（0件になったか）
-- セクション整合チェックの結果（`data-tab-panel=` が6件か）
+- プレースホルダ残存チェックの結果（完結 HTML と Artifact 版の両方で0件になったか）
+- セクション整合チェックの結果（両方で `data-tab-panel=` が6件か）
 - er図を生成した場合はカーディナリティマーカーチェックの結果
 
 ## 安全ルール
 
-- 書き込みは `docs/PROJECT_OVERVIEW.md`・`docs/project-overview.html`・`~/dev/projects.yaml` のみ。コードは変更しない
+- 書き込みは `docs/PROJECT_OVERVIEW.md`・`docs/project-overview.html`・`docs/project-overview.artifact.html`・`~/dev/projects.yaml` のみ。コードは変更しない
 - `.env*`（sample以外）・credentials・秘密鍵は読まない。収集した内容に秘密情報らしき文字列があれば記載せず警告する
 - コミットはしない（ユーザーの指示があれば行う）
