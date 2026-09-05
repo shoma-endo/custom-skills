@@ -17,9 +17,10 @@
     --teal-deep:#166b64;
     --line:#d8ddd3;
     --critical:#b23a2e;
-    --warning:#c1752a;
+    --warning:#c1752a;       /* 面・帯・バー用の amber */
+    --warning-ink:#8f5219;   /* 文字用の amber（小サイズで AA を満たす暗さ） */
     --good:#3f8f63;
-    --neutral:#6b7686;
+    --neutral:#5b6675;       /* 小文字グレー。paper 上で 5:1 以上 */
     --neutral-bg:#e7e9e3;
     --shadow: 0 1px 2px rgba(20,32,46,.06), 0 6px 20px rgba(20,32,46,.05);
   }
@@ -34,15 +35,23 @@
   .serif{ font-family:"Hiragino Mincho ProN","Yu Mincho",ui-serif,Georgia,serif; }
   .mono{ font-family:ui-monospace,"SF Mono",Menlo,monospace; font-variant-numeric:tabular-nums; }
 
-  /* ambient scroll progress — passive indicator, not a tab/nav control */
+  /* 状態変化に息をつける（reduced-motion では無効） */
+  .tab, .stat-tile, .expand-btn, .discovery, .next-item, .chip, .gap-list li{
+    transition: background-color .15s, border-color .15s, color .15s, box-shadow .15s, transform .15s;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .tab, .stat-tile, .expand-btn, .discovery, .next-item, .chip, .gap-list li{ transition:none }
+  }
+
+  /* ambient scroll progress — 現在タブ内の読了位置。タブ切替はこれではなく .tabbar が担う */
   #scrollbar{ position:fixed; top:0; left:0; height:3px; width:100%; background:transparent; z-index:50; }
   #scrollbar-fill{ height:100%; width:0%; background:var(--teal); transition:width .1s linear; }
   @media (prefers-reduced-motion: reduce){ #scrollbar-fill{ transition:none } }
 
-  .col{ max-width:840px; margin:0 auto; padding:0 32px; }
-  .wide{ max-width:1440px; margin:0 auto; padding:0 40px; }
+  /* 1本の読み幅。ヒーロー・タブバー・全パネル・リンクが同じ左端に揃う（整列） */
+  .col{ max-width:960px; margin:0 auto; padding:0 32px; }
 
-  /* Hero */
+  /* Hero — タブ外（常時表示） */
   header.hero{
     background:var(--navy); color:var(--navy-ink);
     padding:64px 0 48px; position:relative; overflow:hidden;
@@ -60,54 +69,102 @@
     color:var(--teal); font-weight:600; margin:0 0 10px;
   }
   header.hero .eyebrow{ color:#7fd3cc; }
-  h1.title{ font-size:2.35rem; margin:0 0 14px; text-wrap:balance; font-weight:600; }
-  .tagline{ font-size:1.05rem; color:#c7d1de; max-width:56ch; margin:0 0 28px; }
+  h1.title{ font-size:2.35rem; margin:0 0 14px; text-wrap:balance; font-weight:600; letter-spacing:.01em; }
+  .tagline{ font-size:1.05rem; color:#c7d1de; max-width:40em; margin:0 0 28px; }
   .stamp{
     display:inline-flex; gap:10px; align-items:center;
     border:1px solid rgba(255,255,255,.35); border-radius:3px;
     padding:7px 14px; font-size:.78rem; color:#dfe6ee;
-    transform:rotate(-1.2deg); background:rgba(255,255,255,.04);
+    background:rgba(255,255,255,.04);
   }
   .stamp b{ color:#fff; font-weight:600; }
   .age-warn{
     display:inline-block; margin-left:10px; font-size:.72rem; font-weight:600;
-    background:#f5e7d6; color:var(--warning); border-radius:99px; padding:3px 10px;
+    background:#f5e7d6; color:var(--warning-ink); border-radius:99px; padding:3px 10px;
     vertical-align:middle;
   }
 
-  /* Status board — 現場到着時に最初に見る数字。各タイルは該当セクションへのアンカー */
-  .statboard{ display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+  /* Status board — タブ外（常時表示）。現場到着時に最初に見る数字。grid なので4〜6枚が1段で等幅に揃う。
+     各タイルは該当ブロックへのアンカー（別タブ内でもJSがタブを切り替えて飛ぶ） */
+  .statboard{ display:grid; grid-template-columns:repeat(auto-fit, minmax(136px, 1fr)); gap:12px; margin-top:28px; }
   .stat-tile{
-    flex:1 1 150px; min-width:150px; max-width:230px; display:block;
+    display:block;
     background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.22);
     border-top:3px solid rgba(255,255,255,.35); border-radius:5px;
     padding:12px 16px 10px; text-decoration:none; color:var(--navy-ink);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
   }
-  a.stat-tile:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.55); }
+  a.stat-tile:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.55); transform:translateY(-1px); }
   .stat-tile .num{ display:block; font-size:1.85rem; font-weight:700; line-height:1.25; color:#fff; }
   .stat-tile .cap{ display:block; font-size:.74rem; color:#c7d1de; letter-spacing:.04em; margin-top:2px; }
-  a.stat-tile .cap::after{ content:" ↓"; color:#7fd3cc; }
-  .stat-tile.ok{ border-top-color:var(--teal); }
+  a.stat-tile .cap::after{ content:" ↓"; color:#9cc3ff; }
+  /* 意味色: 緑=健全 / amber=注意 / 赤=要対処（--teal は使わない。健全色を1つに） */
+  .stat-tile.ok{ border-top-color:var(--good); }
   .stat-tile.warn{ border-top-color:var(--warning); }
   .stat-tile.crit{ border-top-color:var(--critical); }
-  section{ scroll-margin-top:10px; }
 
-  /* Since-last card — 前回キャッチアップ（MD frontmatter の commit）からの変化 */
-  .since-card{ border-left:4px solid var(--navy); padding:20px 24px; }
+  /* Tab bar — 6タブ（復帰・意図・人・設計・運用・穴）。責務ごとに読み口を分ける。sticky で常に手元に置く。
+     タブはラベル幅（均等伸ばししない）。狭幅では横スクロールし、続きがある側を JS が .more-right で示す */
+  .tabbar{
+    position:sticky; top:0; z-index:40; background:var(--paper);
+    border-bottom:1px solid var(--line);
+    box-shadow: 0 8px 24px -16px rgba(20,32,46,.25);
+  }
+  .tabbar-inner{ display:flex; align-items:flex-end; gap:8px; overflow-x:auto; scrollbar-width:none; scroll-snap-type:x proximity; }
+  .tabbar-inner::-webkit-scrollbar{ display:none; }
+  .tabbar-inner.more-right{
+    -webkit-mask-image:linear-gradient(90deg, #000 82%, transparent);
+            mask-image:linear-gradient(90deg, #000 82%, transparent);
+  }
+  .tab{
+    flex:0 0 auto; scroll-snap-align:start;
+    display:inline-flex; align-items:center; gap:7px;
+    padding:13px 18px 11px; margin-bottom:-1px;
+    border:0; border-bottom:3px solid transparent; background:transparent;
+    color:var(--ink-soft); font-family:inherit; font-size:.95rem; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .tab .icon{ width:16px; height:16px; color:var(--teal); }
+  .tab:hover{ color:var(--ink); background:rgba(20,32,46,.03); }
+  .tab[aria-selected="true"]{
+    color:var(--ink); border-bottom-color:var(--teal); background:var(--card);
+    box-shadow: 0 1px 0 var(--card);   /* タブバーの下線を隠し、下のパネルへ“つながる” */
+  }
+  .tab:focus-visible{ outline:2px solid var(--teal); outline-offset:-2px; }
+  /* 穴タブだけは意味論上「要対処」の入口なので、アイコンと選択インジケータを amber にする（色は意味にのみ使う） */
+  .tab[data-tab="gaps"] .icon{ color:var(--warning); }
+  .tab[data-tab="gaps"][aria-selected="true"]{ border-bottom-color:var(--warning); }
+  /* アクティブタブの責務1行。タブ内の説明とパネル冒頭の説明をここ1箇所に統合（説明の三重化を避ける） */
+  .tab-hint{ margin:0; padding:8px 0 10px; font-size:.82rem; color:var(--ink-soft); min-height:1.6em; }
+  .tab-hint b{ color:var(--ink); font-weight:600; margin-right:.5em; }
+
+  /* Panels — 1タブ＝1 <section data-tab-panel>。JS が hidden を付け外しする。JS無効・印刷時は全タブが縦に並ぶ */
+  .panel{ padding:0 0 24px; }
+  .block{ padding:32px 0; scroll-margin-top:96px; }
+  .block + .block{ border-top:1px solid var(--line); }
+  @media print{
+    .tabbar, #scrollbar{ display:none !important; }
+    .panel[hidden]{ display:block !important; }
+    .panel{ break-before:page; }
+    .panel:first-of-type{ break-before:auto; }
+  }
+
+  /* Since-last card — 前回キャッチアップ（MD frontmatter の commit）からの変化。左帯は意味色を持たないので付けない */
+  .since-card{ padding:20px 24px; }
   .delta-row{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 10px; }
   .delta{ font-size:.82rem; padding:3px 11px; border-radius:3px; border:1px solid var(--line); background:var(--paper); }
   .delta b{ color:var(--teal-deep); font-weight:700; }
   .since-note{ color:var(--ink-soft); font-size:.9rem; margin:0; }
 
-  /* Section rhythm */
-  section{ padding:32px 0; }
-  section + section{ border-top:1px solid var(--line); }
-  .section-head{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  /* Section heads */
+  .section-head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
   .section-head .icon{ color:var(--teal); flex:none; }
   h2{
-    font-size:1.5rem; margin:0; font-weight:600; text-wrap:balance;
+    font-size:1.5rem; margin:0; font-weight:600; text-wrap:balance; letter-spacing:.01em;
   }
-  .section-sub{ color:var(--ink-soft); font-size:.95rem; margin:6px 0 24px; max-width:60ch; }
+  h3{ font-size:1.05rem; margin:22px 0 6px; font-weight:600; color:var(--ink); }
+  h3:first-child{ margin-top:0; }
+  /* .section-sub は凡例（色・記号・並び順の意味）だけに使う。節の要約や生成側への指示は書かない */
+  .section-sub{ color:var(--ink-soft); font-size:.9rem; margin:0 0 20px; max-width:44em; }
 
   /* Key fact emphasis — the one thing in a paragraph the reader must not miss */
   .key{ color:var(--blue); font-weight:700; font-size:1.12em; }
@@ -116,7 +173,8 @@
 
   /* Cards */
   .card{ background:var(--card); border:1px solid var(--line); border-radius:6px; box-shadow:var(--shadow); }
-  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:36px; }
+  @media (max-width:900px){ .grid2{ grid-template-columns:1fr; gap:28px; } }
 
   /* Resume card */
   .resume-card{ border-left:4px solid var(--teal); padding:22px 26px; }
@@ -132,7 +190,7 @@
   .next-item{ display:flex; gap:14px; align-items:baseline; padding:11px 14px; background:var(--neutral-bg); border-radius:6px; margin:8px 0; }
   .next-item .n{ flex:0 0 26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-size:.85rem; }
   .next-item .act{ font-weight:600; }
-  .next-item .why{ display:block; color:var(--neutral); font-size:.85rem; margin-top:2px; font-weight:400; }
+  .next-item .why{ display:block; color:var(--ink-soft); font-size:.85rem; margin-top:2px; font-weight:400; }
 
   /* People */
   .person{ display:flex; gap:14px; align-items:flex-start; padding:14px 0; }
@@ -151,6 +209,15 @@
     display:inline-block; font-size:.72rem; padding:2px 9px; border-radius:99px;
     background:var(--neutral-bg); color:var(--neutral); font-weight:600; white-space:nowrap;
   }
+  /* 役割の穴 — 欠員・単一人依存・不在レビュアー等。amber＝人待ち／注意 */
+  .gap-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .gap-list li{
+    display:flex; gap:12px; align-items:flex-start; padding:12px 16px;
+    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--warning); border-radius:0 6px 6px 0;
+  }
+  .gap-list .icon{ color:var(--warning); flex:none; margin-top:3px; }
+  .gap-list .role{ font-weight:600; }
+  .gap-list .why{ display:block; color:var(--ink-soft); font-size:.85rem; margin-top:2px; }
 
   /* Diagram sheets */
   .sheet{ background:var(--card); border:1px solid var(--line); border-radius:6px; margin-bottom:20px; }
@@ -172,7 +239,7 @@
   .sheet-src{ padding:10px 22px 16px; color:var(--ink-soft); font-size:.78rem; border-top:1px dashed var(--line); }
   .sheet-omitted{ padding:20px 22px; color:var(--ink-soft); font-style:italic; }
 
-  /* Diagram lightbox — click-to-zoom for full detail */
+  /* Diagram lightbox — click-to-zoom for full detail. 幅はビューポートに収め、小さい図は JS が 2 倍までに留める */
   .lightbox{
     display:none; position:fixed; inset:0; background:rgba(20,32,46,.85); z-index:200;
     align-items:center; justify-content:center; padding:36px;
@@ -182,7 +249,7 @@
     background:var(--card); border-radius:8px; padding:28px; max-width:96vw; max-height:92vh;
     overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.4); position:relative;
   }
-  .lightbox-inner svg{ display:block; width:1400px; max-width:none; height:auto; }
+  .lightbox-inner svg{ display:block; width:min(1400px, 92vw); max-width:none; height:auto; }
   .lightbox-close{
     position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
     border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer;
@@ -191,7 +258,7 @@
   .lightbox-close:hover{ color:var(--critical); border-color:var(--critical); }
   .lightbox-hint{ text-align:center; color:var(--ink-soft); font-size:.78rem; margin-top:10px; }
 
-  /* Process / stack */
+  /* Process / stack（運用タブ） */
   .process-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
   .process-list li{ display:flex; gap:12px; align-items:flex-start; }
   .process-list .icon{ margin-top:2px; color:var(--navy); }
@@ -203,7 +270,7 @@
   .chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--teal); flex:none; }
   .chip .ver{ color:var(--ink-soft); }
 
-  /* Timeline */
+  /* Timeline（穴タブ・直近の状態とやりかけ） */
   .timeline{ position:relative; padding-left:24px; }
   .timeline::before{ content:""; position:absolute; left:5px; top:4px; bottom:4px; width:1px; background:var(--line); }
   .tl-item{ position:relative; padding-bottom:20px; }
@@ -216,30 +283,35 @@
   .tl-date{ font-size:.78rem; color:var(--ink-soft); }
   .tl-msg{ margin-top:2px; }
 
-  /* Discovery cards */
+  /* Discovery cards（穴タブ・穴・発見事項） */
+  .gap-legend{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px; }
+  .gap-legend .kind-pill{ margin:0; }
   .discovery{ border-left:4px solid var(--neutral); background:var(--card); border-radius:0 6px 6px 0; padding:14px 18px; margin-bottom:12px; border-top:1px solid var(--line); border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
   .discovery.sev-critical{ border-left-color:var(--critical); }
   .discovery.sev-warning{ border-left-color:var(--warning); }
   .discovery.sev-good{ border-left-color:var(--good); }
   .sev-pill{ font-size:.7rem; font-weight:700; letter-spacing:.03em; padding:2px 8px; border-radius:99px; margin-right:8px; }
   .sev-pill.sev-critical{ background:#f4e2df; color:var(--critical); }
-  .sev-pill.sev-warning{ background:#f5e7d6; color:var(--warning); }
+  .sev-pill.sev-warning{ background:#f5e7d6; color:var(--warning-ink); }
   .sev-pill.sev-good{ background:#dff0e6; color:var(--good); }
   .sev-pill.sev-neutral{ background:var(--neutral-bg); color:var(--neutral); }
+  /* 穴の種類（ボトルネック／矛盾／TBD／未配線／デッドパス）。深刻度ではなく分類なので色は付けない */
+  .kind-pill{ font-size:.7rem; font-weight:600; padding:2px 8px; border-radius:3px; margin-right:8px; border:1px solid var(--line); color:var(--ink-soft); background:var(--paper); }
   .discovery .evidence{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
 
-  /* Links */
+  /* Links — タブ外（常時表示・末尾）。リンクは青（意味色: 青=次の一手・強調・リンク） */
   .link-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
   .link-list li{ display:flex; gap:10px; align-items:flex-start; }
-  .link-list .icon{ color:var(--teal); margin-top:2px; }
-  a{ color:var(--teal-deep); text-decoration-color:rgba(31,138,130,.35); text-underline-offset:3px; }
-  a:hover{ text-decoration-color:var(--teal-deep); }
+  .link-list .icon{ color:var(--blue); margin-top:2px; }
+  #links{ border-top:1px solid var(--line); padding:32px 0; }
+  a{ color:var(--blue); text-decoration-color:rgba(33,88,166,.35); text-underline-offset:3px; }
+  a:hover{ text-decoration-color:var(--blue); }
   a:focus-visible, button:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
 
   table{ border-collapse:collapse; width:100%; font-size:.88rem; }
   th,td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
   th{ background:var(--paper); font-weight:600; }
-  .tbd{ color:var(--warning); font-weight:600; }
+  .tbd{ color:var(--warning-ink); font-weight:600; }
 
   footer{ text-align:center; padding:36px 24px 56px; color:var(--ink-soft); font-size:.82rem; }
   footer code{ background:var(--neutral-bg); padding:1px 6px; border-radius:3px; }
@@ -258,10 +330,13 @@
   <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5L21.5 20h-19z"/><path d="M12 9.5v5"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><path d="M9 15l6-6"/><path d="M11 6l1-1a4 4 0 015.7 5.7l-1.4 1.4"/><path d="M13 18l-1 1a4 4 0 01-5.7-5.7l1.4-1.4"/></symbol>
   <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3"/><path d="M12 15h5"/></symbol>
 </svg>
 
 <div id="scrollbar"><div id="scrollbar-fill"></div></div>
 
+<!-- ===== タブ外（常時表示）: ヒーロー＋状況ボード ===== -->
 <header class="hero">
   <div class="col hero-inner">
     <p class="eyebrow">案件キャッチアップ・レポート</p>
@@ -272,130 +347,173 @@
   </div>
 </header>
 
-<section id="since-last">
+<!-- ===== タブバー: 6タブ固定（勝手に減らさない）。data-tab はパネルの id と一致。data-desc はタブバー下のヒント1行に出る ===== -->
+<nav class="tabbar" aria-label="レポートのタブ">
   <div class="col">
-    <div class="card since-card">
-      <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">前回キャッチアップからの変化</h2></div>
-      <div style="margin-top:12px">{{SINCE_LAST_HTML}}</div>
+    <div class="tabbar-inner" role="tablist" id="tablist">
+      <button class="tab" role="tab" type="button" id="tab-resume" data-tab="resume" aria-controls="resume" aria-selected="true" tabindex="0" data-desc="30秒サマリー・前回からの変化・再開手順・次の一手。ここだけ読めば作業は始められる"><svg class="icon"><use href="#i-compass"/></svg>復帰</button>
+      <button class="tab" role="tab" type="button" id="tab-intent" data-tab="intent" aria-controls="intent" aria-selected="false" tabindex="-1" data-desc="なぜこのリポジトリがあるのか。背景・目的・誰のための何か（README・docs・コミット本文から）"><svg class="icon"><use href="#i-target"/></svg>意図</button>
+      <button class="tab" role="tab" type="button" id="tab-people" data-tab="people" aria-controls="people" aria-selected="false" tabindex="-1" data-desc="誰が作り、誰が関わり、どの役割が埋まっていないか。判断を仰ぐ相手を探す"><svg class="icon"><use href="#i-people"/></svg>人</button>
+      <button class="tab" role="tab" type="button" id="tab-design" data-tab="design" aria-controls="design" aria-selected="false" tabindex="-1" data-desc="システムの形。構造・依存関係 → 主要インターフェース → データ関係。図面はクリックで拡大"><svg class="icon"><use href="#i-layers"/></svg>設計</button>
+      <button class="tab" role="tab" type="button" id="tab-ops" data-tab="ops" aria-controls="ops" aria-selected="false" tabindex="-1" data-desc="コードがどう世に出て、どう回っているか。ブランチ運用・CI/CD・デプロイ先・定期ジョブと技術スタック"><svg class="icon"><use href="#i-branch"/></svg>運用</button>
+      <button class="tab" role="tab" type="button" id="tab-gaps" data-tab="gaps" aria-controls="gaps" aria-selected="false" tabindex="-1" data-desc="まだ気づいていないかもしれない箇所。やりかけ・ボトルネック・docs↔コードの矛盾・TBD・未配線"><svg class="icon"><use href="#i-warn"/></svg>穴</button>
     </div>
+    <p class="tab-hint" id="tab-hint" aria-live="polite"><b>復帰</b>30秒サマリー・前回からの変化・再開手順・次の一手。ここだけ読めば作業は始められる</p>
   </div>
-</section>
+</nav>
 
-<section id="summary">
+<!-- ===== 復帰タブ（MD 1〜4節） ===== -->
+<section class="panel" id="resume" role="tabpanel" aria-labelledby="tab-resume" data-tab-panel="resume">
   <div class="col">
-    <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">30秒サマリー</h2></div>
-    <div style="margin-top:14px">{{SUMMARY_HTML}}</div>
+    <div class="block" id="summary">
+      <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">30秒サマリー</h2></div>
+      <div>{{SUMMARY_HTML}}</div>
+    </div>
+
+    <div class="block" id="since-last">
+      <div class="card since-card">
+        <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">前回キャッチアップからの変化</h2></div>
+        <div>{{SINCE_LAST_HTML}}</div>
+      </div>
+    </div>
+
+    <div class="block" id="resume-steps">
+      <div class="card resume-card">
+        <div class="section-head"><svg class="icon"><use href="#i-terminal"/></svg><h2 class="serif">再開手順</h2></div>
+        <div style="margin-top:10px">{{RESUME_HTML}}</div>
+      </div>
+    </div>
+
+    <div class="block" id="next">
+      <div class="card next-card">
+        <div class="section-head"><svg class="icon" style="color:var(--blue)"><use href="#i-target"/></svg><h2 class="serif">次の一手</h2></div>
+        <p class="section-sub">推定。着手するかの判断は読者が行う。</p>
+        <div>{{NEXT_HTML}}</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section id="resume">
+<!-- ===== 意図タブ（MD 5節） ===== -->
+<section class="panel" id="intent" role="tabpanel" aria-labelledby="tab-intent" data-tab-panel="intent" hidden>
   <div class="col">
-    <div class="card resume-card">
-      <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">再開手順</h2></div>
-      <div style="margin-top:18px">{{RESUME_HTML}}</div>
+    <div class="block" id="intent-body">
+      <div class="section-head"><svg class="icon"><use href="#i-target"/></svg><h2 class="serif">背景・目的・対象読者</h2></div>
+      <div>{{INTENT_HTML}}</div>
     </div>
   </div>
 </section>
 
-<section id="next">
+<!-- ===== 人タブ（MD 6節） ===== -->
+<section class="panel" id="people" role="tabpanel" aria-labelledby="tab-people" data-tab-panel="people" hidden>
   <div class="col">
-    <div class="card next-card">
-      <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">次の一手</h2></div>
-      <p class="section-sub">事実から導いた再開後の推奨アクション（推定）。着手するかの判断は読者が行う。</p>
-      <div style="margin-top:12px">{{NEXT_HTML}}</div>
-    </div>
-  </div>
-</section>
-
-<section id="overview">
-  <div class="wide">
-    <div class="grid2">
-      <div>
-        <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">案件の概要</h2></div>
-        <div style="margin-top:14px">{{OVERVIEW_HTML}}</div>
-      </div>
-      <div>
-        <div class="section-head"><svg class="icon"><use href="#i-people"/></svg><h2 class="serif">登場人物</h2></div>
-        <div style="margin-top:14px">{{PEOPLE_HTML}}</div>
+    <div class="block" id="people-body">
+      <div class="grid2">
+        <div>
+          <div class="section-head"><svg class="icon"><use href="#i-people"/></svg><h2 class="serif">作成者・関係者</h2></div>
+          <p class="section-sub">バー＝コミット数の比率。役割不明は TBD。</p>
+          <div>{{PEOPLE_HTML}}</div>
+        </div>
+        <div>
+          <div class="section-head"><svg class="icon" style="color:var(--warning)"><use href="#i-warn"/></svg><h2 class="serif">役割の穴</h2></div>
+          <p class="section-sub">amber＝人の面で詰まりうる箇所（推定）。</p>
+          <div>{{ROLE_GAPS_HTML}}</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="diagrams">
-  <div class="wide">
-    <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">構成図</h2></div>
-    <p class="section-sub">構造・依存関係 → 主要インターフェース → データ関係の順で、システムの理解を段階的に深める。</p>
-
-    <div class="sheet">
-      <div class="sheet-head">
-        <span class="sheet-num mono">DWG-01</span>
-        <svg class="icon" style="color:var(--ink-soft)"><use href="#i-layers"/></svg>
-        <span class="sheet-title">構造・依存関係</span>
-        <button class="expand-btn" type="button" data-zoom-target="dwg-01"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
-      </div>
-      <div class="sheet-body" id="dwg-01">{{DIAGRAM_STRUCTURE_SVG}}</div>
-      <div class="sheet-src mono">{{DIAGRAM_STRUCTURE_SRC}}</div>
-    </div>
-
-    <div class="sheet">
-      <div class="sheet-head">
-        <span class="sheet-num mono">DWG-02</span>
-        <svg class="icon" style="color:var(--ink-soft)"><use href="#i-plug"/></svg>
-        <span class="sheet-title">主要インターフェース</span>
-        <button class="expand-btn" type="button" data-zoom-target="dwg-02"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
-      </div>
-      <div class="sheet-body" id="dwg-02">{{DIAGRAM_INTERFACE_SVG}}</div>
-      <div class="sheet-src mono">{{DIAGRAM_INTERFACE_SRC}}</div>
-    </div>
-
-    <div class="sheet">
-      <div class="sheet-head">
-        <span class="sheet-num mono">DWG-03</span>
-        <svg class="icon" style="color:var(--ink-soft)"><use href="#i-db"/></svg>
-        <span class="sheet-title">データ関係</span>
-        <button class="expand-btn" type="button" data-zoom-target="dwg-03"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
-      </div>
-      <div class="sheet-body" id="dwg-03">{{DIAGRAM_ERD_SVG}}</div>
-      <div class="sheet-src mono">{{DIAGRAM_ERD_SRC}}</div>
-    </div>
-  </div>
-</section>
-
-<section id="process">
-  <div class="wide">
-    <div class="grid2">
-      <div>
-        <div class="section-head"><svg class="icon"><use href="#i-branch"/></svg><h2 class="serif">開発・運用プロセス</h2></div>
-        <div style="margin-top:14px">{{PROCESS_HTML}}</div>
-      </div>
-      <div>
-        <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">技術スタック</h2></div>
-        <div class="chip-tray" style="margin-top:14px">{{STACK_HTML}}</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="recent">
+<!-- ===== 設計タブ（MD 7節） ===== -->
+<section class="panel" id="design" role="tabpanel" aria-labelledby="tab-design" data-tab-panel="design" hidden>
   <div class="col">
-    <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">直近の状態とやりかけ</h2></div>
-    <div class="timeline" style="margin-top:18px">{{RECENT_HTML}}</div>
+    <div class="block" id="diagrams">
+      <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">構成図</h2></div>
 
-    <div class="section-head" style="margin-top:36px"><svg class="icon"><use href="#i-warn"/></svg><h2 class="serif">発見事項</h2></div>
-    <div style="margin-top:14px">{{DISCOVERY_HTML}}</div>
+      <div class="sheet">
+        <div class="sheet-head">
+          <span class="sheet-num mono">DWG-01</span>
+          <svg class="icon" style="color:var(--ink-soft)"><use href="#i-layers"/></svg>
+          <span class="sheet-title">構造・依存関係</span>
+          <button class="expand-btn" type="button" data-zoom-target="dwg-01"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+        </div>
+        <div class="sheet-body" id="dwg-01">{{DIAGRAM_STRUCTURE_SVG}}</div>
+        <div class="sheet-src mono">{{DIAGRAM_STRUCTURE_SRC}}</div>
+      </div>
+
+      <div class="sheet">
+        <div class="sheet-head">
+          <span class="sheet-num mono">DWG-02</span>
+          <svg class="icon" style="color:var(--ink-soft)"><use href="#i-plug"/></svg>
+          <span class="sheet-title">主要インターフェース</span>
+          <button class="expand-btn" type="button" data-zoom-target="dwg-02"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+        </div>
+        <div class="sheet-body" id="dwg-02">{{DIAGRAM_INTERFACE_SVG}}</div>
+        <div class="sheet-src mono">{{DIAGRAM_INTERFACE_SRC}}</div>
+      </div>
+
+      <div class="sheet">
+        <div class="sheet-head">
+          <span class="sheet-num mono">DWG-03</span>
+          <svg class="icon" style="color:var(--ink-soft)"><use href="#i-db"/></svg>
+          <span class="sheet-title">データ関係</span>
+          <button class="expand-btn" type="button" data-zoom-target="dwg-03"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+        </div>
+        <div class="sheet-body" id="dwg-03">{{DIAGRAM_ERD_SVG}}</div>
+        <div class="sheet-src mono">{{DIAGRAM_ERD_SRC}}</div>
+      </div>
+    </div>
   </div>
 </section>
 
+<!-- ===== 運用タブ（MD 8節） ===== -->
+<section class="panel" id="ops" role="tabpanel" aria-labelledby="tab-ops" data-tab-panel="ops" hidden>
+  <div class="col">
+    <div class="block" id="process">
+      <div class="grid2">
+        <div>
+          <div class="section-head"><svg class="icon"><use href="#i-branch"/></svg><h2 class="serif">開発・運用プロセス</h2></div>
+          <div>{{PROCESS_HTML}}</div>
+        </div>
+        <div>
+          <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">技術スタック</h2></div>
+          <div class="chip-tray" style="margin-top:6px">{{STACK_HTML}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 穴タブ（MD 9〜10節） ===== -->
+<section class="panel" id="gaps" role="tabpanel" aria-labelledby="tab-gaps" data-tab-panel="gaps" hidden>
+  <div class="col">
+    <div class="block" id="recent">
+      <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">直近の状態とやりかけ</h2></div>
+      <p class="section-sub">新しい順。amber＝未コミット変更・WIP（推定）。</p>
+      <div class="timeline">{{RECENT_HTML}}</div>
+    </div>
+
+    <div class="block" id="discovery">
+      <div class="section-head"><svg class="icon" style="color:var(--warning)"><use href="#i-warn"/></svg><h2 class="serif">穴・発見事項</h2></div>
+      <p class="section-sub">左帯＝深刻度（赤=要対処 / amber=注意 / 緑=解消済み / 灰=中立）。角ラベル＝穴の種類。</p>
+      <div class="gap-legend" aria-label="穴の種類">
+        <span class="kind-pill">ボトルネック</span><span class="kind-pill">矛盾</span><span class="kind-pill">TBD</span><span class="kind-pill">未配線</span><span class="kind-pill">デッドパス</span>
+      </div>
+      <div>{{DISCOVERY_HTML}}</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== タブ外（常時表示）: 関連リンク（MD 11節） ===== -->
 <section id="links">
   <div class="col">
-    <div class="section-head"><svg class="icon"><use href="#i-link"/></svg><h2 class="serif">関連リンク</h2></div>
-    <ul class="link-list" style="margin-top:14px">{{LINKS_HTML}}</ul>
+    <div class="section-head"><svg class="icon" style="color:var(--blue)"><use href="#i-link"/></svg><h2 class="serif">関連リンク</h2></div>
+    <ul class="link-list" style="margin-top:10px">{{LINKS_HTML}}</ul>
   </div>
 </section>
 
 <footer>
-  生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>
+  生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>。タブは URL の <code>#タブID</code>（resume / intent / people / design / ops / gaps）で直接開ける
 </footer>
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -405,6 +523,106 @@
 </div>
 
 <script>
+  // Tabs — 素のJS・外部依存なし。6タブの表示切替、キーボード操作（←→ Home End）、URL hash での復元。
+  // hash は「タブID（#gaps）」でも「タブ内ブロックのID（#recent, #since-last, #discovery）」でもよく、
+  // 後者なら含まれるタブを開いてからそのブロックへスクロールする（状況ボードのタイルはこれで別タブへ飛ぶ）。
+  // JSが動かない環境では hidden を外す処理も走らないため全タブが縦に並ぶ（劣化しても読める）。
+  (function(){
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab[role="tab"]'));
+    var panels = Array.prototype.slice.call(document.querySelectorAll('[data-tab-panel]'));
+    var bar = document.getElementById('tablist');
+    var hint = document.getElementById('tab-hint');
+    if (!tabs.length || !panels.length) return;
+    var ids = tabs.map(function(t){ return t.getAttribute('data-tab'); });
+
+    function updateScrollHint(){
+      if (!bar) return;
+      var more = bar.scrollWidth - bar.clientWidth - bar.scrollLeft > 4;
+      bar.classList.toggle('more-right', more);
+    }
+    function revealTab(tab){
+      if (!bar || bar.scrollWidth <= bar.clientWidth) return;
+      var left = tab.offsetLeft - 16;
+      var right = tab.offsetLeft + tab.offsetWidth + 16 - bar.clientWidth;
+      if (left < bar.scrollLeft) bar.scrollLeft = left;
+      else if (right > bar.scrollLeft) bar.scrollLeft = right;
+    }
+    function activate(id, focusTab){
+      if (ids.indexOf(id) < 0) return false;
+      var active = null;
+      tabs.forEach(function(t){
+        var on = t.getAttribute('data-tab') === id;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        if (on) active = t;
+      });
+      panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+      document.body.setAttribute('data-active-tab', id);
+      if (hint && active){
+        hint.textContent = '';
+        var b = document.createElement('b');
+        b.textContent = active.textContent.trim();
+        hint.appendChild(b);
+        hint.appendChild(document.createTextNode(active.getAttribute('data-desc') || ''));
+      }
+      if (active) revealTab(active);
+      if (focusTab && active) active.focus();
+      updateScrollHint();
+      return true;
+    }
+    function setHash(id){
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+      else location.hash = id;
+    }
+    function panelOf(el){
+      while (el && el !== document.body){
+        if (el.hasAttribute && el.hasAttribute('data-tab-panel')) return el.getAttribute('data-tab-panel');
+        el = el.parentNode;
+      }
+      return null;
+    }
+    function applyHash(initial){
+      var h = decodeURIComponent(location.hash.replace(/^#/, ''));
+      if (!h){ activate(ids[0]); return; }
+      if (activate(h)){
+        if (!initial) window.scrollTo({ top: 0, behavior: 'auto' });
+        return;
+      }
+      var el = document.getElementById(h);
+      var pid = el && panelOf(el);
+      if (pid){
+        activate(pid);
+        el.scrollIntoView({ block: 'start' });
+      }
+    }
+
+    tabs.forEach(function(t, i){
+      t.addEventListener('click', function(){
+        var id = t.getAttribute('data-tab');
+        activate(id);
+        setHash(id);
+      });
+      t.addEventListener('keydown', function(e){
+        var j = i;
+        if (e.key === 'ArrowRight') j = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = tabs.length - 1;
+        else return;
+        e.preventDefault();
+        activate(ids[j], true);
+        setHash(ids[j]);
+      });
+    });
+    if (bar){
+      bar.addEventListener('scroll', updateScrollHint, { passive: true });
+      window.addEventListener('resize', updateScrollHint);
+    }
+    window.addEventListener('hashchange', function(){ applyHash(false); });
+    applyHash(true);
+  })();
+
+  // Scroll progress — 現在開いているタブ内の読了位置（受動表示）。
   (function(){
     var fill = document.getElementById('scrollbar-fill');
     function onScroll(){
@@ -438,15 +656,24 @@
     }
   })();
 
-  // Diagram zoom lightbox — clones the inline SVG at full/native size for reading detail.
+  // Diagram zoom lightbox — clones the inline SVG for reading detail.
+  // 幅は CSS の min(1400px, 92vw)。viewBox が小さい図（<700px）は 2 倍までに留めて、無意味な拡大を避ける。
+  // 開いたら閉じるボタンに focus を移し、閉じたら元のボタンへ戻す。
   (function(){
     var box = document.getElementById('lightbox');
     var inner = document.getElementById('lightbox-inner');
     var closeBtn = inner.querySelector('.lightbox-close');
+    var opener = null;
 
-    function openWith(sourceSvg){
+    function openWith(sourceSvg, from){
+      opener = from || null;
       var html = sourceSvg.outerHTML.split('my-svg').join('my-svg-zoom');
       inner.innerHTML = html;
+      var clone = inner.querySelector('svg');
+      var vb = clone && clone.viewBox && clone.viewBox.baseVal;
+      if (clone && vb && vb.width > 0 && vb.width < 700){
+        clone.style.width = 'min(' + Math.round(vb.width * 2) + 'px, 92vw)';
+      }
       var reinsertedClose = document.createElement('button');
       reinsertedClose.className = 'lightbox-close';
       reinsertedClose.type = 'button';
@@ -460,22 +687,31 @@
       inner.appendChild(hint);
       box.classList.add('open');
       box.setAttribute('aria-hidden', 'false');
+      reinsertedClose.focus();
     }
     function close(){
+      if (!box.classList.contains('open')) return;
       box.classList.remove('open');
       box.setAttribute('aria-hidden', 'true');
       inner.innerHTML = '';
+      if (opener && opener.focus) opener.focus();
+      opener = null;
     }
 
+    closeBtn.addEventListener('click', close);
     document.querySelectorAll('[data-zoom-target]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var target = document.getElementById(btn.getAttribute('data-zoom-target'));
         var svg = target && target.querySelector('svg');
-        if (svg) openWith(svg);
+        if (svg) openWith(svg, btn);
       });
     });
     document.querySelectorAll('.sheet-body svg').forEach(function(svg){
-      svg.addEventListener('click', function(){ openWith(svg); });
+      svg.addEventListener('click', function(){
+        var sheet = svg.closest ? svg.closest('.sheet') : null;
+        var btn = sheet && sheet.querySelector('[data-zoom-target]');
+        openWith(svg, btn);
+      });
     });
     box.addEventListener('click', function(e){ if (e.target === box) close(); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
