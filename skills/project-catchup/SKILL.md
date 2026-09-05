@@ -13,6 +13,8 @@ allowed-tools:
   - Bash(date:*)
   - Bash(wc:*)
   - Bash(npx -y @mermaid-js/mermaid-cli:*)
+  - Bash(python3 ~/.agents/skills/project-catchup/scripts/build-overview-html.py:*)
+  - Bash(python3 skills/project-catchup/scripts/build-overview-html.py:*)
   - Bash(open:*)
 ---
 
@@ -50,7 +52,7 @@ allowed-tools:
 
 - **Bashコマンドは1コマンド1呼び出し**。`&&` `;` `|` で他コマンドと連結しない（連結すると許可パターンにマッチせず確認が発生しうる）
 - 一時ファイル（Mermaidソース等）は **Write ツールで直接書く**。heredocやシェルリダイレクトを使わない
-- プレースホルダ置換・テキスト加工は **Read の内容を自分で組み立てて Write/Edit する**。`python3` `node` 等の外部インタプリタを呼び出さない
+- **HTML生成だけは例外的に `python3` を呼ぶ**（`scripts/build-overview-html.py`。`allowed-tools` に narrow なパターンで登録済み）。プレースホルダの手埋めは逐語性が壊れるので行わない — 詳細は Step 4。それ以外のテキスト加工は Read の内容を自分で組み立てて Write/Edit し、`node` 等の別インタプリタは呼ばない
 - 一時ファイルの置き場所は `/tmp` ではなくセッションのスクラッチパッドディレクトリを使う（`/tmp` 直書きは許可リスト外の挙動を誘発しやすい）
 
 ## Step 1: 事実収集（推測禁止）
@@ -218,6 +220,26 @@ generator: project-catchup
 - 既存の `docs/PROJECT_OVERVIEW.md` がある場合は上書きでなく差分更新（frontmatter の generated / commit を更新）。旧構成（「案件の概要」「登場人物と役割」「発見事項」「技術スタック」が独立節）のMDは、この節構成に**並べ替え・改名して**更新する（内容は捨てない）
 - 日本語のみで書く
 
+### 機械可読規約（Step 4 のスクリプトが読む形）
+
+HTMLはMDから**機械変換**される。次の形を外すとその節はHTMLで prose にフォールバックし、タイル・帯・番号が出なくなる（内容は失われないが読み口が落ちる）。判断に迷ったら形を守る:
+
+| 節 | 守る形 |
+|---|---|
+| frontmatter | `generated: YYYY-MM-DD` と `commit: <短縮SHA>`。`{{DATE}}` / `{{SHA}}` の出所 |
+| 見出し | この節構成の文言で始める（括弧の副題は自由）。接頭一致で引かれる |
+| 30秒サマリー | 先頭1文がタグラインになる。1文を短く切る |
+| 前回キャッチアップからの変化 | 冒頭に `前回: YYYY-MM-DD（commit \`abc1234\`）` の1行。件数は `コミット +23` / `変更ファイル 47` の語で書く |
+| 再開手順 | コマンドは ```bash（または ```sh）フェンスに入れ、主要ステップに `# N. ラベル` の番号コメントを付ける |
+| 次の一手 | `1. **アクション**` の番号リスト＋次行を `根拠: ...` で始める。最大3件がHTMLに出る |
+| 作成者・関係者 | 表にする。列見出しに 人物/名前/Author、役割、コミット/件数、根拠/出典 のいずれかの語を含める（コミット数列があると比率バーが出る） |
+| 役割の穴 | 1件1行の箇条書きで `役割名｜根拠（出典: ...）`。無ければ「検出なし」と書く |
+| 構成図の各 `###` | 節内に `出典: <path>` の1行を置く |
+| 技術スタック | 表にする。1列目=技術名、2列目=バージョン |
+| 直近の状態とやりかけ | 未コミット変更は `未コミット変更 N件` か「作業ツリーはクリーン」と書く（タイルの出所）。表なら1列目が項目 |
+| 穴・発見事項 | 1件＝`### G01｜種類｜深刻度｜題` の見出し（本文に `証拠: file:line`）。または `- 種類｜深刻度｜内容｜証拠` の1行。深刻度は critical / warning / good |
+| 関連リンク | `- [ラベル](URL)` または `- 説明` の箇条書き |
+
 ## Step 3: Mermaid図の事前レンダリング
 
 HTML用にSVG化する（HTMLにJSライブラリを埋め込まない。オフライン自己完結＆軽量のため）。**MDに書いた3種の図それぞれ**に対して行う:
@@ -237,7 +259,7 @@ npx -y @mermaid-js/mermaid-cli -i interface.mmd -o interface.svg -b transparent
 npx -y @mermaid-js/mermaid-cli -i erd.mmd -o erd.svg -b transparent
 ```
 
-3. 生成された `.svg` は Read ツールで読み込み、Step 4 のHTML埋め込みに**そのまま**使う。特にer図は`<defs>`内のマーカー定義（`er-onlyOne`/`er-zeroOrMore`等、カーディナリティを示す線端の図形）がSVGの本体。CSSや`<defs>`を手で間引くとこれらのマーカーが消え、「1対多」「1対1」の情報が図から失われる（2026-07-05: 実際にこの欠落が発生し気付かれた）。
+3. 生成された `.svg` は**そのまま**残す（Readで中身を確認してもよいが、加工しない）。Step 4 のスクリプトに `--svg-structure` / `--svg-interface` / `--svg-erd` でパスを渡せば逐語で埋め込まれる。特にer図は`<defs>`内のマーカー定義（`er-onlyOne`/`er-zeroOrMore`等、カーディナリティを示す線端の図形）がSVGの本体。CSSや`<defs>`を手で間引くとこれらのマーカーが消え、「1対多」「1対1」の情報が図から失われる（2026-07-05: 実際にこの欠落が発生し気付かれた）。
 
 ### er図の生成後チェック（自動・1コマンド）
 
@@ -254,9 +276,42 @@ grep -c -E "er-onlyOne|er-zeroOrMore|er-zeroOrOne|er-oneOrMore" erd.svg
 
 **失敗時、原因を推測で書かない**（2026-08-17: 実際に「macOS sandboxのChrome headless権限エラー」という未検証の原因文がHTMLに書かれ、後日の再現テストでは同一コマンドが問題なく成功した実例あり）。npxコマンドの標準出力・標準エラーは切り捨てず、失敗した図の直下に実際のエラーメッセージの末尾数行をそのまま引用する（「この図はMD参照（生成失敗、エラー: `<実際のstderr末尾>`）」の形）。原因の特定・説明はしない — 症状の事実だけを記録し、原因究明は次回の人間またはエージェントに委ねる。
 
-## Step 4: ペライチHTML生成 `docs/project-overview.html`
+## Step 4: HTML／Artifact の生成（スクリプト実行）
 
-`templates/overview.html` を Read で読み込み、プレースホルダをMD正本の内容で直接置き換えて Write する（**外部インタプリタを使わず、自分でテキストを組み立てる**）。
+**LLM は HTML を書かない。** MD正本 → テンプレの変換は決定論でなければならない（手埋めでは再開手順の番号コメント・件数・意味色の一貫性が壊れる）。次の1コマンドで完結HTMLとArtifact版を同時に生成し、検査まで走らせる:
+
+```bash
+python3 ~/.agents/skills/project-catchup/scripts/build-overview-html.py --md docs/PROJECT_OVERVIEW.md --out docs/project-overview.html
+```
+
+Step 3 でSVGを生成した場合は引数で渡す（1コマンドで実行する）:
+
+```bash
+python3 ~/.agents/skills/project-catchup/scripts/build-overview-html.py --md docs/PROJECT_OVERVIEW.md --out docs/project-overview.html --svg-structure <scratch>/structure.svg --svg-interface <scratch>/interface.svg --svg-erd <scratch>/erd.svg
+```
+
+- 出力は2ファイル。`docs/project-overview.html`（完結）と `docs/project-overview.artifact.html`（Artifact 版。`--out` から自動で決まる）
+- `--template` 省略時はスクリプト隣の `../templates/overview.html` を使う
+- 渡さなかった図面は「該当なし（SVG未指定）」に差し替わる。省略した観点（抽象層なし・永続化なし）はそのままでよい
+- 各図の出典はMDの該当 `###` 節の「出典:」1行を自動で拾う。上書きしたいときだけ `--svg-structure-src` / `--svg-interface-src` / `--svg-erd-src`
+- `--check-only` は生成せず既存出力の検査だけを行う
+- **HTMLは手で編集しない**。直したくなったら `docs/PROJECT_OVERVIEW.md` を直して再実行する（HTMLは使い捨て）
+
+### スクリプトが自動で行う検査（違反があれば exit 1）
+
+Step 4 で人間がgrepを並べる運用は廃止した。次の5つはスクリプトが毎回実行し、結果を標準出力に OK / NG で出す:
+
+| 検査 | 合格条件 |
+|---|---|
+| プレースホルダ残存 | 完結HTML・Artifact版とも `{{...}}` が0件 |
+| 外部依存（自己完結性） | 外部 script / stylesheet / 画像 / iframe / CDN が0件、かつ `<script>` 本文と `on*` 属性に fetch / XMLHttpRequest / WebSocket が0件（本文テキストに現れた語は実行されないので誤検知しない） |
+| セクション整合 | 両方で `data-tab-panel=` が6件（resume / intent / people / design / ops / gaps） |
+| Artifact シェル禁止タグ | Artifact版に `<!doctype` / `<html` / `<head>` / `<body` が1つも無い |
+| 再開手順の逐語性 | MDとHTMLで `^# 数字` の番号コメント件数が一致 |
+
+テンプレに未知のプレースホルダがあれば、空文字で埋めず「変換ロジックのバグ」として落ちる。exit 1 になったらMD正本かテンプレを直して再実行し、全てOKになるまで繰り返す（HTMLを直して辻褄を合わせない）。
+
+er図のカーディナリティマーカー検査（Step 3）だけはSVG生成側の話なのでスクリプトの外に残っている。
 
 ### 見せ方の設計（サイドバー・6セクション責務分離）
 
@@ -281,115 +336,39 @@ grep -c -E "er-onlyOne|er-zeroOrMore|er-zeroOrOne|er-oneOrMore" erd.svg
 
 **方針転換の記録（タブ導入）**: 2026-07-05 に「タブ切替は使わない（MDと代り映えしない見せ方を避けるため、縦スクロール1本道の現場復帰レポート）」と決めていたが、2026-09-05 にユーザー指示で**タブを再導入**した。理由は責務分離 — 「今どう動くか（復帰）」と「なぜあるか（意図）」「誰に聞くか（人）」「何を見落としているか（穴）」は読む動機が異なり、1本道に並べると復帰に不要な情報が再開の邪魔をし、逆に穴・意図が末尾に埋もれて読まれなかった。縦1本道の良さ（読み順の強制）は各セクション内の順序と復帰の先頭配置で残す。
 
-### プレースホルダの埋め方
 
-- `{{PROJECT_NAME}}` / `{{SHA}}`: プロジェクト名（README の見出し or ディレクトリ名）と HEAD SHA 短縮形
-- `{{DATE}}`: `YYYY-MM-DD` 固定。テンプレのJSが `data-date` からこの資料の経過日数を閲覧時に計算し、14日以上で「再生成推奨」の警告を出す
-- `{{TAGLINE}}`: 30秒サマリーから1文だけ抜き出したキャッチコピー（ヒーロー帯に大きく出す）
-- `{{STATBOARD_HTML}}`: トップバー直下の状況ボード。1タイル＝小さな HeroUI Card で、Header（ラベル）→ Content（数値）の順に書く: `<a class="stat-tile ok" href="#recent"><span class="stat-tile__label">最終コミットから</span><span class="stat-tile__value mono">3日</span></a>`（数字は `.stat-tile__value` に単位ごと入れる。例: `3日` `+23` `2件`。意味色の `ok` / `warn` / `crit` はラベル先頭のドットとラベル色になる。旧 `.num` / `.cap` も、旧来の数値→ラベル順のまま同じ見た目で動く）。クリックで該当ブロックへ飛ぶページ内アンカー（別セクション内でもJSがそのセクションを開いて飛ぶ）。出すタイル（該当しないものは出さない・4〜6枚）:
-  - 最終コミットからの日数 → `href="#recent"`（穴）。31日以上は `warn`、それ未満は `ok`
-  - 未コミット変更 N件 → `href="#recent"`（穴）。0件は `ok`、1件以上は `warn`
-  - 前回比コミット +N → `href="#since-last"`（復帰）。初回・比較不能時は出さない
-  - 穴・発見事項 N件 → `href="#discovery"`（穴）。sev-critical があれば `crit`、warning のみは `warn`、それ以外は `ok`
-  - 役割の穴 N件 → `href="#people"`（人）。1件以上のときだけ出し `warn`
-  - TBD N件 → ジャンプ先が定まらないため `<span class="stat-tile warn">`（`<a>` にしない。↓印はリンクにのみ付く）。0件なら出さない
-- `{{SUMMARY_HTML}}`（復帰）: MDの「30秒サマリー」節をそのまま段落化する。ヒーローの`{{TAGLINE}}`と重複する冒頭文は省いてよいが、要約や言い換えはしない
-- `{{SINCE_LAST_HTML}}`（復帰）: Step 1 の前回差分から組み立てる。`<p class="since-note">前回: <b>YYYY-MM-DD</b>（commit <code>abc1234</code>）</p>` ＋ `<div class="delta-row"><span class="delta">コミット <b>+23</b></span><span class="delta">変更 <b>47ファイル</b></span></div>` ＋ MDの「前回キャッチアップからの変化」節の要約文をそのまま段落化。初回は `<p class="since-note">初回キャッチアップ（比較基準なし）。次回の再生成からここに前回比が表示される。</p>` のみ
-- `{{RESUME_HTML}}`（復帰）: MDの「再開手順」のbashコードブロックを**コメントを含めて逐語転記**する。手順番号コメント（`# 1. 環境変数` `# 2. DBマイグレーション`等）は読者が「今どのステップか」を追う唯一の手がかりなので、要約・整形の過程で間引かない（2026-07-05: 実際にこの番号コメントが転記時に消え、手順が読みにくくなる欠落が発生した）。`<pre class="mono"><code>`の直後は必ず改行してからコード本文を書く（開始タグと同じ行にコードの1行目を続けない。全行を行頭からのgrepで検出可能にするため）
-- `{{NEXT_HTML}}`（復帰）: MDの「次の一手」を1項目＝`<div class="next-item"><span class="n">1</span><div><span class="act">アクション1行</span><span class="why">根拠: 出典付き1行</span></div></div>` として優先順に並べる（最大3個）。導出できる材料が無ければ `<p class="since-note">提案なし（直近の状態に判断材料が不足）</p>` と正直に書く — 創作しない
-- `{{INTENT_HTML}}`（意図）: MDの「意図」節を `<h3>背景</h3>` `<h3>目的</h3>` `<h3>対象読者・受益者</h3>` の3見出し＋段落で組む。段落ごとに**最も見落としてはいけない一文**を `<span class="key">...</span>` で囲む（青・太字・やや大きめ）。強調は各段落1箇所まで。「出典:」等の脚注は強調しない。推定した箇所は文末に「（推定）」を残す
-- `{{PEOPLE_HTML}}`（人）: 各人物を `.person` 行として組み立てる。`<div class="person"><span class="avatar"><span class="avatar__fallback">頭文字</span></span><div class="person-body"><div class="person-name">名前 <span class="badge badge--outline">役割</span></div><div class="person-meta">コミット N件・最終 YYYY-MM-DD・出典</div><div class="share-bar"><div class="share-fill" style="width:NN%"></div></div></div></div>`。`.share-fill` の `width` はコミット数の比率(%)。役割不明は `<span class="badge badge--outline">TBD</span>`
-- `{{ROLE_GAPS_HTML}}`（人）: MDの「役割の穴」を1件＝amber の Alert にする。`<div class="alert alert--warning"><span class="alert__indicator"><svg class="icon"><use href="#i-warn"/></svg></span><div class="alert__content"><p class="alert__title">単一人依存</p><p class="alert__description">根拠: コミット 92% が1人（出典: git shortlog）</p></div></div>`。検出なしなら `<p class="since-note">役割の穴は検出なし（出典: git shortlog / CODEOWNERS）</p>`
-- `{{DIAGRAM_STRUCTURE_SVG}}` / `{{DIAGRAM_INTERFACE_SVG}}` / `{{DIAGRAM_ERD_SVG}}`（設計）: Step 3 で生成したSVGを**そのまま**（mermaid-cli出力の`style="max-width: ###px"`を書き換えず自然な幅のまま）埋め込む。インライン表示はCSSの`max-height:560px`で高さを抑えるが、各図面には拡大ボタン（クリックでライトボックス表示・原寸に近い1400px幅でスクロール可）が付いているため、インライン側を無理に大きくする必要はない（DWG-01/02/03の図面番号は既にテンプレ側で固定表示。省略する場合は `.card__content.sheet-body` の中身を `<p class="sheet-omitted">この観点は該当なし（理由）</p>` に差し替える）
-- `{{DIAGRAM_STRUCTURE_SRC}}` / `{{DIAGRAM_INTERFACE_SRC}}` / `{{DIAGRAM_ERD_SRC}}`（設計）: 各図の出典1行（例: `出典: prisma/schema.prisma`）
-- `{{PROCESS_HTML}}`（運用）: `<ul class="process-list">` に1項目＝`<li><svg class="icon"><use href="#i-branch"/></svg><div>ブランチ運用: main 直push（出典: git log）</div></li>`。ブランチ運用・CI・デプロイ先・定期ジョブの順。無いものは「なし（出典）」と書く
-- `{{STACK_HTML}}`（運用）: 技術ごとに `<span class="chip chip--secondary"><span class="chip__dot"></span><span class="chip__label">Next.js</span><span class="chip__meta">15.1</span></span>`（名前は `.chip__label`、バージョンは `.chip__meta`）。色は付けない（技術名は状態ではないので `chip--secondary` 固定）
-- `{{RECENT_HTML}}`（穴）: `.tl-item` を新しい順に並べる。最新コミットは `class="tl-item now"`、未コミット変更やWIPは `class="tl-item flag"`（amber表示）。`.tl-date` は絶対日付＋相対を併記する（例: `2026-06-28（8日前）`。相対は生成時点で計算して焼き込む）
-- `{{DISCOVERY_HTML}}`（穴）: 発見事項1件＝Alert 1つ。`<div class="alert alert--warning"><span class="alert__indicator"><svg class="icon"><use href="#i-warn"/></svg></span><div class="alert__content"><div class="alert__meta"><span class="badge badge--warning badge--mono">注意</span><span class="badge badge--outline">矛盾</span></div><p class="alert__title">本文1行</p><p class="alert__description">証拠: README.md:42 / package.json scripts</p></div></div>`。深刻度で `alert--danger`＋`badge--danger`(赤・要対処) / `alert--warning`＋`badge--warning`(amber・注意) / `alert--success`＋`badge--success`(緑・解消済み) / `alert--default`＋`badge--default`(灰・中立) を選ぶ。種類（ボトルネック／矛盾／TBD／未配線／デッドパス）は色を持たない `badge--outline` で、テンプレの凡例と同じ語を使う。証拠（file:line等）は `.alert__description` に必須
-- `{{LINKS_HTML}}`（セクション外）: `<li><svg class="icon"><use href="#i-link"/></svg><a href="...">ラベル</a></li>`。無ければ `<li>なし</li>`
-- 単一ファイル・外部依存ゼロ（CDN・外部フォント・外部画像なし。SVGはインライン埋め込み、アイコンはテンプレ冒頭の `<symbol>` スプライトを`<use>`で参照）
-- テンプレの構造（サイドバー・トップバー・パネル・カードの `card__*` 階層・`data-tab-panel`・ブロックの `id`）は変更しない。変更するのはプレースホルダの中身だけ
-- HTMLは使い捨てなので手編集しない前提。直したくなったらMDを直して再生成
+### プレースホルダの由来（MD正本 → HTML）
 
-### 再開手順の逐語性チェック（自動・2コマンド）
+スクリプトがどのMD節をどのプレースホルダに流すかの対応。**具体的なHTML断片（`.person` / `.alert` / `.chip` 等の構造）はスクリプト内が唯一の定義**で、ここには書かない（二重管理にすると必ずずれる）。
 
-散文ルールだけに頼らず、番号コメントがHTMLでも生存しているかを機械的に確認する（それぞれ1コマンドで実行し、件数を見比べる）:
+| プレースホルダ | 由来（MD節） | 変換 |
+|---|---|---|
+| `{{PROJECT_NAME}}` / `{{DATE}}` / `{{SHA}}` | `# <名前> 全体像` と frontmatter の `generated` / `commit` | そのまま |
+| `{{TAGLINE}}` | 30秒サマリーの先頭1文 | 120字超は切り詰め |
+| `{{STATBOARD_HTML}}` | 変換結果から機械導出 | 最終コミットからの日数 / 未コミット変更 / 前回比コミット / 穴・発見事項 / 役割の穴 / TBD。**取れないタイルは出さない**（最大6枚） |
+| `{{SUMMARY_HTML}}` | 30秒サマリー | 段落化。先頭の太字1つを `.key` に |
+| `{{SINCE_LAST_HTML}}` | 前回キャッチアップからの変化 | 前回日付・SHA・コミット数・ファイル数が取れれば `.since-note` ＋ `.delta-row`、取れなければ本文を段落化 |
+| `{{RESUME_HTML}}` | 再開手順 | コードフェンスを `<pre class="mono"><code>` に逐語転記（`# N.` の番号コメントを含む） |
+| `{{NEXT_HTML}}` | 次の一手 | 番号リスト＋`根拠:` 行を `.next-item` に（最大3件）。取れなければ「提案なし」 |
+| `{{INTENT_HTML}}` | 意図（背景・目的・対象読者）※旧構成の「案件の概要」もフォールバックで拾う | `<h3>`＋段落。各段落の最初の太字を `.key` に |
+| `{{PEOPLE_HTML}}` | 人と役割 → 作成者・関係者 | 表があれば `.person` 行（コミット数列があれば比率バー）。表が無ければ本文をそのまま prose 化 |
+| `{{ROLE_GAPS_HTML}}` | 人と役割 → 役割の穴 | `.alert--warning`。「検出なし」文言なら `.since-note` |
+| `{{DIAGRAM_*_SVG}}` / `{{DIAGRAM_*_SRC}}` | CLI引数のSVG／該当 `###` 節の「出典:」1行 | SVGはそのまま埋め込み。MD内の mermaid ソースは埋めない |
+| `{{PROCESS_HTML}}` | 開発・運用プロセス | 箇条書き／表行を `.process-list` に。語からアイコンを選ぶ |
+| `{{STACK_HTML}}` | 技術スタック | 表の 技術\|版 を `.chip` に（色は付けない） |
+| `{{RECENT_HTML}}` | 直近の状態とやりかけ | `.tl-item`。先頭は `now`、WIP・未コミット・持ち越し・待ちは `flag` |
+| `{{DISCOVERY_HTML}}` | 穴・発見事項 | `### G01｜種類｜深刻度｜題` または `｜` 区切り行／表を `.alert` に。深刻度 critical→danger(要対処) / warning→warning(注意) / good→success(解消済み) / 他→default |
+| `{{LINKS_HTML}}` | 関連リンク | `.link-list` の `<li>`。無ければ「なし」 |
 
-```bash
-grep -c "^# [0-9]" docs/PROJECT_OVERVIEW.md
-```
+正本に該当節が無い場合は空にせず「この節は正本に該当なし」等の規約文が入る（読者が「見落としたのか無いのか」を判断できるように）。
 
-```bash
-grep -c "^# [0-9]" docs/project-overview.html
-```
+### Artifact 版 `docs/project-overview.artifact.html`
 
-- 両方の件数が**一致すればOK**。番号コメントが全て転記されている
-- HTML側の件数がMD側より少なければ転記時に間引かれている。`{{RESUME_HTML}}`を該当箇所から逐語で書き直す
-
-### 生成後の自己完結性チェック（自動・1コマンド）
-
-散文ルールだけに頼らず、外部依存が紛れ込んでいないか機械的に確認する:
-
-```bash
-grep -nE '<script[^>]*\ssrc=|<link[^>]*stylesheet|@import|<img[^>]*src=.{0,3}(https?:|//)|fetch\(|XMLHttpRequest|WebSocket|cdn\.|googleapis\.com|jsdelivr|unpkg\.com' docs/project-overview.html
-```
-
-- ノーヒット（exit 1）なら自己完結性OK。`関連リンク`セクション等の`<a href>`テキストリンクはこの条件式に含まれないため誤検知しない
-- ヒットした場合（exit 0）は該当行が実際に外部リソース読み込みを起こしている。インライン化するか記載を削って再生成し、再度ノーヒットになるまで繰り返す
-
-### プレースホルダ残存チェック（自動・1コマンド）
-
-散文ルールだけに頼らず、置換漏れを機械的に確認する:
-
-```bash
-grep -c '{{' docs/project-overview.html
-```
-
-- 0件（exit 1）なら全プレースホルダが置換済み
-- ヒットした場合（exit 0）は置換漏れ。「該当なし」のタイル・図は空文字ではなく規約どおりの差し替え文にした上で、`{{` が消えるまで再生成する
-
-### セクション整合チェック（自動・1コマンド）
-
-6セクションが揃っているか（置換時にパネルを壊していないか）を機械的に確認する:
-
-```bash
-grep -c 'data-tab-panel=' docs/project-overview.html
-```
-
-- **6件**ならOK（resume / intent / people / design / ops / gaps の各パネルが1つずつ）
-- 6件以外ならテンプレ構造を崩している。`templates/overview.html` を再読して、プレースホルダの中身だけを差し替え直す
-
-### Artifact 版の同時生成 `docs/project-overview.artifact.html`
-
-claude.ai の Artifact は publish 時に `<!doctype html>…<head></head><body>` を被せる。完結 HTML（`docs/project-overview.html`）をそのまま渡すと文書が二重になるため、**同じ内容から Artifact 版を必ず同時に書く**（`spec-to-html` / `scripts/spec-html.py` と同じ約束）。
-
-手順（完結 HTML の Write と自己完結性・プレースホルダ・セクション整合チェックの**あと**）:
-
-1. `docs/project-overview.html` を Read する
-2. 次だけを残した派生を組み立て、`docs/project-overview.artifact.html` に Write する:
-   - `<title>…</title>`（完結 HTML の `<title>` と同じ文言）
-   - `<style>…</style>`（`<head>` 内のスタイルブロックをそのまま）
-   - 本文（完結 HTML の `<body>…</body>` の**中身だけ**。サイドバー・メイン・ライトボックス・インライン SVG・末尾の `<script>…</script>` を含む）
-3. Artifact 版に次のタグが**1つも残っていない**ことを確認する（残っていたら変換ミス）:
-
-```bash
-grep -niE '<!doctype|<html|</html>|<head>|</head>|<body|</body>' docs/project-overview.artifact.html
-```
-
-- ノーヒット（exit 1）ならOK
-- ヒットしたら組み立て直す。`<html>` や `<body>` を残したまま publish しない
-
-4. 自己完結性チェックを Artifact 版にも同じ正規表現で再実行する（両方ノーヒットになるまで）:
-
-```bash
-grep -nE '<script[^>]*\ssrc=|<link[^>]*stylesheet|@import|<img[^>]*src=.{0,3}(https?:|//)|fetch\(|XMLHttpRequest|WebSocket|cdn\.|googleapis\.com|jsdelivr|unpkg\.com' docs/project-overview.artifact.html
-```
-
-5. プレースホルダ残存・セクション整合も Artifact 版で確認する（`{{` が0件、`data-tab-panel=` が6件）
+claude.ai の Artifact は publish 時に `<!doctype html>…<head></head><body>` を被せる。完結HTMLをそのまま渡すと文書が二重になるため、**スクリプトが同じ内容から Artifact 版を同時に出力する**（`<title>` ＋ `<style>` ＋ 本文 ＋ `<script>` だけ。`spec-to-html` の `<slug>.artifact.html` と同じ約束）。禁止タグ・自己完結性・プレースホルダ・セクション整合は上の表のとおり自動検査される。
 
 **閲覧の使い分け**:
-- メインPC: `open docs/project-overview.html`（完結 HTML）
-- スマホ／クラウド: `docs/project-overview.artifact.html` を Claude Artifact として publish（デフォルト非公開）。概要を更新して再生成したら、**同じファイルパスで再 publish**すれば同じ URL が更新される（新しい URL にはならない）
+- メインPC: `open docs/project-overview.html`（完結HTML。`open docs/project-overview.html#gaps` のように hash で直接開ける）
+- スマホ／クラウド: `docs/project-overview.artifact.html` を Claude Artifact として publish（デフォルト非公開）。再生成後は**同じファイルパスで再 publish**すれば同じ URL が更新される
 
 ## Step 5: 台帳への反映（存在する場合のみ）
 
@@ -405,15 +384,12 @@ grep -nE '<script[^>]*\ssrc=|<link[^>]*stylesheet|@import|<img[^>]*src=.{0,3}(ht
 - 穴・発見事項のうち sev-critical と役割の穴の一覧（人・穴の要点。読者が報告だけで危険箇所を知れるように）
 - TBD として残した項目の一覧（ユーザーが埋めるべき箇所）
 - ドキュメントとコードの矛盾を見つけた場合はその一覧
-- 自己完結性チェックの結果（完結 HTML と Artifact 版の両方。OK、またはヒットして対処した内容）
-- Artifact 版のシェル禁止タグチェックの結果（`<!doctype` / `<html` / `<head>` / `<body` が残っていないか）
-- 再開手順の逐語性チェックの結果（MD/HTMLの番号コメント件数が一致したか）
-- プレースホルダ残存チェックの結果（完結 HTML と Artifact 版の両方で0件になったか）
-- セクション整合チェックの結果（両方で `data-tab-panel=` が6件か）
+- `build-overview-html.py` の検査結果（プレースホルダ残存・自己完結性・セクション整合・Artifact シェル禁止タグ・再開手順の逐語性の5項目。全OKなら「全OK」の1行でよい。NGがあれば何をどう直して再実行したかを書く）
 - er図を生成した場合はカーディナリティマーカーチェックの結果
+- MDの機械可読規約を外していてHTMLで prose にフォールバックした節があれば、その節名（次回MDを直せば読み口が戻る）
 
 ## 安全ルール
 
-- 書き込みは `docs/PROJECT_OVERVIEW.md`・`docs/project-overview.html`・`docs/project-overview.artifact.html`・`~/dev/projects.yaml` のみ。コードは変更しない
+- 書き込みは `docs/PROJECT_OVERVIEW.md`・`docs/project-overview.html`・`docs/project-overview.artifact.html`・`~/dev/projects.yaml` のみ。コードは変更しない（HTML 2ファイルは `build-overview-html.py` が `--md` / `--out` から書く。スクリプトはこの3ファイル以外に触らない）
 - `.env*`（sample以外）・credentials・秘密鍵は読まない。収集した内容に秘密情報らしき文字列があれば記載せず警告する
 - コミットはしない（ユーザーの指示があれば行う）
