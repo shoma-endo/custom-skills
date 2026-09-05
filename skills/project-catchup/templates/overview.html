@@ -6,164 +6,446 @@
 <title>{{PROJECT_NAME}} 全体像</title>
 <style>
   :root{
-    --ink:#14202e;
-    --ink-soft:#3b4756;
-    --paper:#eef1ee;
-    --card:#fbfcfa;
-    --navy:#1b3a63;
-    --navy-ink:#eef1ee;
-    --blue:#2158a6;
-    --teal:#1f8a82;
-    --teal-deep:#166b64;
-    --line:#d8ddd3;
-    --critical:#b23a2e;
-    --warning:#c1752a;       /* 面・帯・バー用の amber */
-    --warning-ink:#8f5219;   /* 文字用の amber（小サイズで AA を満たす暗さ） */
-    --good:#3f8f63;
-    --neutral:#5b6675;       /* 小文字グレー。paper 上で 5:1 以上 */
-    --neutral-bg:#e7e9e3;
-    --shadow: 0 1px 2px rgba(20,32,46,.06), 0 6px 20px rgba(20,32,46,.05);
+    /* ダーク計器: 無彩色の面・境界で区画。色と薄いグローは状態・操作の意味に限定。
+       骨格は HeroUI 風のダッシュボード（左サイドバー＋メイン）、部品は HeroUI の
+       Card / Chip / Badge / Button / Avatar / Divider / Alert の構造を vanilla CSS に写したもの。 */
+    color-scheme:dark;
+    --ink:#e6edf5;
+    --ink-soft:#afbdca;
+    --paper:#080b10;          /* 一番奥。カードが必ず浮いて見えるよう地を落とす */
+    --surface:#161d27;        /* Card default   （HeroUI: bg-surface） */
+    --surface-2:#1f2833;      /* Card secondary （HeroUI: bg-surface-secondary） */
+    --surface-3:#28323f;      /* Card tertiary  （HeroUI: bg-surface-tertiary） */
+    --surface-4:#323e4d;      /* カード内の行カード（tertiary 親の上に1段） */
+    --surface-5:#3c4a5b;      /* 同・ホバー */
+    /* カード内の行カードが使う面。.card の変種が親に応じて1段上へ差し替える */
+    --row:var(--surface-2);
+    --row-hover:var(--surface-3);
+    --card:var(--surface);    /* 既存の生成HTMLとの互換 */
+    --navy:#12181f;
+    --navy-ink:var(--ink);
+    --well:#0b1017;   /* カード内でへこませる面（コード・行アイテム） */
+    --blue:#85b8ff;
+    --blue-solid:#285daf;
+    --blue-bg:#182c47;
+    --teal:var(--blue);       /* 既存の生成HTMLとの互換。操作・強調は青に統一 */
+    --teal-deep:var(--blue);
+    --line:#3b4a5b;
+    --line-strong:#55697f;    /* ホバー時の縁 */
+    --line-soft:#28323e;
+    --critical:#f18c82;
+    --critical-bg:#392323;
+    --warning:#edbb6e;
+    --warning-ink:var(--warning);
+    --warning-bg:#352b1c;
+    --good:#84c79a;
+    --good-bg:#1c3026;
+    --neutral:#96a5b5;
+    --neutral-bg:#28323e;
+    /* 行カードに薄く重ねる意味色（面はあくまで --row。ネオンにしないための上限は 10%） */
+    --critical-soft:rgba(241,140,130,.10);
+    --warning-soft:rgba(237,187,110,.10);
+    --good-soft:rgba(132,199,154,.09);
+    --blue-soft:rgba(133,184,255,.09);
+    --diagram-paper:#fbfcfa;  /* 既存の明色SVG・透明背景の図も読める独立した図面 */
+    /* HeroUI 風の柔らかい多層影。近接の輪郭 → 中距離 → 遠くの拡散、の3層でフラットさを消す */
+    --shadow:0 1px 2px rgba(0,0,0,.40), 0 6px 14px -4px rgba(0,0,0,.42), 0 20px 40px -12px rgba(0,0,0,.52);
+    --shadow-lg:0 2px 4px rgba(0,0,0,.42), 0 12px 26px -6px rgba(0,0,0,.48), 0 34px 60px -16px rgba(0,0,0,.60);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.34), 0 4px 10px -3px rgba(0,0,0,.34);
+    --radius-card:24px;       /* カード本体。HeroUI の大きめ radius */
+    --radius:20px;
+    --radius-sm:14px;
+    --radius-xs:10px;
+    --radius-full:999px;
+    --sidebar-w:268px;
+    --sans:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
   body{
     margin:0; background:var(--paper); color:var(--ink);
-    font-family:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    font-family:var(--sans);
     line-height:1.75; font-size:16px;
   }
-  .serif{ font-family:"Hiragino Mincho ProN","Yu Mincho",ui-serif,Georgia,serif; }
-  .mono{ font-family:ui-monospace,"SF Mono",Menlo,monospace; font-variant-numeric:tabular-nums; }
+  .serif{ font-family:var(--sans); }
+  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
 
   /* 状態変化に息をつける（reduced-motion では無効） */
-  .tab, .stat-tile, .expand-btn, .discovery, .next-item, .chip, .gap-list li{
+  .nav-item, .stat-tile, .btn, .expand-btn, .chip, .card,
+  .row-card, .next-item, .alert, .discovery, .gap-list li, .person, .tl-item, .link-list li, .process-list li{
     transition: background-color .15s, border-color .15s, color .15s, box-shadow .15s, transform .15s;
   }
   @media (prefers-reduced-motion: reduce){
-    .tab, .stat-tile, .expand-btn, .discovery, .next-item, .chip, .gap-list li{ transition:none }
+    .btn:hover, .expand-btn:hover, .chip:hover, a.stat-tile:hover,
+    .row-card:hover, .next-item:hover, .alert:hover, .discovery:hover, .gap-list li:hover,
+    .person:hover, .tl-item:hover, .link-list li:hover, .process-list li:hover{ transform:none }
+    .nav-item, .stat-tile, .btn, .expand-btn, .chip, .card,
+    .row-card, .next-item, .alert, .discovery, .gap-list li, .person, .tl-item, .link-list li, .process-list li{ transition:none }
+    .sidebar, .scrim{ transition:none !important }
   }
 
-  /* ambient scroll progress — 現在タブ内の読了位置。タブ切替はこれではなく .tabbar が担う */
-  #scrollbar{ position:fixed; top:0; left:0; height:3px; width:100%; background:transparent; z-index:50; }
-  #scrollbar-fill{ height:100%; width:0%; background:var(--teal); transition:width .1s linear; }
+  /* ===================================================================
+     HeroUI 風プリミティブ（React・Tailwind CDN は使わない。構造とトークン感だけを写す）
+     Card / Chip / Badge / Button / Avatar / Divider / Alert
+     各ブロック末尾の「互換」行は、BEM化前に生成済みのHTMLを壊さないためのエイリアス。
+     =================================================================== */
+
+  /* --- Card: Header( Title / Description ) → Content → Footer -------- */
+  .card{
+    --card-surface:var(--surface);
+    display:flex; flex-direction:column; min-width:0; position:relative;
+    background:var(--card-surface); border:1px solid var(--line);
+    border-radius:var(--radius-card); box-shadow:var(--shadow);
+  }
+  /* 上端のハイライト＝面に厚みを出す（HeroUI カードの立ち上がり） */
+  .card::before{
+    content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+  }
+  /* ホバーでわずかに浮き、縁が明るくなる（reduced-motion では transform を止める） */
+  .card:not(.card--transparent):hover{ box-shadow:var(--shadow-lg); border-color:var(--line-strong); transform:translateY(-3px); }
+  @media (prefers-reduced-motion: reduce){ .card:not(.card--transparent):hover{ transform:none } }
+  .card--default{ --card-surface:var(--surface); --row:var(--surface-2); --row-hover:var(--surface-3); }
+  .card--secondary{ --card-surface:var(--surface-2); --row:var(--surface-3); --row-hover:var(--surface-4); }
+  .card--tertiary{ --card-surface:var(--surface-3); --row:var(--surface-4); --row-hover:var(--surface-5); }
+  .card--transparent{ --card-surface:transparent; border-color:transparent; box-shadow:none; --row:var(--surface); --row-hover:var(--surface-2); }
+  .card--transparent::before{ display:none; }
+  /* 左帯は意味色のときだけ付ける（青=次の一手・強調／amber=注意）。
+     border-left だと 24px の角丸に食い込んで三日月状に欠け、角が硬く見える。
+     内側に浮かせた丸帯にすると、カードの角丸と 1px の輪郭がそのまま残る。 */
+  .card--accent{ --card-band:var(--blue); }
+  .card--warning{ --card-band:var(--warning); }
+  .card--accent::after, .card--warning::after{
+    content:""; position:absolute; left:0; top:20px; bottom:20px; width:4px;
+    border-radius:0 var(--radius-full) var(--radius-full) 0;
+    background:var(--card-band); pointer-events:none;
+  }
+
+  .card__header{ display:flex; align-items:flex-start; gap:13px; flex-wrap:wrap; padding:26px 28px 0; }
+  .card__header > .icon{ color:var(--neutral); flex:none; margin-top:5px; }
+  .card__heading{ min-width:0; flex:1 1 260px; }
+  .card__title{ margin:0; font-size:1.22rem; font-weight:600; letter-spacing:.01em; line-height:1.5; text-wrap:balance; }
+  .card__description{ margin:3px 0 0; color:var(--ink-soft); font-size:.86rem; line-height:1.6; max-width:46em; }
+  .card__actions{ margin-left:auto; flex:none; display:flex; align-items:center; gap:8px; }
+  .card__content{ padding:18px 28px 26px; min-width:0; }
+  .card__content > :first-child{ margin-top:0; }
+  .card__content > :last-child{ margin-bottom:0; }
+  .card__footer{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:14px 28px; border-top:1px solid var(--line-soft);
+    color:var(--ink-soft); font-size:.78rem;
+  }
+  .card--transparent > .card__header{ padding-left:0; padding-right:0; }
+  .card--transparent > .card__content{ padding-left:0; padding-right:0; padding-bottom:0; }
+  .card--transparent > .card__footer{ padding-left:0; padding-right:0; }
+
+  /* --- Row card: カード内の1行を、親サーフェスの1段上に浮かせた小カードにする ---
+     親 .card の変種が --row / --row-hover を差し替えるので、default/secondary/
+     tertiary/transparent どの親の中でも「1段浮いた行」に見える。 */
+  .row-card, .next-item, .alert, .discovery, .gap-list li, .person, .tl-item,
+  .link-list li, .process-list li{
+    position:relative;
+    background:var(--row); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+  }
+  .row-card::after, .next-item::after, .alert::after, .discovery::after, .gap-list li::after,
+  .person::after, .tl-item::after, .link-list li::after, .process-list li::after{
+    content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .row-card:hover, .next-item:hover, .alert:hover, .discovery:hover, .gap-list li:hover,
+  .person:hover, .tl-item:hover, .link-list li:hover, .process-list li:hover{
+    background:var(--row-hover); border-color:var(--line-strong);
+    box-shadow:var(--shadow); transform:translateY(-1px);
+  }
+
+  /* --- Button ------------------------------------------------------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    height:38px; padding:0 17px; border-radius:var(--radius-full);
+    border:1px solid transparent; background:transparent; color:var(--ink);
+    font-family:inherit; font-size:.85rem; font-weight:600; line-height:1;
+    cursor:pointer; white-space:nowrap; text-decoration:none;
+  }
+  .btn--sm{ height:32px; padding:0 14px; font-size:.78rem; }
+  .btn--lg{ height:44px; padding:0 22px; font-size:.95rem; }
+  .btn--primary{ background:var(--blue-solid); color:#fff; box-shadow:var(--shadow-sm); }
+  .btn--primary:hover{ background:#2f6bc6; box-shadow:var(--shadow); transform:translateY(-1px); }
+  .btn--secondary{ background:var(--surface-2); color:var(--ink); border-color:var(--line); box-shadow:var(--shadow-sm); }
+  .btn--secondary:hover{ border-color:var(--blue); color:var(--blue); }
+  .btn--tertiary{ background:var(--surface-3); color:var(--blue); border-color:var(--line); box-shadow:var(--shadow-sm); }
+  .btn--tertiary:hover{ background:var(--blue-bg); border-color:var(--blue); box-shadow:var(--shadow); transform:translateY(-1px); }
+  .btn--outline{ border-color:var(--line); color:var(--ink-soft); }
+  .btn--outline:hover{ border-color:var(--blue); color:var(--blue); }
+  .btn--ghost{ color:var(--ink-soft); }
+  .btn--ghost:hover{ background:var(--neutral-bg); color:var(--ink); }
+  .btn--icon-only{ width:38px; padding:0; }
+  .btn--icon-only.btn--sm{ width:32px; }
+  .btn .icon{ width:15px; height:15px; }
+  .btn:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  /* 互換: 旧 .expand-btn */
+  .expand-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    height:32px; padding:0 14px; border-radius:var(--radius-full);
+    border:1px solid var(--line); background:var(--surface-3); color:var(--blue);
+    font-family:inherit; font-size:.78rem; font-weight:600; cursor:pointer; box-shadow:var(--shadow-sm);
+  }
+  .expand-btn:hover{ background:var(--blue-bg); border-color:var(--blue); box-shadow:var(--shadow); transform:translateY(-1px); }
+  .expand-btn .icon{ width:14px; height:14px; }
+
+  /* --- Chip: 丸型の小ラベル（技術スタック等） ------------------------ */
+  .chip{
+    --chip-accent:var(--neutral); --chip-soft:var(--neutral-bg);
+    display:inline-flex; align-items:center; gap:8px;
+    height:34px; padding:0 16px; border-radius:var(--radius-full);
+    border:1px solid var(--line); background:var(--surface-2); color:var(--ink);
+    font-size:.85rem; line-height:1; box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .chip:hover{ border-color:var(--line-strong); background:var(--surface-3); box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.06); transform:translateY(-1px); }
+  .chip--sm{ height:28px; padding:0 12px; font-size:.74rem; gap:6px; }
+  .chip--lg{ height:40px; padding:0 20px; font-size:.92rem; }
+  .chip--default{ --chip-accent:var(--neutral); --chip-soft:var(--neutral-bg); }
+  .chip--accent{ --chip-accent:var(--blue); --chip-soft:var(--blue-bg); }
+  .chip--success{ --chip-accent:var(--good); --chip-soft:var(--good-bg); }
+  .chip--warning{ --chip-accent:var(--warning); --chip-soft:var(--warning-bg); }
+  .chip--danger{ --chip-accent:var(--critical); --chip-soft:var(--critical-bg); }
+  .chip--secondary{ background:var(--surface-3); border-color:var(--line); }
+  .chip--primary{ background:var(--chip-accent); border-color:transparent; color:var(--paper); box-shadow:none; }
+  .chip--soft{ background:var(--chip-soft); border-color:transparent; color:var(--chip-accent); box-shadow:none; }
+  .chip--tertiary{ background:transparent; border-color:transparent; color:var(--ink-soft); box-shadow:none; }
+  .chip__label{ min-width:0; }
+  .chip__meta, .chip .ver{ color:var(--ink-soft); font-family:var(--mono); font-size:.92em; }
+  .chip--primary .chip__meta{ color:inherit; opacity:.8; }
+  .chip__dot, .chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--chip-accent); flex:none; }
+
+  /* --- Badge: 角丸の状態ラベル（深刻度・役割・分類） ------------------ */
+  .badge{
+    --badge-ink:var(--neutral); --badge-bg:var(--neutral-bg);
+    display:inline-flex; align-items:center; gap:5px;
+    padding:4px 12px; border-radius:var(--radius-full);
+    background:var(--badge-bg); color:var(--badge-ink);
+    font-size:.71rem; font-weight:700; letter-spacing:.03em; line-height:1.5; white-space:nowrap;
+  }
+  .badge--mono{ font-family:var(--mono); }
+  .badge--default{ --badge-ink:var(--neutral); --badge-bg:var(--neutral-bg); }
+  .badge--accent{ --badge-ink:var(--blue); --badge-bg:var(--blue-bg); }
+  .badge--success{ --badge-ink:var(--good); --badge-bg:var(--good-bg); }
+  .badge--warning{ --badge-ink:var(--warning-ink); --badge-bg:var(--warning-bg); }
+  .badge--danger{ --badge-ink:var(--critical); --badge-bg:var(--critical-bg); }
+  /* 分類ラベルは深刻度ではないので色を持たせない（枠線だけ） */
+  .badge--outline{ background:var(--paper); border:1px solid var(--line); color:var(--ink-soft); font-weight:600; }
+  /* 互換: 旧 .sev-pill / .kind-pill / .pill */
+  .sev-pill{ display:inline-flex; align-items:center; padding:3px 10px; border-radius:var(--radius-full); font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.03em; margin-right:8px; background:var(--neutral-bg); color:var(--neutral); }
+  .sev-pill.sev-critical{ background:var(--critical-bg); color:var(--critical); }
+  .sev-pill.sev-warning{ background:var(--warning-bg); color:var(--warning-ink); }
+  .sev-pill.sev-good{ background:var(--good-bg); color:var(--good); }
+  .sev-pill.sev-neutral{ background:var(--neutral-bg); color:var(--neutral); }
+  .kind-pill{ display:inline-flex; align-items:center; padding:3px 10px; border-radius:var(--radius-full); font-size:.7rem; font-weight:600; margin-right:8px; border:1px solid var(--line); color:var(--ink-soft); background:var(--paper); }
+  .pill{ display:inline-flex; align-items:center; padding:2px 10px; border-radius:var(--radius-full); background:var(--neutral-bg); color:var(--neutral); font-size:.72rem; font-weight:600; white-space:nowrap; }
+
+  /* --- Avatar ------------------------------------------------------- */
+  .avatar{
+    --avatar-size:38px;
+    width:var(--avatar-size); height:var(--avatar-size); flex:none;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:var(--radius-xs); border:1px solid var(--line); background:var(--well);
+    color:var(--ink-soft); font-family:inherit; font-weight:600; font-size:.9rem; overflow:hidden;
+  }
+  .avatar--sm{ --avatar-size:30px; font-size:.78rem; }
+  .avatar--round{ border-radius:var(--radius-full); }
+  .avatar--lg{ --avatar-size:46px; font-size:1.05rem; }
+  .avatar--soft{ background:var(--neutral-bg); border-color:transparent; }
+  .avatar__image{ width:100%; height:100%; object-fit:cover; }
+  .avatar__fallback{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:inherit; }
+  .avatar__fallback--accent{ background:var(--blue-bg); color:var(--blue); }
+  .avatar__fallback--success{ background:var(--good-bg); color:var(--good); }
+  .avatar__fallback--warning{ background:var(--warning-bg); color:var(--warning-ink); }
+  .avatar__fallback--danger{ background:var(--critical-bg); color:var(--critical); }
+
+  /* --- Divider ------------------------------------------------------ */
+  .divider{ height:1px; border:0; margin:18px 0; background:var(--line-soft); }
+  .divider--strong{ background:var(--line); }
+
+  /* --- Alert: Indicator / Content( Title / Description ) ------------- */
+  /* 面・角丸・影は .row-card プリミティブ側。ここは配置と意味色だけ。
+     意味色は「薄い面（--*-soft）＋内側の丸帯」で出す。border-left は使わない
+     （角丸を食って左角が硬く見え、人物行など無彩の行カードと質感がずれる）。 */
+  .alert, .discovery, .gap-list li{
+    --alert-ink:var(--neutral);
+    --alert-tint:transparent;
+    padding:18px 22px 18px 26px;
+    /* グラデーションは単色2点＝ベタ塗りのレイヤー。--row を残したまま意味色を重ねる */
+    background:linear-gradient(var(--alert-tint), var(--alert-tint)), var(--row);
+  }
+  .alert:hover, .discovery:hover, .gap-list li:hover{
+    background:linear-gradient(var(--alert-tint), var(--alert-tint)), var(--row-hover);
+  }
+  .alert::before, .discovery::before, .gap-list li::before{
+    content:""; position:absolute; left:0; top:14px; bottom:14px; width:4px;
+    border-radius:0 var(--radius-full) var(--radius-full) 0;
+    background:var(--alert-ink); pointer-events:none;
+  }
+  .alert{ display:flex; align-items:flex-start; gap:13px; }
+  .alert--default{ --alert-ink:var(--neutral); }
+  .alert--accent{ --alert-ink:var(--blue); --alert-tint:var(--blue-soft); }
+  .alert--success{ --alert-ink:var(--good); --alert-tint:var(--good-soft); }
+  .alert--warning{ --alert-ink:var(--warning); --alert-tint:var(--warning-soft); }
+  .alert--danger{ --alert-ink:var(--critical); --alert-tint:var(--critical-soft); }
+  .alert__indicator{ flex:none; margin-top:3px; display:flex; color:var(--alert-ink); }
+  .alert__indicator .icon{ width:18px; height:18px; color:inherit; }
+  .alert__content{ min-width:0; flex:1 1 auto; }
+  .alert__meta{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:5px; }
+  .alert__title{ margin:0; font-size:.98rem; font-weight:600; line-height:1.6; }
+  .alert__description{ margin:3px 0 0; color:var(--ink-soft); font-size:.85rem; line-height:1.6; }
+  .alert + .alert{ margin-top:12px; }
+  /* 互換: 旧 .discovery（深刻度は帯と薄い面の色） */
+  .discovery{ display:block; margin-bottom:12px; }
+  .discovery.sev-critical{ --alert-ink:var(--critical); --alert-tint:var(--critical-soft); }
+  .discovery.sev-warning{ --alert-ink:var(--warning); --alert-tint:var(--warning-soft); }
+  .discovery.sev-good{ --alert-ink:var(--good); --alert-tint:var(--good-soft); }
+  .discovery .evidence, .alert .evidence{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
+  /* 互換: 旧 .gap-list（役割の穴＝amber の Alert） */
+  .gap-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .gap-list li{ display:flex; gap:13px; align-items:flex-start; --alert-ink:var(--warning); --alert-tint:var(--warning-soft); }
+  .gap-list .icon{ color:var(--warning); flex:none; margin-top:3px; }
+  .gap-list .role{ font-weight:600; }
+  .gap-list .why{ display:block; color:var(--ink-soft); font-size:.85rem; margin-top:2px; }
+
+  /* ===================================================================
+     App shell: 左サイドバー＋メイン。ドキュメント自体がスクロールし、サイドバーは sticky で貼り付く
+     =================================================================== */
+  .app{ display:grid; grid-template-columns:var(--sidebar-w) minmax(0,1fr); align-items:start; }
+
+  .sidebar{
+    position:sticky; top:0; height:100dvh; min-height:100vh;
+    display:flex; flex-direction:column; gap:4px;
+    background:var(--navy); border-right:1px solid var(--line);
+    padding:22px 14px 16px; overflow-y:auto; z-index:60;
+  }
+  .brand{ padding:0 8px 16px; border-bottom:1px solid var(--line-soft); margin-bottom:14px; }
+  .eyebrow{
+    font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--neutral); font-family:var(--mono); font-weight:600; margin:0 0 8px;
+  }
+  h1.title{ font-size:1.22rem; margin:0; text-wrap:balance; font-weight:600; letter-spacing:.01em; line-height:1.4; overflow-wrap:anywhere; }
+
+  /* Sidebar nav — アイコン＋ラベル＋短い desc。選択は意味色の淡い塗り。穴だけ amber */
+  .nav{ display:flex; flex-direction:column; gap:3px; }
+  .nav-label{ font-family:var(--mono); font-size:.66rem; letter-spacing:.12em; color:var(--neutral); padding:4px 10px 8px; text-transform:uppercase; }
+  .nav-item{
+    display:flex; gap:11px; align-items:flex-start; width:100%;
+    padding:10px 13px; border-radius:var(--radius-sm);
+    border:1px solid transparent; background:transparent;
+    color:var(--ink-soft); font-family:inherit; font-size:.94rem; text-align:left; cursor:pointer;
+  }
+  .nav-item .icon{ width:18px; height:18px; flex:none; margin-top:3px; color:var(--neutral); }
+  .nav-item .lab{ display:block; font-weight:600; line-height:1.45; }
+  .nav-item .desc{ display:block; font-size:.73rem; line-height:1.45; color:var(--neutral); margin-top:1px; }
+  .nav-item:hover{ background:var(--surface); border-color:var(--line-soft); color:var(--ink); box-shadow:var(--shadow-sm); }
+  .nav-item:hover .icon{ color:var(--ink-soft); }
+  .nav-item[aria-selected="true"]{
+    background:var(--blue-bg); border-color:rgba(133,184,255,.30); color:var(--blue);
+    box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .nav-item[aria-selected="true"] .icon{ color:var(--blue); }
+  .nav-item[aria-selected="true"] .desc{ color:var(--ink-soft); }
+  .nav-item[data-tab="gaps"] .icon{ color:var(--warning); }
+  .nav-item[data-tab="gaps"][aria-selected="true"]{
+    background:var(--warning-bg); border-color:rgba(237,187,110,.32); color:var(--warning);
+    box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .nav-item[data-tab="gaps"][aria-selected="true"] .icon{ color:var(--warning); }
+  .nav-item:focus-visible{ outline:2px solid var(--blue); outline-offset:-2px; }
+  .sidebar-foot{ margin-top:auto; padding:14px 10px 0; border-top:1px solid var(--line-soft); color:var(--neutral); font-size:.72rem; line-height:1.6; overflow-wrap:anywhere; }
+  .sidebar-foot code{ background:var(--neutral-bg); border-radius:4px; padding:1px 5px; font-family:var(--mono); }
+
+  /* Main */
+  .main{ min-width:0; }
+  .col{ max-width:1000px; margin:0 auto; padding:0 40px; }
+
+  /* Top bar — 現在地・生成日・SHA・経過警告 */
+  .topbar{
+    position:sticky; top:0; z-index:40; background:var(--navy);
+    border-bottom:1px solid var(--line); box-shadow:0 6px 16px rgba(0,0,0,.20);
+  }
+  .topbar-inner{ display:flex; align-items:center; gap:14px; min-height:60px; padding-top:10px; padding-bottom:10px; flex-wrap:wrap; }
+  .topbar-where{ min-width:0; flex:1 1 260px; }
+  .topbar-title{ margin:0; font-size:1rem; font-weight:600; line-height:1.4; }
+  .topbar-title .cur{ color:var(--ink); }
+  .topbar-desc{ display:block; font-size:.78rem; color:var(--ink-soft); font-weight:400; line-height:1.45; }
+  .topbar-meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  /* ハンバーガーはドロワー幅でのみ出す。JS はこの display を見てドロワー有無を判定する */
+  .nav-toggle{ display:none; }
+  .stamp{
+    display:inline-flex; flex-wrap:wrap; gap:5px 9px; align-items:center;
+    border:1px solid var(--line); border-radius:var(--radius-full);
+    padding:7px 15px; font-size:.74rem; color:var(--ink-soft);
+    background:var(--surface-2); font-family:var(--mono); box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .stamp b{ color:var(--ink); font-weight:600; }
+  .age-warn{
+    display:inline-flex; align-items:center; font-size:.72rem; font-weight:600;
+    background:var(--warning-bg); color:var(--warning-ink); border-radius:var(--radius-full); padding:4px 12px;
+  }
+  /* ambient scroll progress — topbar の下端。セクション切替はサイドバーが担う */
+  #scrollbar{ position:absolute; left:0; right:0; bottom:-1px; height:2px; background:transparent; }
+  #scrollbar-fill{ height:100%; width:0%; background:var(--blue); transition:width .1s linear; }
   @media (prefers-reduced-motion: reduce){ #scrollbar-fill{ transition:none } }
 
-  /* 1本の読み幅。ヒーロー・タブバー・全パネル・リンクが同じ左端に揃う（整列） */
-  .col{ max-width:960px; margin:0 auto; padding:0 32px; }
-
-  /* Hero — タブ外（常時表示） */
-  header.hero{
-    background:var(--navy); color:var(--navy-ink);
-    padding:64px 0 48px; position:relative; overflow:hidden;
-  }
-  header.hero::after{
-    content:""; position:absolute; inset:0;
-    background-image:
-      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
-    background-size:28px 28px; pointer-events:none;
-  }
-  .hero-inner{ position:relative; z-index:1; }
-  .eyebrow{
-    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--teal); font-weight:600; margin:0 0 10px;
-  }
-  header.hero .eyebrow{ color:#7fd3cc; }
-  h1.title{ font-size:2.35rem; margin:0 0 14px; text-wrap:balance; font-weight:600; letter-spacing:.01em; }
-  .tagline{ font-size:1.05rem; color:#c7d1de; max-width:40em; margin:0 0 28px; }
-  .stamp{
-    display:inline-flex; gap:10px; align-items:center;
-    border:1px solid rgba(255,255,255,.35); border-radius:3px;
-    padding:7px 14px; font-size:.78rem; color:#dfe6ee;
-    background:rgba(255,255,255,.04);
-  }
-  .stamp b{ color:#fff; font-weight:600; }
-  .age-warn{
-    display:inline-block; margin-left:10px; font-size:.72rem; font-weight:600;
-    background:#f5e7d6; color:var(--warning-ink); border-radius:99px; padding:3px 10px;
-    vertical-align:middle;
-  }
-
-  /* Status board — タブ外（常時表示）。現場到着時に最初に見る数字。grid なので4〜6枚が1段で等幅に揃う。
-     各タイルは該当ブロックへのアンカー（別タブ内でもJSがタブを切り替えて飛ぶ） */
-  .statboard{ display:grid; grid-template-columns:repeat(auto-fit, minmax(136px, 1fr)); gap:12px; margin-top:28px; }
+  /* Board — セクション外（常時表示）。現場到着時に最初に見る数字。
+     1タイル＝小さな HeroUI Card。Header（意味色ドット＋ラベル）→ Content（大きい数値）の2階層。
+     ラベルは DOM 上どちらの並びでも上に来るよう order で固定する（旧 .num/.cap 併用のため）。 */
+  .board{ padding:30px 0 4px; }
+  .tagline{ font-size:1.02rem; color:var(--ink-soft); max-width:44em; margin:0 0 20px; }
+  .statboard{ display:grid; grid-template-columns:repeat(auto-fit, minmax(168px, 1fr)); gap:16px; }
   .stat-tile{
-    display:block;
-    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.22);
-    border-top:3px solid rgba(255,255,255,.35); border-radius:5px;
-    padding:12px 16px 10px; text-decoration:none; color:var(--navy-ink);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    --signal:var(--neutral); --signal-bg:var(--neutral-bg);
+    position:relative; display:flex; flex-direction:column; gap:9px; min-width:0;
+    padding:17px 20px 19px; text-decoration:none; color:var(--ink);
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius-card); box-shadow:var(--shadow);
   }
-  a.stat-tile:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.55); transform:translateY(-1px); }
-  .stat-tile .num{ display:block; font-size:1.85rem; font-weight:700; line-height:1.25; color:#fff; }
-  .stat-tile .cap{ display:block; font-size:.74rem; color:#c7d1de; letter-spacing:.04em; margin-top:2px; }
-  a.stat-tile .cap::after{ content:" ↓"; color:#9cc3ff; }
-  /* 意味色: 緑=健全 / amber=注意 / 赤=要対処（--teal は使わない。健全色を1つに） */
-  .stat-tile.ok{ border-top-color:var(--good); }
-  .stat-tile.warn{ border-top-color:var(--warning); }
-  .stat-tile.crit{ border-top-color:var(--critical); }
+  /* 上端のハイライト＝面に厚みを出す（.card と同じ立ち上がり） */
+  .stat-tile::before{
+    content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.055);
+  }
+  /* Header: 意味色ドット＋ラベル（リンクなら右端に ↓） */
+  .stat-tile__label, .stat-tile .cap{
+    order:1; display:flex; align-items:center; gap:8px; min-width:0;
+    font-family:var(--mono); font-size:.73rem; font-weight:600; letter-spacing:.04em;
+    line-height:1.5; color:var(--signal);
+  }
+  .stat-tile__label::before, .stat-tile .cap::before{
+    content:""; flex:none; width:7px; height:7px; border-radius:50%;
+    background:var(--signal); box-shadow:0 0 0 3px var(--signal-bg);
+  }
+  /* Content: 数値は単位ごと1つの塊。色は付けず、状態はヘッダのドット／ラベルが担う */
+  .stat-tile__value, .stat-tile .num{
+    order:2; display:block; font-family:var(--mono); font-variant-numeric:tabular-nums;
+    font-size:2.05rem; font-weight:700; line-height:1.15; letter-spacing:-.01em; color:var(--ink);
+  }
+  a.stat-tile .stat-tile__label::after, a.stat-tile .cap::after{ content:"↓"; margin-left:auto; flex:none; color:var(--blue); }
+  a.stat-tile:hover{ background:var(--surface-2); border-color:var(--line-strong); box-shadow:var(--shadow-lg); transform:translateY(-3px); }
+  .stat-tile:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  /* 意味色: 緑=健全 / amber=注意 / 赤=要対処 */
+  .stat-tile.ok{ --signal:var(--good); --signal-bg:var(--good-bg); }
+  .stat-tile.warn{ --signal:var(--warning); --signal-bg:var(--warning-bg); }
+  .stat-tile.crit{ --signal:var(--critical); --signal-bg:var(--critical-bg); }
 
-  /* Tab bar — 6タブ（復帰・意図・人・設計・運用・穴）。責務ごとに読み口を分ける。sticky で常に手元に置く。
-     タブはラベル幅（均等伸ばししない）。狭幅では横スクロールし、続きがある側を JS が .more-right で示す */
-  .tabbar{
-    position:sticky; top:0; z-index:40; background:var(--paper);
-    border-bottom:1px solid var(--line);
-    box-shadow: 0 8px 24px -16px rgba(20,32,46,.25);
-  }
-  .tabbar-inner{ display:flex; align-items:flex-end; gap:8px; overflow-x:auto; scrollbar-width:none; scroll-snap-type:x proximity; }
-  .tabbar-inner::-webkit-scrollbar{ display:none; }
-  .tabbar-inner.more-right{
-    -webkit-mask-image:linear-gradient(90deg, #000 82%, transparent);
-            mask-image:linear-gradient(90deg, #000 82%, transparent);
-  }
-  .tab{
-    flex:0 0 auto; scroll-snap-align:start;
-    display:inline-flex; align-items:center; gap:7px;
-    padding:13px 18px 11px; margin-bottom:-1px;
-    border:0; border-bottom:3px solid transparent; background:transparent;
-    color:var(--ink-soft); font-family:inherit; font-size:.95rem; font-weight:600; cursor:pointer; white-space:nowrap;
-  }
-  .tab .icon{ width:16px; height:16px; color:var(--teal); }
-  .tab:hover{ color:var(--ink); background:rgba(20,32,46,.03); }
-  .tab[aria-selected="true"]{
-    color:var(--ink); border-bottom-color:var(--teal); background:var(--card);
-    box-shadow: 0 1px 0 var(--card);   /* タブバーの下線を隠し、下のパネルへ“つながる” */
-  }
-  .tab:focus-visible{ outline:2px solid var(--teal); outline-offset:-2px; }
-  /* 穴タブだけは意味論上「要対処」の入口なので、アイコンと選択インジケータを amber にする（色は意味にのみ使う） */
-  .tab[data-tab="gaps"] .icon{ color:var(--warning); }
-  .tab[data-tab="gaps"][aria-selected="true"]{ border-bottom-color:var(--warning); }
-  /* アクティブタブの責務1行。タブ内の説明とパネル冒頭の説明をここ1箇所に統合（説明の三重化を避ける） */
-  .tab-hint{ margin:0; padding:8px 0 10px; font-size:.82rem; color:var(--ink-soft); min-height:1.6em; }
-  .tab-hint b{ color:var(--ink); font-weight:600; margin-right:.5em; }
+  /* Panels — 1セクション＝1 <section data-tab-panel>。JS が hidden を付け外しする */
+  /* sticky なトップバーの下に見出しが潜らないよう、直接 #resume 等へ飛んだ時の余白を確保する */
+  .panel{ padding:0 0 24px; scroll-margin-top:76px; }
+  .block{ padding:16px 0; scroll-margin-top:88px; overflow-wrap:anywhere; }
 
-  /* Panels — 1タブ＝1 <section data-tab-panel>。JS が hidden を付け外しする。JS無効・印刷時は全タブが縦に並ぶ */
-  .panel{ padding:0 0 24px; }
-  .block{ padding:32px 0; scroll-margin-top:96px; }
-  .block + .block{ border-top:1px solid var(--line); }
-  @media print{
-    .tabbar, #scrollbar{ display:none !important; }
-    .panel[hidden]{ display:block !important; }
-    .panel{ break-before:page; }
-    .panel:first-of-type{ break-before:auto; }
-  }
-
-  /* Since-last card — 前回キャッチアップ（MD frontmatter の commit）からの変化。左帯は意味色を持たないので付けない */
-  .since-card{ padding:20px 24px; }
-  .delta-row{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 10px; }
-  .delta{ font-size:.82rem; padding:3px 11px; border-radius:3px; border:1px solid var(--line); background:var(--paper); }
-  .delta b{ color:var(--teal-deep); font-weight:700; }
-  .since-note{ color:var(--ink-soft); font-size:.9rem; margin:0; }
-
-  /* Section heads */
+  /* 見出し（カード外で使う場合の互換） */
   .section-head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-  .section-head .icon{ color:var(--teal); flex:none; }
-  h2{
-    font-size:1.5rem; margin:0; font-weight:600; text-wrap:balance; letter-spacing:.01em;
-  }
+  .section-head .icon{ color:var(--neutral); flex:none; }
+  h2{ font-size:1.45rem; margin:0; font-weight:600; text-wrap:balance; letter-spacing:.01em; }
   h3{ font-size:1.05rem; margin:22px 0 6px; font-weight:600; color:var(--ink); }
   h3:first-child{ margin-top:0; }
-  /* .section-sub は凡例（色・記号・並び順の意味）だけに使う。節の要約や生成側への指示は書かない */
   .section-sub{ color:var(--ink-soft); font-size:.9rem; margin:0 0 20px; max-width:44em; }
 
   /* Key fact emphasis — the one thing in a paragraph the reader must not miss */
@@ -171,151 +453,201 @@
 
   .icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 
-  /* Cards */
-  .card{ background:var(--card); border:1px solid var(--line); border-radius:6px; box-shadow:var(--shadow); }
-  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:36px; }
-  @media (max-width:900px){ .grid2{ grid-template-columns:1fr; gap:28px; } }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:start; }
+  .grid2 > *{ min-width:0; }
+  @media (max-width:1100px){ .grid2{ grid-template-columns:1fr; } }
 
-  /* Resume card */
-  .resume-card{ border-left:4px solid var(--teal); padding:22px 26px; }
-  .resume-card pre{
-    background:var(--ink); color:#dcefee; border-top:3px solid var(--teal);
-    padding:16px 18px; border-radius:4px; overflow-x:auto; font-size:.86rem; line-height:1.65;
+  /* Since-last */
+  .delta-row{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 10px; }
+  .delta{ display:inline-flex; align-items:center; gap:6px; font-size:.82rem; padding:7px 16px; border-radius:var(--radius-full); border:1px solid var(--line); background:var(--surface-2); box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.05); }
+  .delta b{ color:var(--ink); font-family:var(--mono); font-weight:700; }
+  .since-note{ color:var(--ink-soft); font-size:.9rem; margin:0; }
+
+  /* Resume steps */
+  /* コードだけは逆に「へこませる」段（HeroUI Snippet 相当）。行カードとは役割が違う */
+  .resume-card pre, .card__content > pre{
+    background:var(--well); color:var(--ink); border:1px solid var(--line);
+    box-shadow:inset 0 3px 12px rgba(0,0,0,.45);
+    padding:20px 22px; border-radius:var(--radius); overflow-x:auto; font-size:.86rem; line-height:1.65;
   }
-  .resume-card code{ font-family:inherit; }
+  .resume-card code, .card__content > pre code{ font-family:inherit; }
   .resume-card p.note{ color:var(--ink-soft); font-size:.88rem; margin-top:10px; }
 
-  /* Next moves — レポートは事実で終わらず判断材料で終わる */
-  .next-card{ border-left:4px solid var(--blue); padding:22px 26px; }
-  .next-item{ display:flex; gap:14px; align-items:baseline; padding:11px 14px; background:var(--neutral-bg); border-radius:6px; margin:8px 0; }
-  .next-item .n{ flex:0 0 26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-size:.85rem; }
+  /* Next moves — レポートは事実で終わらず判断材料で終わる。1項目＝親カードの1段上に浮く行カード */
+  .next-item{ display:flex; gap:14px; align-items:baseline; padding:16px 20px; margin:12px 0; }
+  .next-item:first-child{ margin-top:0; }
+  .next-item:last-child{ margin-bottom:0; }
+  .next-item > div{ min-width:0; }
+  .next-item .n{ flex:0 0 28px; height:28px; border-radius:var(--radius-full); background:var(--blue-solid); color:#fff; font-family:var(--mono); font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-size:.85rem; box-shadow:var(--shadow-sm); }
   .next-item .act{ font-weight:600; }
   .next-item .why{ display:block; color:var(--ink-soft); font-size:.85rem; margin-top:2px; font-weight:400; }
 
   /* People */
-  .person{ display:flex; gap:14px; align-items:flex-start; padding:14px 0; }
-  .person + .person{ border-top:1px solid var(--line); }
-  .avatar{
-    width:38px; height:38px; border-radius:50%; background:var(--navy); color:var(--navy-ink);
-    display:flex; align-items:center; justify-content:center; font-weight:600; flex:none;
-    font-family:inherit;
-  }
+  /* 1人＝行カード（従来の区切り線は廃止し、面で分ける） */
+  .person{ display:flex; gap:14px; align-items:flex-start; padding:16px 20px; }
+  .person + .person{ margin-top:12px; }
   .person-body{ flex:1; min-width:0; }
-  .person-name{ font-weight:600; }
+  .person-name{ font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .person-meta{ color:var(--ink-soft); font-size:.82rem; }
-  .share-bar{ height:5px; background:var(--neutral-bg); border-radius:3px; margin-top:8px; overflow:hidden; }
-  .share-fill{ height:100%; background:var(--teal); }
-  .pill{
-    display:inline-block; font-size:.72rem; padding:2px 9px; border-radius:99px;
-    background:var(--neutral-bg); color:var(--neutral); font-weight:600; white-space:nowrap;
-  }
-  /* 役割の穴 — 欠員・単一人依存・不在レビュアー等。amber＝人待ち／注意 */
-  .gap-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
-  .gap-list li{
-    display:flex; gap:12px; align-items:flex-start; padding:12px 16px;
-    background:var(--card); border:1px solid var(--line); border-left:4px solid var(--warning); border-radius:0 6px 6px 0;
-  }
-  .gap-list .icon{ color:var(--warning); flex:none; margin-top:3px; }
-  .gap-list .role{ font-weight:600; }
-  .gap-list .why{ display:block; color:var(--ink-soft); font-size:.85rem; margin-top:2px; }
+  .share-bar{ height:5px; background:var(--neutral-bg); border-radius:var(--radius-full); margin-top:8px; overflow:hidden; }
+  .share-fill{ height:100%; background:var(--neutral); border-radius:inherit; }
 
-  /* Diagram sheets */
-  .sheet{ background:var(--card); border:1px solid var(--line); border-radius:6px; margin-bottom:20px; }
-  .sheet-head{
-    display:flex; align-items:baseline; gap:12px; padding:16px 22px;
-    border-bottom:1px solid var(--line); border-top:3px solid var(--teal); border-radius:6px 6px 0 0;
-  }
-  .sheet-num{ font-weight:700; color:var(--teal); font-size:.9rem; letter-spacing:.03em; }
-  .sheet-title{ font-weight:600; flex:1; }
-  .expand-btn{
-    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--paper);
-    color:var(--ink-soft); font-size:.78rem; padding:5px 11px; border-radius:99px; cursor:pointer;
-    font-family:inherit;
-  }
-  .expand-btn:hover{ color:var(--teal-deep); border-color:var(--teal); }
-  .expand-btn .icon{ width:14px; height:14px; }
-  .sheet-body{ padding:20px 22px; overflow-x:auto; }
+  /* Diagram sheets — Card(secondary): Header(図面番号・表題・拡大) → Content(SVG) → Footer(出典) */
+  .sheet{ margin-bottom:22px; }
+  .sheet-num{ font-family:var(--mono); font-weight:700; color:var(--ink-soft); font-size:.86rem; letter-spacing:.03em; }
+  .sheet-body{ overflow-x:auto; }
   .sheet-body svg{ max-width:100%; max-height:560px; width:auto; height:auto; display:block; margin:0 auto; cursor:zoom-in; }
-  .sheet-src{ padding:10px 22px 16px; color:var(--ink-soft); font-size:.78rem; border-top:1px dashed var(--line); }
-  .sheet-omitted{ padding:20px 22px; color:var(--ink-soft); font-style:italic; }
+  /* 図面もカードの一種として額装する（明色の紙 ＋ 縁 ＋ 影） */
+  .sheet-body svg, .lightbox-inner > svg{
+    background:var(--diagram-paper); color:#14202e; padding:14px;
+    border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow-sm), 0 0 0 1px rgba(0,0,0,.25);
+  }
+  .sheet-src{ font-family:var(--mono); }
+  .sheet-omitted{ color:var(--ink-soft); font-style:italic; margin:0; }
 
-  /* Diagram lightbox — click-to-zoom for full detail. 幅はビューポートに収め、小さい図は JS が 2 倍までに留める */
+  /* Diagram lightbox — click-to-zoom for full detail */
   .lightbox{
-    display:none; position:fixed; inset:0; background:rgba(20,32,46,.85); z-index:200;
+    display:none; position:fixed; inset:0; background:rgba(5,8,12,.9); z-index:200;
     align-items:center; justify-content:center; padding:36px;
   }
   .lightbox.open{ display:flex; }
   .lightbox-inner{
-    background:var(--card); border-radius:8px; padding:28px; max-width:96vw; max-height:92vh;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-card); padding:44px 24px 24px; max-width:96vw; max-height:92vh;
     overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.4); position:relative;
   }
   .lightbox-inner svg{ display:block; width:min(1400px, 92vw); max-width:none; height:auto; }
   .lightbox-close{
-    position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
+    position:absolute; top:10px; right:10px; width:34px; height:34px; border-radius:var(--radius-full);
     border:1px solid var(--line); background:var(--paper); color:var(--ink-soft); cursor:pointer;
     display:flex; align-items:center; justify-content:center; font-size:1rem; line-height:1;
   }
   .lightbox-close:hover{ color:var(--critical); border-color:var(--critical); }
   .lightbox-hint{ text-align:center; color:var(--ink-soft); font-size:.78rem; margin-top:10px; }
 
-  /* Process / stack（運用タブ） */
+  /* Process / stack（運用） */
   .process-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
-  .process-list li{ display:flex; gap:12px; align-items:flex-start; }
-  .process-list .icon{ margin-top:2px; color:var(--navy); }
+  .process-list li{ display:flex; gap:13px; align-items:flex-start; padding:15px 18px; }
+  .process-list .icon{ margin-top:3px; color:var(--neutral); }
   .chip-tray{ display:flex; flex-wrap:wrap; gap:10px; }
-  .chip{
-    display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line);
-    border-radius:5px; padding:7px 12px; font-size:.85rem;
-  }
-  .chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--teal); flex:none; }
-  .chip .ver{ color:var(--ink-soft); }
 
-  /* Timeline（穴タブ・直近の状態とやりかけ） */
-  .timeline{ position:relative; padding-left:24px; }
-  .timeline::before{ content:""; position:absolute; left:5px; top:4px; bottom:4px; width:1px; background:var(--line); }
-  .tl-item{ position:relative; padding-bottom:20px; }
+  /* Timeline（穴・直近の状態とやりかけ） */
+  .timeline{ position:relative; padding-left:30px; }
+  .timeline::before{ content:""; position:absolute; left:7px; top:10px; bottom:10px; width:1px; background:var(--line); }
+  .tl-item{ padding:15px 18px; margin-bottom:12px; }
+  .tl-item:last-child{ margin-bottom:0; }
   .tl-item::before{
-    content:""; position:absolute; left:-24px; top:5px; width:10px; height:10px; border-radius:50%;
-    background:var(--card); border:2px solid var(--neutral);
+    content:""; position:absolute; left:-30px; top:19px; width:11px; height:11px; border-radius:50%;
+    background:var(--surface); border:2px solid var(--neutral); z-index:1;
   }
-  .tl-item.now::before{ border-color:var(--teal); background:var(--teal); }
+  .tl-item.now::before{ border-color:var(--blue); background:var(--blue); }
   .tl-item.flag::before{ border-color:var(--warning); background:var(--warning); }
   .tl-date{ font-size:.78rem; color:var(--ink-soft); }
   .tl-msg{ margin-top:2px; }
 
-  /* Discovery cards（穴タブ・穴・発見事項） */
-  .gap-legend{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px; }
-  .gap-legend .kind-pill{ margin:0; }
-  .discovery{ border-left:4px solid var(--neutral); background:var(--card); border-radius:0 6px 6px 0; padding:14px 18px; margin-bottom:12px; border-top:1px solid var(--line); border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
-  .discovery.sev-critical{ border-left-color:var(--critical); }
-  .discovery.sev-warning{ border-left-color:var(--warning); }
-  .discovery.sev-good{ border-left-color:var(--good); }
-  .sev-pill{ font-size:.7rem; font-weight:700; letter-spacing:.03em; padding:2px 8px; border-radius:99px; margin-right:8px; }
-  .sev-pill.sev-critical{ background:#f4e2df; color:var(--critical); }
-  .sev-pill.sev-warning{ background:#f5e7d6; color:var(--warning-ink); }
-  .sev-pill.sev-good{ background:#dff0e6; color:var(--good); }
-  .sev-pill.sev-neutral{ background:var(--neutral-bg); color:var(--neutral); }
-  /* 穴の種類（ボトルネック／矛盾／TBD／未配線／デッドパス）。深刻度ではなく分類なので色は付けない */
-  .kind-pill{ font-size:.7rem; font-weight:600; padding:2px 8px; border-radius:3px; margin-right:8px; border:1px solid var(--line); color:var(--ink-soft); background:var(--paper); }
-  .discovery .evidence{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
+  /* 穴の種類の凡例 */
+  .gap-legend{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; }
+  .gap-legend .kind-pill, .gap-legend .badge{ margin:0; }
 
-  /* Links — タブ外（常時表示・末尾）。リンクは青（意味色: 青=次の一手・強調・リンク） */
+  /* Links */
   .link-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
-  .link-list li{ display:flex; gap:10px; align-items:flex-start; }
-  .link-list .icon{ color:var(--blue); margin-top:2px; }
-  #links{ border-top:1px solid var(--line); padding:32px 0; }
-  a{ color:var(--blue); text-decoration-color:rgba(33,88,166,.35); text-underline-offset:3px; }
+  .link-list li{ display:flex; gap:12px; align-items:flex-start; padding:15px 18px; }
+  .link-list .icon{ color:var(--blue); margin-top:3px; flex:none; }
+  #links{ border-top:1px solid var(--line); padding:30px 0; }
+  a{ color:var(--blue); text-decoration-color:currentColor; text-underline-offset:3px; }
   a:hover{ text-decoration-color:var(--blue); }
-  a:focus-visible, button:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
 
-  table{ border-collapse:collapse; width:100%; font-size:.88rem; }
-  th,td{ border:1px solid var(--line); padding:7px 10px; text-align:left; }
-  th{ background:var(--paper); font-weight:600; }
+  /* テーブルも面として扱う（外周を角丸で囲い、内側は横罫のみ） */
+  table{
+    border-collapse:separate; border-spacing:0; width:100%; font-size:.88rem;
+    background:var(--row); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow-sm); overflow:hidden;
+  }
+  th,td{ border:0; border-bottom:1px solid var(--line-soft); padding:11px 14px; text-align:left; }
+  tr:last-child td{ border-bottom:0; }
+  th{ background:var(--row-hover); font-weight:600; border-bottom:1px solid var(--line); }
   .tbd{ color:var(--warning-ink); font-weight:600; }
 
-  footer{ text-align:center; padding:36px 24px 56px; color:var(--ink-soft); font-size:.82rem; }
-  footer code{ background:var(--neutral-bg); padding:1px 6px; border-radius:3px; }
+  footer{ padding:24px 0 44px; color:var(--ink-soft); font-size:.82rem; overflow-wrap:anywhere; }
+  footer code{ background:var(--neutral-bg); padding:1px 6px; border-radius:4px; }
+
+  .visually-hidden{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+
+  /* ===== 狭幅: サイドバーはドロワー。メインは全幅 ===== */
+  .scrim{ display:none; position:fixed; inset:0; background:rgba(5,8,12,.6); z-index:55; }
+  @media (max-width:900px){
+    .app{ grid-template-columns:minmax(0,1fr); }
+    .sidebar{
+      position:fixed; top:0; left:0; bottom:0; width:min(300px, 86vw); height:auto; min-height:0;
+      transform:translateX(-100%); transition:transform .22s ease; box-shadow:none;
+    }
+    body.nav-open .sidebar{ transform:translateX(0); box-shadow:0 0 40px rgba(0,0,0,.5); }
+    body.nav-open .scrim{ display:block; }
+    body.nav-open{ overflow:hidden; }
+    .nav-toggle{ display:inline-flex; }
+    .col{ padding:0 24px; }
+    .board{ padding:24px 0 4px; }
+  }
+  @media (max-width:600px){
+    :root{ --radius-card:18px; --radius:15px; }
+    .col{ padding:0 18px; }
+    h2{ font-size:1.22rem; }
+    .card__title{ font-size:1.1rem; }
+    .topbar-desc{ display:none; }
+    .statboard{ grid-template-columns:repeat(auto-fit, minmax(132px, 1fr)); }
+    .card__header{ padding:20px 18px 0; }
+    .card__content{ padding:14px 18px 20px; }
+    .card__footer{ padding:12px 18px; }
+    .sheet-head-title{ flex-basis:45%; }
+    .lightbox{ padding:12px; }
+    .lightbox-inner{ padding:44px 12px 16px; }
+  }
+
+  /* 印刷は明るい紙・全セクション縦並び（サイドバーのナビは畳み、案件名だけ残す） */
+  @media print{
+    :root{
+      color-scheme:light;
+      --ink:#14202e; --ink-soft:#3b4756; --paper:#fff;
+      --surface:#fff; --surface-2:#fafbfc; --surface-3:#f4f6f8; --surface-4:#eef1f4; --surface-5:#e7ebef;
+      --navy:#fff; --well:#f4f6f8; --line:#aab4bf; --line-soft:#d3d9df; --neutral:#526171; --neutral-bg:#edf0f3;
+      --blue:#2158a6; --blue-bg:#edf3fc; --critical:#a32e23; --critical-bg:#f9eae7;
+      --warning:#865015; --warning-bg:#faf0df; --good:#28653e; --good-bg:#eaf4ed;
+      --critical-soft:rgba(163,46,35,.07); --warning-soft:rgba(134,80,21,.09);
+      --good-soft:rgba(40,101,62,.07); --blue-soft:rgba(33,88,166,.06);
+      --shadow:none; --shadow-sm:none; --shadow-lg:none; --line-strong:#8b97a4;
+    }
+    .app{ display:block; }
+    /* 狭幅（ドロワー）指定の transform / width / position もここで打ち消す。打ち消さないと紙面から案件名が消える */
+    .sidebar{ position:static; transform:none; width:auto; height:auto; min-height:0; padding:0 0 12px; border-right:0; border-bottom:1px solid var(--line); overflow:visible; box-shadow:none; transition:none; }
+    .nav, .nav-label, .sidebar-foot, .nav-toggle, .scrim, #scrollbar, .lightbox, .expand-btn, .btn--icon-only{ display:none !important; }
+    .brand{ border-bottom:0; padding:0; margin:0; }
+    h1.title{ font-size:1.9rem; }
+    .topbar{ position:static; box-shadow:none; border-bottom:1px solid var(--line); }
+    .panel[hidden]{ display:block !important; }
+    .panel{ break-before:page; }
+    .board + .panel{ break-before:auto; }  /* :first-of-type は .board（同じ section）に取られるので使わない */
+    .col{ max-width:none; padding:0; }
+    .statboard{ grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); }
+    .stat-tile, .resume-card pre, .card__content > pre, .chip, .btn, table,
+    .row-card, .next-item, .alert, .discovery, .gap-list li, .person, .tl-item, .link-list li, .process-list li{ box-shadow:none; }
+    .card::before, .stat-tile::before,
+    .row-card::after, .next-item::after, .alert::after, .discovery::after, .gap-list li::after,
+    .person::after, .tl-item::after, .link-list li::after, .process-list li::after{ display:none; }
+    .next-item .n{ background:var(--paper); color:var(--blue); border:1px solid var(--blue); }
+    .card, .stat-tile, .row-card, .next-item, .alert, .discovery, .gap-list li, .person, .tl-item, .link-list li, .process-list li{ break-inside:avoid; }
+    .block{ padding:20px 0; }
+  }
 </style>
+<noscript><style>
+  /* JS無効: 全セクションを縦並びにし、サイドバーのナビは畳む（押しても切り替わらないため） */
+  .panel[hidden]{ display:block; }
+  .app{ display:block; }
+  .sidebar{ position:static; transform:none; width:auto; height:auto; min-height:0; overflow:visible; border-right:0; border-bottom:1px solid var(--line); padding:20px 24px; box-shadow:none; }
+  .nav, .nav-label, .nav-toggle{ display:none; }
+  .brand{ border-bottom:0; padding:0; margin:0; }
+  h1.title{ font-size:1.9rem; }
+</style></noscript>
 </head>
 <body>
 
@@ -332,189 +664,279 @@
   <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
   <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3"/><path d="M12 15h5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
 </svg>
 
-<div id="scrollbar"><div id="scrollbar-fill"></div></div>
+<div class="app">
 
-<!-- ===== タブ外（常時表示）: ヒーロー＋状況ボード ===== -->
-<header class="hero">
-  <div class="col hero-inner">
-    <p class="eyebrow">案件キャッチアップ・レポート</p>
+<!-- ===== 左サイドバー: ブランド＋6セクションのナビ（data-tab はパネルの id と一致） ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <p class="eyebrow">案件キャッチアップ</p>
     <h1 class="title serif">{{PROJECT_NAME}}</h1>
+  </div>
+  <p class="nav-label">セクション</p>
+  <div class="nav" role="tablist" aria-orientation="vertical" aria-label="レポートのセクション" id="navlist">
+    <button class="nav-item" role="tab" type="button" id="tab-resume" data-tab="resume" aria-controls="resume" aria-selected="true" tabindex="0" data-desc="30秒サマリー・前回からの変化・再開手順・次の一手。ここだけ読めば作業は始められる"><svg class="icon"><use href="#i-compass"/></svg><span><span class="lab">復帰</span><span class="desc">今どう動くか</span></span></button>
+    <button class="nav-item" role="tab" type="button" id="tab-intent" data-tab="intent" aria-controls="intent" aria-selected="false" tabindex="-1" data-desc="なぜこのリポジトリがあるのか。背景・目的・誰のための何か（README・docs・コミット本文から）"><svg class="icon"><use href="#i-target"/></svg><span><span class="lab">意図</span><span class="desc">なぜあるか</span></span></button>
+    <button class="nav-item" role="tab" type="button" id="tab-people" data-tab="people" aria-controls="people" aria-selected="false" tabindex="-1" data-desc="誰が作り、誰が関わり、どの役割が埋まっていないか。判断を仰ぐ相手を探す"><svg class="icon"><use href="#i-people"/></svg><span><span class="lab">人</span><span class="desc">誰に聞くか</span></span></button>
+    <button class="nav-item" role="tab" type="button" id="tab-design" data-tab="design" aria-controls="design" aria-selected="false" tabindex="-1" data-desc="システムの形。構造・依存関係 → 主要インターフェース → データ関係。図面はクリックで拡大"><svg class="icon"><use href="#i-layers"/></svg><span><span class="lab">設計</span><span class="desc">どういう形か</span></span></button>
+    <button class="nav-item" role="tab" type="button" id="tab-ops" data-tab="ops" aria-controls="ops" aria-selected="false" tabindex="-1" data-desc="コードがどう世に出て、どう回っているか。ブランチ運用・CI/CD・デプロイ先・定期ジョブと技術スタック"><svg class="icon"><use href="#i-branch"/></svg><span><span class="lab">運用</span><span class="desc">どう回るか</span></span></button>
+    <button class="nav-item" role="tab" type="button" id="tab-gaps" data-tab="gaps" aria-controls="gaps" aria-selected="false" tabindex="-1" data-desc="まだ気づいていないかもしれない箇所。やりかけ・ボトルネック・docs↔コードの矛盾・TBD・未配線"><svg class="icon"><use href="#i-warn"/></svg><span><span class="lab">穴</span><span class="desc">何を見落としたか</span></span></button>
+  </div>
+  <p class="sidebar-foot">正本は <code>docs/PROJECT_OVERVIEW.md</code>。古い場合は <code>/project-catchup</code> で再生成。</p>
+</aside>
+
+<div class="main">
+
+<!-- ===== トップバー（常時表示）: 現在地・生成日・SHA・経過警告 ===== -->
+<div class="topbar">
+  <div class="col topbar-inner">
+    <button class="btn btn--secondary btn--icon-only nav-toggle" type="button" id="nav-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="セクション一覧を開く"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <div class="topbar-where">
+      <p class="topbar-title" id="topbar-title" aria-live="polite"><span class="cur">復帰</span><span class="topbar-desc">30秒サマリー・前回からの変化・再開手順・次の一手。ここだけ読めば作業は始められる</span></p>
+    </div>
+    <div class="topbar-meta">
+      <span class="stamp mono" id="stamp" data-date="{{DATE}}"><b>GENERATED</b> {{DATE}} &nbsp;・&nbsp; <b>REV</b> {{SHA}}</span>
+    </div>
+  </div>
+  <div id="scrollbar"><div id="scrollbar-fill"></div></div>
+</div>
+
+<!-- ===== セクション外（常時表示）: タグライン＋状況ボード ===== -->
+<section class="board">
+  <div class="col">
     <p class="tagline">{{TAGLINE}}</p>
-    <span class="stamp mono" id="stamp" data-date="{{DATE}}"><b>GENERATED</b> {{DATE}} &nbsp;・&nbsp; <b>REV</b> {{SHA}}</span>
     <div class="statboard">{{STATBOARD_HTML}}</div>
   </div>
-</header>
+</section>
 
-<!-- ===== タブバー: 6タブ固定（勝手に減らさない）。data-tab はパネルの id と一致。data-desc はタブバー下のヒント1行に出る ===== -->
-<nav class="tabbar" aria-label="レポートのタブ">
-  <div class="col">
-    <div class="tabbar-inner" role="tablist" id="tablist">
-      <button class="tab" role="tab" type="button" id="tab-resume" data-tab="resume" aria-controls="resume" aria-selected="true" tabindex="0" data-desc="30秒サマリー・前回からの変化・再開手順・次の一手。ここだけ読めば作業は始められる"><svg class="icon"><use href="#i-compass"/></svg>復帰</button>
-      <button class="tab" role="tab" type="button" id="tab-intent" data-tab="intent" aria-controls="intent" aria-selected="false" tabindex="-1" data-desc="なぜこのリポジトリがあるのか。背景・目的・誰のための何か（README・docs・コミット本文から）"><svg class="icon"><use href="#i-target"/></svg>意図</button>
-      <button class="tab" role="tab" type="button" id="tab-people" data-tab="people" aria-controls="people" aria-selected="false" tabindex="-1" data-desc="誰が作り、誰が関わり、どの役割が埋まっていないか。判断を仰ぐ相手を探す"><svg class="icon"><use href="#i-people"/></svg>人</button>
-      <button class="tab" role="tab" type="button" id="tab-design" data-tab="design" aria-controls="design" aria-selected="false" tabindex="-1" data-desc="システムの形。構造・依存関係 → 主要インターフェース → データ関係。図面はクリックで拡大"><svg class="icon"><use href="#i-layers"/></svg>設計</button>
-      <button class="tab" role="tab" type="button" id="tab-ops" data-tab="ops" aria-controls="ops" aria-selected="false" tabindex="-1" data-desc="コードがどう世に出て、どう回っているか。ブランチ運用・CI/CD・デプロイ先・定期ジョブと技術スタック"><svg class="icon"><use href="#i-branch"/></svg>運用</button>
-      <button class="tab" role="tab" type="button" id="tab-gaps" data-tab="gaps" aria-controls="gaps" aria-selected="false" tabindex="-1" data-desc="まだ気づいていないかもしれない箇所。やりかけ・ボトルネック・docs↔コードの矛盾・TBD・未配線"><svg class="icon"><use href="#i-warn"/></svg>穴</button>
-    </div>
-    <p class="tab-hint" id="tab-hint" aria-live="polite"><b>復帰</b>30秒サマリー・前回からの変化・再開手順・次の一手。ここだけ読めば作業は始められる</p>
-  </div>
-</nav>
-
-<!-- ===== 復帰タブ（MD 1〜4節） ===== -->
+<!-- ===== 復帰（MD 1〜4節） ===== -->
 <section class="panel" id="resume" role="tabpanel" aria-labelledby="tab-resume" data-tab-panel="resume">
   <div class="col">
     <div class="block" id="summary">
-      <div class="section-head"><svg class="icon"><use href="#i-compass"/></svg><h2 class="serif">30秒サマリー</h2></div>
-      <div>{{SUMMARY_HTML}}</div>
+      <div class="card card--default">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-compass"/></svg>
+          <div class="card__heading"><h2 class="card__title serif">30秒サマリー</h2></div>
+        </div>
+        <div class="card__content">{{SUMMARY_HTML}}</div>
+      </div>
     </div>
 
     <div class="block" id="since-last">
-      <div class="card since-card">
-        <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">前回キャッチアップからの変化</h2></div>
-        <div>{{SINCE_LAST_HTML}}</div>
+      <div class="card card--default">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-clock"/></svg>
+          <div class="card__heading"><h2 class="card__title serif">前回キャッチアップからの変化</h2></div>
+        </div>
+        <div class="card__content">{{SINCE_LAST_HTML}}</div>
       </div>
     </div>
 
     <div class="block" id="resume-steps">
-      <div class="card resume-card">
-        <div class="section-head"><svg class="icon"><use href="#i-terminal"/></svg><h2 class="serif">再開手順</h2></div>
-        <div style="margin-top:10px">{{RESUME_HTML}}</div>
+      <div class="card card--secondary card--accent resume-card">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-terminal"/></svg>
+          <div class="card__heading"><h2 class="card__title serif">再開手順</h2></div>
+        </div>
+        <div class="card__content">{{RESUME_HTML}}</div>
       </div>
     </div>
 
     <div class="block" id="next">
-      <div class="card next-card">
-        <div class="section-head"><svg class="icon" style="color:var(--blue)"><use href="#i-target"/></svg><h2 class="serif">次の一手</h2></div>
-        <p class="section-sub">推定。着手するかの判断は読者が行う。</p>
-        <div>{{NEXT_HTML}}</div>
+      <div class="card card--tertiary card--accent next-card">
+        <div class="card__header">
+          <svg class="icon" style="color:var(--blue)"><use href="#i-target"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif">次の一手</h2>
+            <p class="card__description">推定。着手するかの判断は読者が行う。</p>
+          </div>
+        </div>
+        <div class="card__content">{{NEXT_HTML}}</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 意図タブ（MD 5節） ===== -->
+<!-- ===== 意図（MD 5節） ===== -->
 <section class="panel" id="intent" role="tabpanel" aria-labelledby="tab-intent" data-tab-panel="intent" hidden>
   <div class="col">
     <div class="block" id="intent-body">
-      <div class="section-head"><svg class="icon"><use href="#i-target"/></svg><h2 class="serif">背景・目的・対象読者</h2></div>
-      <div>{{INTENT_HTML}}</div>
+      <div class="card card--default">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-target"/></svg>
+          <div class="card__heading"><h2 class="card__title serif">背景・目的・対象読者</h2></div>
+        </div>
+        <div class="card__content">{{INTENT_HTML}}</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 人タブ（MD 6節） ===== -->
+<!-- ===== 人（MD 6節） ===== -->
 <section class="panel" id="people" role="tabpanel" aria-labelledby="tab-people" data-tab-panel="people" hidden>
   <div class="col">
     <div class="block" id="people-body">
       <div class="grid2">
-        <div>
-          <div class="section-head"><svg class="icon"><use href="#i-people"/></svg><h2 class="serif">作成者・関係者</h2></div>
-          <p class="section-sub">バー＝コミット数の比率。役割不明は TBD。</p>
-          <div>{{PEOPLE_HTML}}</div>
+        <div class="card card--default">
+          <div class="card__header">
+            <svg class="icon"><use href="#i-people"/></svg>
+            <div class="card__heading">
+              <h2 class="card__title serif">作成者・関係者</h2>
+              <p class="card__description">バー＝コミット数の比率。役割不明は TBD。</p>
+            </div>
+          </div>
+          <div class="card__content">{{PEOPLE_HTML}}</div>
         </div>
-        <div>
-          <div class="section-head"><svg class="icon" style="color:var(--warning)"><use href="#i-warn"/></svg><h2 class="serif">役割の穴</h2></div>
-          <p class="section-sub">amber＝人の面で詰まりうる箇所（推定）。</p>
-          <div>{{ROLE_GAPS_HTML}}</div>
+        <div class="card card--default card--warning">
+          <div class="card__header">
+            <svg class="icon" style="color:var(--warning)"><use href="#i-warn"/></svg>
+            <div class="card__heading">
+              <h2 class="card__title serif">役割の穴</h2>
+              <p class="card__description">amber＝人の面で詰まりうる箇所（推定）。</p>
+            </div>
+          </div>
+          <div class="card__content">{{ROLE_GAPS_HTML}}</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 設計タブ（MD 7節） ===== -->
+<!-- ===== 設計（MD 7節）: 図面1枚＝Card(secondary) ===== -->
 <section class="panel" id="design" role="tabpanel" aria-labelledby="tab-design" data-tab-panel="design" hidden>
   <div class="col">
     <div class="block" id="diagrams">
-      <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">構成図</h2></div>
-
-      <div class="sheet">
-        <div class="sheet-head">
-          <span class="sheet-num mono">DWG-01</span>
-          <svg class="icon" style="color:var(--ink-soft)"><use href="#i-layers"/></svg>
-          <span class="sheet-title">構造・依存関係</span>
-          <button class="expand-btn" type="button" data-zoom-target="dwg-01"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+      <div class="card card--secondary sheet">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-layers"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif sheet-head-title">構造・依存関係</h2>
+            <p class="card__description"><span class="sheet-num">DWG-01</span></p>
+          </div>
+          <div class="card__actions">
+            <button class="btn btn--tertiary btn--sm expand-btn" type="button" data-zoom-target="dwg-01"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+          </div>
         </div>
-        <div class="sheet-body" id="dwg-01">{{DIAGRAM_STRUCTURE_SVG}}</div>
-        <div class="sheet-src mono">{{DIAGRAM_STRUCTURE_SRC}}</div>
+        <div class="card__content sheet-body" id="dwg-01">{{DIAGRAM_STRUCTURE_SVG}}</div>
+        <div class="card__footer sheet-src">{{DIAGRAM_STRUCTURE_SRC}}</div>
       </div>
 
-      <div class="sheet">
-        <div class="sheet-head">
-          <span class="sheet-num mono">DWG-02</span>
-          <svg class="icon" style="color:var(--ink-soft)"><use href="#i-plug"/></svg>
-          <span class="sheet-title">主要インターフェース</span>
-          <button class="expand-btn" type="button" data-zoom-target="dwg-02"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+      <div class="card card--secondary sheet">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-plug"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif sheet-head-title">主要インターフェース</h2>
+            <p class="card__description"><span class="sheet-num">DWG-02</span></p>
+          </div>
+          <div class="card__actions">
+            <button class="btn btn--tertiary btn--sm expand-btn" type="button" data-zoom-target="dwg-02"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+          </div>
         </div>
-        <div class="sheet-body" id="dwg-02">{{DIAGRAM_INTERFACE_SVG}}</div>
-        <div class="sheet-src mono">{{DIAGRAM_INTERFACE_SRC}}</div>
+        <div class="card__content sheet-body" id="dwg-02">{{DIAGRAM_INTERFACE_SVG}}</div>
+        <div class="card__footer sheet-src">{{DIAGRAM_INTERFACE_SRC}}</div>
       </div>
 
-      <div class="sheet">
-        <div class="sheet-head">
-          <span class="sheet-num mono">DWG-03</span>
-          <svg class="icon" style="color:var(--ink-soft)"><use href="#i-db"/></svg>
-          <span class="sheet-title">データ関係</span>
-          <button class="expand-btn" type="button" data-zoom-target="dwg-03"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+      <div class="card card--secondary sheet">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-db"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif sheet-head-title">データ関係</h2>
+            <p class="card__description"><span class="sheet-num">DWG-03</span></p>
+          </div>
+          <div class="card__actions">
+            <button class="btn btn--tertiary btn--sm expand-btn" type="button" data-zoom-target="dwg-03"><svg class="icon"><use href="#i-expand"/></svg>拡大</button>
+          </div>
         </div>
-        <div class="sheet-body" id="dwg-03">{{DIAGRAM_ERD_SVG}}</div>
-        <div class="sheet-src mono">{{DIAGRAM_ERD_SRC}}</div>
+        <div class="card__content sheet-body" id="dwg-03">{{DIAGRAM_ERD_SVG}}</div>
+        <div class="card__footer sheet-src">{{DIAGRAM_ERD_SRC}}</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 運用タブ（MD 8節） ===== -->
+<!-- ===== 運用（MD 8節） ===== -->
 <section class="panel" id="ops" role="tabpanel" aria-labelledby="tab-ops" data-tab-panel="ops" hidden>
   <div class="col">
     <div class="block" id="process">
       <div class="grid2">
-        <div>
-          <div class="section-head"><svg class="icon"><use href="#i-branch"/></svg><h2 class="serif">開発・運用プロセス</h2></div>
-          <div>{{PROCESS_HTML}}</div>
+        <div class="card card--default">
+          <div class="card__header">
+            <svg class="icon"><use href="#i-branch"/></svg>
+            <div class="card__heading"><h2 class="card__title serif">開発・運用プロセス</h2></div>
+          </div>
+          <div class="card__content">{{PROCESS_HTML}}</div>
         </div>
-        <div>
-          <div class="section-head"><svg class="icon"><use href="#i-layers"/></svg><h2 class="serif">技術スタック</h2></div>
-          <div class="chip-tray" style="margin-top:6px">{{STACK_HTML}}</div>
+        <div class="card card--default">
+          <div class="card__header">
+            <svg class="icon"><use href="#i-layers"/></svg>
+            <div class="card__heading"><h2 class="card__title serif">技術スタック</h2></div>
+          </div>
+          <div class="card__content"><div class="chip-tray">{{STACK_HTML}}</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== 穴タブ（MD 9〜10節） ===== -->
+<!-- ===== 穴（MD 9〜10節） ===== -->
 <section class="panel" id="gaps" role="tabpanel" aria-labelledby="tab-gaps" data-tab-panel="gaps" hidden>
   <div class="col">
     <div class="block" id="recent">
-      <div class="section-head"><svg class="icon"><use href="#i-clock"/></svg><h2 class="serif">直近の状態とやりかけ</h2></div>
-      <p class="section-sub">新しい順。amber＝未コミット変更・WIP（推定）。</p>
-      <div class="timeline">{{RECENT_HTML}}</div>
+      <div class="card card--default">
+        <div class="card__header">
+          <svg class="icon"><use href="#i-clock"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif">直近の状態とやりかけ</h2>
+            <p class="card__description">新しい順。amber＝未コミット変更・WIP（推定）。</p>
+          </div>
+        </div>
+        <div class="card__content"><div class="timeline">{{RECENT_HTML}}</div></div>
+      </div>
     </div>
 
     <div class="block" id="discovery">
-      <div class="section-head"><svg class="icon" style="color:var(--warning)"><use href="#i-warn"/></svg><h2 class="serif">穴・発見事項</h2></div>
-      <p class="section-sub">左帯＝深刻度（赤=要対処 / amber=注意 / 緑=解消済み / 灰=中立）。角ラベル＝穴の種類。</p>
-      <div class="gap-legend" aria-label="穴の種類">
-        <span class="kind-pill">ボトルネック</span><span class="kind-pill">矛盾</span><span class="kind-pill">TBD</span><span class="kind-pill">未配線</span><span class="kind-pill">デッドパス</span>
+      <div class="card card--default">
+        <div class="card__header">
+          <svg class="icon" style="color:var(--warning)"><use href="#i-warn"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif">穴・発見事項</h2>
+            <p class="card__description">左帯＝深刻度（赤=要対処 / amber=注意 / 緑=解消済み / 灰=中立）。丸ラベル＝穴の種類。</p>
+            <div class="gap-legend" aria-label="穴の種類">
+              <span class="badge badge--outline kind-pill">ボトルネック</span><span class="badge badge--outline kind-pill">矛盾</span><span class="badge badge--outline kind-pill">TBD</span><span class="badge badge--outline kind-pill">未配線</span><span class="badge badge--outline kind-pill">デッドパス</span>
+            </div>
+          </div>
+        </div>
+        <div class="card__content">{{DISCOVERY_HTML}}</div>
       </div>
-      <div>{{DISCOVERY_HTML}}</div>
     </div>
   </div>
 </section>
 
-<!-- ===== タブ外（常時表示）: 関連リンク（MD 11節） ===== -->
+<!-- ===== セクション外（常時表示）: 関連リンク（MD 11節） ===== -->
 <section id="links">
   <div class="col">
-    <div class="section-head"><svg class="icon" style="color:var(--blue)"><use href="#i-link"/></svg><h2 class="serif">関連リンク</h2></div>
-    <ul class="link-list" style="margin-top:10px">{{LINKS_HTML}}</ul>
+    <div class="card card--default">
+      <div class="card__header">
+        <svg class="icon" style="color:var(--blue)"><use href="#i-link"/></svg>
+        <div class="card__heading"><h2 class="card__title serif">関連リンク</h2></div>
+      </div>
+      <div class="card__content"><ul class="link-list">{{LINKS_HTML}}</ul></div>
+    </div>
   </div>
 </section>
 
 <footer>
-  生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>。タブは URL の <code>#タブID</code>（resume / intent / people / design / ops / gaps）で直接開ける
+  <div class="col">
+    生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>。セクションは URL の <code>#セクションID</code>（resume / intent / people / design / ops / gaps）で直接開ける
+  </div>
 </footer>
+
+</div><!-- /.main -->
+</div><!-- /.app -->
+
+<div class="scrim" id="scrim" hidden></div>
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <div class="lightbox-inner" id="lightbox-inner">
@@ -523,30 +945,48 @@
 </div>
 
 <script>
-  // Tabs — 素のJS・外部依存なし。6タブの表示切替、キーボード操作（←→ Home End）、URL hash での復元。
-  // hash は「タブID（#gaps）」でも「タブ内ブロックのID（#recent, #since-last, #discovery）」でもよく、
-  // 後者なら含まれるタブを開いてからそのブロックへスクロールする（状況ボードのタイルはこれで別タブへ飛ぶ）。
-  // JSが動かない環境では hidden を外す処理も走らないため全タブが縦に並ぶ（劣化しても読める）。
+  // Sidebar nav — 素のJS・外部依存なし。6セクションの表示切替、キーボード操作（↑↓ ←→ Home End）、URL hash での復元。
+  // hash は「セクションID（#gaps）」でも「セクション内ブロックのID（#recent, #since-last, #discovery）」でもよく、
+  // 後者なら含まれるセクションを開いてからそのブロックへスクロールする（状況ボードのタイルはこれで別セクションへ飛ぶ）。
+  // JSが動かない環境では hidden を外す処理も走らないため全セクションが縦に並ぶ（劣化しても読める）。
   (function(){
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab[role="tab"]'));
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.nav-item[role="tab"]'));
     var panels = Array.prototype.slice.call(document.querySelectorAll('[data-tab-panel]'));
-    var bar = document.getElementById('tablist');
-    var hint = document.getElementById('tab-hint');
+    var title = document.getElementById('topbar-title');
     if (!tabs.length || !panels.length) return;
     var ids = tabs.map(function(t){ return t.getAttribute('data-tab'); });
 
-    function updateScrollHint(){
-      if (!bar) return;
-      var more = bar.scrollWidth - bar.clientWidth - bar.scrollLeft > 4;
-      bar.classList.toggle('more-right', more);
+    // ドロワー（狭幅時のみ実体を持つ）
+    var body = document.body;
+    var toggle = document.getElementById('nav-toggle');
+    var scrim = document.getElementById('scrim');
+    var sidebar = document.getElementById('sidebar');
+    function drawerActive(){ return toggle && getComputedStyle(toggle).display !== 'none'; }
+    function openDrawer(){
+      if (!drawerActive()) return;
+      body.classList.add('nav-open');
+      if (scrim) scrim.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'セクション一覧を閉じる');
+      var sel = sidebar && sidebar.querySelector('.nav-item[aria-selected="true"]');
+      if (sel) sel.focus();
     }
-    function revealTab(tab){
-      if (!bar || bar.scrollWidth <= bar.clientWidth) return;
-      var left = tab.offsetLeft - 16;
-      var right = tab.offsetLeft + tab.offsetWidth + 16 - bar.clientWidth;
-      if (left < bar.scrollLeft) bar.scrollLeft = left;
-      else if (right > bar.scrollLeft) bar.scrollLeft = right;
+    function closeDrawer(back){
+      if (!body.classList.contains('nav-open')) return;
+      body.classList.remove('nav-open');
+      if (scrim) scrim.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'セクション一覧を開く');
+      if (back && toggle.focus) toggle.focus();
     }
+    if (toggle){
+      toggle.addEventListener('click', function(){
+        if (body.classList.contains('nav-open')) closeDrawer(true); else openDrawer();
+      });
+    }
+    if (scrim) scrim.addEventListener('click', function(){ closeDrawer(true); });
+    window.addEventListener('resize', function(){ if (!drawerActive()) closeDrawer(false); });
+
     function activate(id, focusTab){
       if (ids.indexOf(id) < 0) return false;
       var active = null;
@@ -557,17 +997,20 @@
         if (on) active = t;
       });
       panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
-      document.body.setAttribute('data-active-tab', id);
-      if (hint && active){
-        hint.textContent = '';
-        var b = document.createElement('b');
-        b.textContent = active.textContent.trim();
-        hint.appendChild(b);
-        hint.appendChild(document.createTextNode(active.getAttribute('data-desc') || ''));
+      body.setAttribute('data-active-tab', id);
+      if (title && active){
+        title.textContent = '';
+        var cur = document.createElement('span');
+        cur.className = 'cur';
+        var lab = active.querySelector('.lab');
+        cur.textContent = lab ? lab.textContent.trim() : id;
+        var desc = document.createElement('span');
+        desc.className = 'topbar-desc';
+        desc.textContent = active.getAttribute('data-desc') || '';
+        title.appendChild(cur);
+        title.appendChild(desc);
       }
-      if (active) revealTab(active);
       if (focusTab && active) active.focus();
-      updateScrollHint();
       return true;
     }
     function setHash(id){
@@ -601,11 +1044,12 @@
         var id = t.getAttribute('data-tab');
         activate(id);
         setHash(id);
+        closeDrawer(false);
       });
       t.addEventListener('keydown', function(e){
         var j = i;
-        if (e.key === 'ArrowRight') j = (i + 1) % tabs.length;
-        else if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') j = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
         else if (e.key === 'Home') j = 0;
         else if (e.key === 'End') j = tabs.length - 1;
         else return;
@@ -614,15 +1058,12 @@
         setHash(ids[j]);
       });
     });
-    if (bar){
-      bar.addEventListener('scroll', updateScrollHint, { passive: true });
-      window.addEventListener('resize', updateScrollHint);
-    }
-    window.addEventListener('hashchange', function(){ applyHash(false); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeDrawer(true); });
+    window.addEventListener('hashchange', function(){ applyHash(false); closeDrawer(false); });
     applyHash(true);
   })();
 
-  // Scroll progress — 現在開いているタブ内の読了位置（受動表示）。
+  // Scroll progress — 現在開いているセクション内の読了位置（受動表示）。
   (function(){
     var fill = document.getElementById('scrollbar-fill');
     function onScroll(){
