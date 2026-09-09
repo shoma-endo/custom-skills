@@ -9,7 +9,8 @@
 - 推測・要約・創作をしない。取れなかった項目は規約文（「該当なし」等）で明示する。
 - 未知のプレースホルダが残ったら黙って空にせず exit 1（変換ロジックのバグとして落とす）。
 - 終了前に4種の検査を必ず走らせる: プレースホルダ残存 / 外部依存 / Artifact シェル禁止タグ /
-  data-tab-panel の6件。加えて再開手順の番号コメントの逐語性も件数で突き合わせる。
+  data-tab-panel の7件（6つの問いセクション + 「増やす」）。加えて再開手順の番号コメントの
+  逐語性も件数で突き合わせる。
 
 使い方（リポジトリ根で）:
     python3 <この位置>/build-overview-html.py \
@@ -904,6 +905,128 @@ def to_artifact(full_html: str) -> str:
     return f"<title>{m_title.group(1)}</title>\n{head_extra}\n\n{m_body.group(1).strip()}\n"
 
 
+# ── 「増やす」セクション: このレポートの育て方 ────────────────────────────────
+# 数週間ぶりに戻った読者が「穴の節をもっと掘りたい」「引き継ぎ先に渡したい」と思ったとき、
+# SKILL.md を開き直すところから始めさせない。成果物自身に、そのまま別のエージェントへ
+# 投げられるプロンプトを載せる。
+#
+# プロンプトが指すのは **MD正本の絶対パス**であって、この HTML ではない。HTML は MD から
+# 再生成できる使い捨てのビューなので、それを入力にすると劣化コピーが増える。
+#
+# カードは本スクリプトが書く。LLM には書かせない ── シェルとプロンプトの作者を1つに保つ。
+# 「この HTML を作り直す」テンプレートは意図的に置かない（作り直すのは /project-catchup）。
+
+READERS = "R1 自分（復帰）／ R2 引き継ぎ先・新規参画 ／ R3 外部（クライアント・上長）"
+
+_GROW_COMMON = """# 参照（必ず開いてから書く。中身はこのプロンプトに貼っていない）
+- 意味の正本: {md}
+- リポジトリ: {repo}
+
+**正本は MD。この HTML を入力にしないこと**（HTML は MD から再生成できる使い捨てのビュー）。
+正本に無い事実は書かない。取れないものは「該当なし」と書く。推測は「推定」と明記する。
+
+# 出力
+{outdir}/{outfile} に、<!DOCTYPE html> から始まる完結した HTML document を1枚書く。
+既存の docs/project-overview.html は書き換えない（併存させる）。
+
+# 制約
+- inline CSS / inline JS のみ。外部CDN・外部CSS・外部スクリプト・外部フォント・外部画像を
+  読み込まない。ネットワーク通信もしない（自己完結でないと検査に落ちる）。
+- 色は意味にだけ使う: 緑=健全・解消済み ／ amber=注意・WIP・人待ち ／ 赤=危険・要対処 ／
+  青=次の一手・強調・リンク。装飾目的で色を付けない。
+- 形が先、文字が後。構造・流れ・比較・状態は図・タイル・レイアウトで先に掴ませ、
+  文章は判断点だけに絞る。強調は各段落1箇所まで。
+- 事実で終わらず判断材料で終わる。「で、次に何をするか」まで書く（提案は推定と明記）。
+"""
+
+GROW_CARDS: list[dict[str, str]] = [
+    {
+        "id": "handoff",
+        "file": "project-overview-handoff.html",
+        "title": "引き継ぎ版を作る（読者 R2）",
+        "desc": "他の人にこのリポジトリを渡すとき。前提知識・地雷・読む順を1枚に。",
+        "task": "引き継ぎ先（このリポジトリもドメインも初見の開発者）が最初に読む1枚を作る。\n"
+                "前提知識 → 読む順（どのファイル・どの docs から）→ 触ると危ない箇所 →\n"
+                "誰に何を聞くか → まだ決まっていないこと、の順で構成する。\n"
+                "「次の一手」は薄くてよい（引き継ぎ直後は着手しない）。\n"
+                "逆に「なぜこうなっているか」は省略しない ── 引き継ぎ先の最初の事故は\n"
+                "理由が分からず作り直すこと。",
+    },
+    {
+        "id": "brief",
+        "file": "project-overview-brief.html",
+        "title": "外部説明版を作る（読者 R3）",
+        "desc": "クライアント・上長に状況を説明するとき。実装語を落として意思決定だけ残す。",
+        "task": "実装を知らない相手（クライアント・上長）向けの1枚を作る。\n"
+                "何のためのものか → 今どこまで進んでいるか → 相手の判断が要ることは何か →\n"
+                "リスクと、それが放置されるとどうなるか、の順。\n"
+                "テーブル名・関数名・型・コマンドは出さない。ドメイン語は使ってよい。\n"
+                "「あなたの返事待ち」の項目を先頭に集約する。",
+    },
+    {
+        "id": "deep",
+        "file": "project-overview-{{セクションID}}.html",
+        "title": "1セクションを深掘りする",
+        "desc": "穴・設計・運用など、1つの問いだけを掘り下げた別ページを作る。",
+        "task": "{{どのセクションを掘るか（resume / intent / people / design / ops / gaps のどれか）}}\n"
+                "の内容だけを掘り下げた1枚を作る。\n"
+                "正本の該当節を起点に、リポジトリを実際に読んで裏を取り、\n"
+                "正本に書ける粒度まで具体化する（ファイル名・行・コマンドまで落とす）。\n"
+                "掘った結果 正本に足すべき事実が見つかったら、HTML の末尾に\n"
+                "「正本へ追記すべき事実」として列挙する（正本は書き換えない）。",
+    },
+    {
+        "id": "free",
+        "file": "project-overview-{{id}}.html",
+        "title": "自由記述で1枚足す",
+        "desc": "上のどれでもないとき。1行目とファイル名を書き換えてから投げる。",
+        "task": "{{どんな1枚が欲しいか（例: 依存関係だけの図 / 定期ジョブの一覧 / コスト構造）}}",
+    },
+]
+
+
+def build_grow(md_path: Path, out_path: Path) -> str:
+    """「増やす」セクションの中身を組む。YAML ではなく MD正本の絶対パスを渡す。"""
+    md_abs = md_path.resolve()
+    outdir = out_path.resolve().parent
+    repo = md_abs.parent.parent if md_abs.parent.name == "docs" else md_abs.parent
+
+    cards: list[str] = []
+    for i, card in enumerate(GROW_CARDS, 1):
+        body_id = f"pc-body-{i}"
+        common = _GROW_COMMON.format(
+            md=md_abs, repo=repo, outdir=outdir, outfile=card["file"])
+        body = f"# やること\n{card['task']}\n\n{common}"
+        cards.append(
+            f'<article class="pc">'
+            f'<h3>{esc(card["title"])}</h3>'
+            f'<p class="pc-desc">{esc(card["desc"])}</p>'
+            f'<details><summary>プロンプトを見る</summary>'
+            f'<pre id="{body_id}">{esc(body)}</pre></details>'
+            f'<button type="button" class="btn btn--secondary btn--sm pc-copy" '
+            f'data-for="{body_id}" data-label="コピー">コピー</button>'
+            f'</article>'
+        )
+
+    paths = (
+        '<div class="pc-paths">'
+        f'<div><b>正本（MD）</b>{esc(str(md_abs))}</div>'
+        f'<div><b>出力先</b>{esc(str(outdir))}</div>'
+        f'<div><b>リポジトリ</b>{esc(str(repo))}</div>'
+        "</div>"
+    )
+
+    lead = (
+        '<p class="pc-lead">このレポートは<b>読者1人ぶん</b>（数週間ぶりに戻った自分）に'
+        "最適化されている。別の読者・別の深さが要るときは、下のプロンプトをコピーして"
+        "ローカルのファイルを開けるエージェント（Claude Code / Cursor / Codex）に投げると、"
+        f"別ページが1枚返ってくる。読者は {esc(READERS)} の3種を想定している。"
+        "<br>プロンプトが渡すのは<b>MD正本の絶対パス</b>で、この HTML ではない。"
+        "正本さえ最新なら、投げ直すだけで最新の事実から書かれる。</p>"
+    )
+    return lead + paths + "".join(cards)
+
+
 # ── 検査 ────────────────────────────────────────────────────────────────────
 # ドキュメント面: 実際に外部リソースを読みに行くタグ・属性だけを見る。
 DOC_FORBIDDEN: list[tuple[str, str]] = [
@@ -970,11 +1093,12 @@ def run_checks(out: Path, art: Path, md: Path | None) -> int:
         else:
             print(f"OK  {path}: 外部依存なし（自己完結）")
 
+        # 6つの問いセクション + 「増やす」（MD正本に対応する見出しを持たない機械生成セクション）
         panels = text.count("data-tab-panel=")
-        if panels == 6:
-            print(f"OK  {path}: data-tab-panel= 6件")
+        if panels == 7:
+            print(f"OK  {path}: data-tab-panel= 7件")
         else:
-            print(f"NG  {path}: data-tab-panel= {panels}件（6件であること）")
+            print(f"NG  {path}: data-tab-panel= {panels}件（7件であること）")
             ng += 1
 
     art_text = art.read_text(encoding="utf-8") if art.is_file() else ""
@@ -1140,6 +1264,7 @@ def main() -> None:
         "RECENT_HTML": recent_html,
         "DISCOVERY_HTML": discovery_html,
         "LINKS_HTML": links_html,
+        "GROW_HTML": build_grow(md_path, out_path),
     }
 
     tpl = tpl_path.read_text(encoding="utf-8")

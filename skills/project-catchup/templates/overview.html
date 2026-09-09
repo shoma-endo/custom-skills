@@ -638,6 +638,31 @@
     .card, .stat-tile, .row-card, .next-item, .alert, .discovery, .gap-list li, .person, .tl-item, .link-list li, .process-list li{ break-inside:avoid; }
     .block{ padding:20px 0; }
   }
+
+  /* ===== 増やす: プロンプトカード ===== */
+  .pc-lead{ margin:0 0 14px; color:var(--ink-soft); line-height:1.85; max-width:72ch; }
+  .pc-paths{
+    background:var(--well); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:12px 14px; margin:0 0 16px; font-family:var(--mono); font-size:.78rem;
+    line-height:1.95; overflow-x:auto; box-shadow:inset 0 1px 2px rgba(0,0,0,.28);
+  }
+  .pc-paths b{ color:var(--neutral); font-weight:600; margin-right:.6em; }
+  .pc{ background:var(--row); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:14px 16px; margin:0 0 10px; }
+  .pc:hover{ background:var(--row-hover); }
+  .pc h3{ margin:0 0 3px; font-size:.95rem; font-weight:650; color:var(--ink); }
+  .pc .pc-desc{ margin:0 0 10px; font-size:.82rem; color:var(--neutral); line-height:1.7; }
+  .pc>details>summary{ cursor:pointer; font-size:.8rem; color:var(--blue); list-style:none; }
+  .pc>details>summary::-webkit-details-marker{ display:none; }
+  .pc>details>summary::before{ content:"\25B8\00a0"; }
+  .pc>details[open]>summary::before{ content:"\25BE\00a0"; }
+  .pc>details>summary:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+  .pc pre{
+    margin:10px 0 0; padding:12px; background:var(--well); border:1px solid var(--line-soft);
+    border-radius:var(--radius); font-family:var(--mono); font-size:.74rem; line-height:1.75;
+    white-space:pre-wrap; word-break:break-word; color:var(--ink-soft);
+  }
+  .pc-copy{ margin-top:10px; }
 </style>
 <noscript><style>
   /* JS無効: 全セクションを縦並びにし、サイドバーのナビは畳む（押しても切り替わらないため） */
@@ -683,8 +708,9 @@
     <button class="nav-item" role="tab" type="button" id="tab-design" data-tab="design" aria-controls="design" aria-selected="false" tabindex="-1" data-desc="システムの形。構造・依存関係 → 主要インターフェース → データ関係。図面はクリックで拡大"><svg class="icon"><use href="#i-layers"/></svg><span><span class="lab">設計</span><span class="desc">どういう形か</span></span></button>
     <button class="nav-item" role="tab" type="button" id="tab-ops" data-tab="ops" aria-controls="ops" aria-selected="false" tabindex="-1" data-desc="コードがどう世に出て、どう回っているか。ブランチ運用・CI/CD・デプロイ先・定期ジョブと技術スタック"><svg class="icon"><use href="#i-branch"/></svg><span><span class="lab">運用</span><span class="desc">どう回るか</span></span></button>
     <button class="nav-item" role="tab" type="button" id="tab-gaps" data-tab="gaps" aria-controls="gaps" aria-selected="false" tabindex="-1" data-desc="まだ気づいていないかもしれない箇所。やりかけ・ボトルネック・docs↔コードの矛盾・TBD・未配線"><svg class="icon"><use href="#i-warn"/></svg><span><span class="lab">穴</span><span class="desc">何を見落としたか</span></span></button>
+    <button class="nav-item" role="tab" type="button" id="tab-grow" data-tab="grow" aria-controls="grow" aria-selected="false" tabindex="-1" data-desc="このレポートを育てる導線。読者を変えた版・深掘り版を別のエージェントに書かせるプロンプト集"><svg class="icon"><use href="#i-expand"/></svg><span><span class="lab">増やす</span><span class="desc">どう育てるか</span></span></button>
   </div>
-  <p class="sidebar-foot">正本は <code>docs/PROJECT_OVERVIEW.md</code>。古い場合は <code>/project-catchup</code> で再生成。</p>
+  <p class="sidebar-foot">正本は <code>docs/PROJECT_OVERVIEW.md</code>。古い場合は <code>/project-catchup</code> で再生成。読み口を足すなら「増やす」。</p>
 </aside>
 
 <div class="main">
@@ -914,6 +940,24 @@
   </div>
 </section>
 
+<!-- ===== 増やす: このレポートの育て方（MD正本に対応する見出しを持たない機械生成セクション） ===== -->
+<section class="panel" id="grow" role="tabpanel" aria-labelledby="tab-grow" data-tab-panel="grow" hidden>
+  <div class="col">
+    <div class="block" id="grow-prompts">
+      <div class="card card--default">
+        <div class="card__header">
+          <svg class="icon" style="color:var(--blue)"><use href="#i-expand"/></svg>
+          <div class="card__heading">
+            <h2 class="card__title serif">このレポートを育てる</h2>
+            <p class="card__description">プロンプトをコピーして、ローカルのファイルを開けるエージェントに投げる。</p>
+          </div>
+        </div>
+        <div class="card__content">{{GROW_HTML}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== セクション外（常時表示）: 関連リンク（MD 11節） ===== -->
 <section id="links">
   <div class="col">
@@ -929,7 +973,7 @@
 
 <footer>
   <div class="col">
-    生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>。セクションは URL の <code>#セクションID</code>（resume / intent / people / design / ops / gaps）で直接開ける
+    生成: <span class="mono">{{DATE}}</span>（commit <code>{{SHA}}</code>）— 古い場合は <code>/project-catchup</code> で再生成。正本は <code>docs/PROJECT_OVERVIEW.md</code>。セクションは URL の <code>#セクションID</code>（resume / intent / people / design / ops / gaps / grow）で直接開ける
   </div>
 </footer>
 
@@ -1157,6 +1201,35 @@
     box.addEventListener('click', function(e){ if (e.target === box) close(); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
   })();
+  // 「増やす」セクションのコピーボタン。clipboard が使えない環境では textarea 選択に落とす。
+  (function(){
+    var host = document.getElementById('grow');
+    if (!host) return;
+    host.addEventListener('click', function(ev){
+      var btn = (ev.target && ev.target.closest) ? ev.target.closest('.pc-copy') : null;
+      if (!btn) return;
+      var body = host.querySelector('#' + btn.getAttribute('data-for'));
+      if (!body) return;
+      var text = body.textContent;
+      var label = btn.getAttribute('data-label') || 'コピー';
+      function done(){
+        btn.textContent = 'コピーした';
+        setTimeout(function(){ btn.textContent = label; }, 1600);
+      }
+      function fallback(){
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+    });
+  })();
+
 </script>
 </body>
 </html>
