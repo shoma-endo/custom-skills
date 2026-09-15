@@ -9,6 +9,7 @@ Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 | スキル | 用途 |
 |--------|------|
 | [automation-scout](skills/automation-scout/) | AIコーディングツールのチャット履歴から反復パターンを抽出し、スキル化・自動化候補を推奨度付きで提案 |
+| [dads-powerpoint](skills/dads-powerpoint/) | 内容を整理・構造化してから、デジタル庁デザインシステム（DADS）の配色・書体・余白を応用した編集可能な PowerPoint を作成・改稿。公式文書14本を同梱 |
 | [e2e-testcases](skills/e2e-testcases/) | リポジトリ解析にもとづく E2E テストケース設計（機能・非機能）。`docs/TEST_CASES.md` を生成 |
 | [estimate](skills/estimate/) | 受託開発の見積もり（工数・金額・スケジュール・見積書）。質問シート先行、レートカードは個人設定で分離 |
 | [lark-translate](skills/lark-translate/) | Lark 機械翻訳 API によるテキスト翻訳（16言語＋glossary 対訳固定）と言語自動判定 |
@@ -19,6 +20,17 @@ Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 | [skill-sheet-scout](skills/skill-sheet-scout/) | SES技術経歴書の月次更新支援。直近1ヶ月の全行動（git・Vault・Lark）を収集し、単価に効く追記候補を文面案付きで提案 |
 
 ## インストール
+
+### npx skills add（推奨）
+
+[skills CLI](https://github.com/vercel-labs/skills) がこのリポジトリを走査して、SKILL.md 単位で導入できる。
+
+```bash
+npx skills add shoma-endo/custom-skills --list              # 収録スキルを一覧
+npx skills add shoma-endo/custom-skills --skill estimate    # 1本だけ導入
+```
+
+### 手動（clone → コピー or symlink）
 
 使いたいスキルを `~/.claude/skills/`（Claude Code の user スコープ）に置くだけ。
 
