@@ -1,6 +1,6 @@
 ---
 name: readme-audit
-description: README・主要docsと実コードの整合を監査し、乖離を根拠ファイル付きで列挙してから承認を得て更新する。「READMEは最新？」「README監査して」「README更新して」「/readme-audit」で起動。不負責：新規参画向けの全体像ドキュメント生成（project-catchup）、READMEの新規作成。
+description: README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。
 allowed-tools:
   - Read
   - Write

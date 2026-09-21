@@ -1,6 +1,6 @@
 ---
 name: meishi
-description: 名刺の作成・改版・入稿データ生成。「名刺を更新して」「名刺の実績数字を変えて」「名刺を刷り直す」「/meishi」で起動。HTML正本の編集→350dpi入稿PNG/PDF生成→印刷基準の検証（文字pt・マージン・線の視認性）→ZIP梱包まで。不負責：印刷発注の実行（手順の案内のみ）、LP本体の変更。
+description: 名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。
 allowed-tools:
   - Read
   - Write

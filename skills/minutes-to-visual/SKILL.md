@@ -1,6 +1,6 @@
 ---
 name: minutes-to-visual
-description: Larkビデオ会議（minutes URL）の文字起こしを取得し、図解画像・Larkスライド・Lark Docsまとめのいずれかに視覚化する。「この会議を図解して」「会議内容をスライドにして」「minutesをDocsにまとめて」「/minutes-to-visual」で起動。不負責：議事録のVaultノート化・タスク照合（meeting-followup）、議事録の定期自動生成（my-agent の自動議事録パイプライン）、スライド・Docs単体の編集（lark-slides / lark-doc）。
+description: Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。
 allowed-tools:
   - Read
   - Write

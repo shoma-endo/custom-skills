@@ -1,6 +1,6 @@
 ---
 name: automation-scout
-description: Claude Code / Codex / Cursor の直近チャット履歴から反復パターンを抽出し、スキル化・taktワークフロー化・launchdジョブ化すべき候補を推奨度付きで提案する。「自動化候補探して」「スキル化した方がいいものある？」「/automation-scout」で起動。提案のみでファイルは作らない。不負責：スキルの実作成（skill-creator）、公開スキルの検索（find-skills）、週次の活動振り返り（weekly-report）。
+description: コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。
 disallowed-tools: AskUserQuestion
 allowed-tools:
   - Bash(date:*)

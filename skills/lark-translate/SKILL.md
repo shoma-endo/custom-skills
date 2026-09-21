@@ -1,7 +1,7 @@
 ---
 name: lark-translate
 version: 1.0.0
-description: "Lark機械翻訳API：テキスト翻訳（zh/ja/en ほか16言語）と言語自動判定。「これ翻訳して」「中国語の記事を日本語に」「何語か判定して」、収集した中国語・英語コンテンツの日本語化、固有名詞の対訳（glossary）を固定した翻訳が必要なときに使用。不負責：ドキュメント全体の取得（lark-doc）、翻訳結果のメッセージ送信（lark-im）。"
+description: "Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。"
 metadata:
   requires:
     bins: ["lark-cli"]

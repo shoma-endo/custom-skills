@@ -1,6 +1,6 @@
 ---
 name: e2e-testcases
-description: アプリケーションのE2Eテストケース（機能要件・非機能要件）をプロジェクト解析にもとづいて設計し、docs/TEST_CASES.md を生成する。「テストケース作って」「E2Eテスト設計して」「/e2e-testcases」で起動。不負責：テストの実行、テストコードの実装（設計のみ）、ユニットテスト設計（vitest等の対象）、CI組み込み。
+description: プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。
 allowed-tools:
   - Read
   - Write

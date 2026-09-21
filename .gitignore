@@ -4,4 +4,7 @@ skills/estimate/rate-card.yaml
 # ローカル個人設定の汎用パターン（各スキルの local-config は共有しない）
 skills/*/local-config.*
 
+# スキルのビルド/評価用スクラッチ（desc-opt ログ等、絶対パス・実行環境依存の値を含む）
+skills/*-workspace/
+
 .DS_Store
