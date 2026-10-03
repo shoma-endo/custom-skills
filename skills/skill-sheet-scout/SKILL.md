@@ -12,7 +12,7 @@ allowed-tools:
 
 ## 前提: 個人設定を先に読む
 
-**開始時に必ず同ディレクトリの `local-config.md` を Read する**（gitignore対象・リポジトリには含まれない）。シートのURL/シート名/レンジ、リポジトリ→案件マッピング、参照パス、ctx検索クエリはすべてそこにある。無ければユーザーに作成を依頼して停止する。以下の手順で「（local-config参照）」とある箇所は同ファイルの値を使う。
+**開始時に必ず同ディレクトリの `local-config.md` を Read する**（gitignore対象・リポジトリには含まれない）。シートのURL/シート名/レンジ、リポジトリ→案件マッピング、参照パス、履歴検索クエリはすべてそこにある。無ければユーザーに作成を依頼して停止する。以下の手順で「（local-config参照）」とある箇所は同ファイルの値を使う。
 
 ## 目的とステークス
 
@@ -56,19 +56,19 @@ lark-cli vc +search --start "$SINCE" --end "$(date +%Y-%m-%d)" --as user
 
 定例講座の回数、案件定例、実装相談・顧客折衝を数える。
 
-### 5. コーディングエージェント履歴の横断検索（ctx）
+### 5. コーディングエージェント履歴の横断検索（recall）
 
-git に残らない作業（調査・設計相談・レビュー・アドバイザリー対応）を拾う。ctx-agent-history-search skill 併用。`ctx status` で索引済みを確認してから:
+git に残らない作業（調査・設計相談・レビュー・アドバイザリー対応）を拾う。ネット接続も索引も使わず、手元の transcript（Claude Code / Codex / Cursor）を直接検索する:
 
 ```bash
-ctx search "<キーワード>" --since 30d
+python3 ~/.agents/skills/recall/scripts/find-sessions.py --days 30 --all-workspaces --term "<キーワード>" --snippets 2
 ```
 
 最低限回すクエリ:
 - **案件名**（local-config のクエリリスト）。ローカルにコードが無い案件は、エージェント履歴が唯一の証跡になり得る
 - **作業種別**: 「設計」「レビュー」「調査」「セキュリティ」等、git コミットに対応しない大きなセッション
 
-ヒットしたら `ctx show event <id> --window 5` / `ctx show session <id>` で内容確認してから証跡に使う。憶測で業務内容に昇格させない（事実と解釈の分離）。
+ヒットしたら各セッションの `path:` の jsonl を該当箇所だけ読み（`grep -n` で位置を取り `sed -n` で前後）、内容を確認してから証跡に使う。憶測で業務内容に昇格させない（事実と解釈の分離）。
 
 ### 6. シート現状の読み取り（local-config参照）
 

@@ -424,6 +424,10 @@ main { padding: 22px 30px 0; max-width: 1720px; }
   color: var(--muted);
   margin-left: auto;
 }
+/* ビュー冒頭の「答える問い」1行（運用ホーム / 事業マップの役割分担） */
+.view-question { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+.view-question b { color: var(--ink); font-weight: 600; }
+.view-question + .view-group { margin-top: 0; }
 
 /* ---- パネル ---- */
 /* 無地化: background/border/border-radius/margin-bottom を外した。
@@ -876,7 +880,7 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 [data-open] { cursor: pointer; }
 .tree-head[data-open]:hover { color: var(--blue); }
 
-/* 全体地図ビュー */
+/* 事業マップビュー */
 .wm-note { font-size: 12px; color: var(--muted); margin: 4px 0 8px; }
 .wm-goal, .wm-layer-head { display: flex; align-items: center; gap: 10px; margin: 6px 0; flex-wrap: wrap; }
 .wm-goal-label, .wm-layer-name { flex: 0 0 150px; font-weight: 600; font-size: 13px; }
@@ -1189,7 +1193,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .kpi-target { font-size: 0.7rem; font-weight: 400; color: var(--muted); margin-left: 2px; }
 .kpi-prev { font-size: 0.74rem; color: var(--muted); margin: 4px 0 6px; }
 
-/* KPI達成バッジ（emb週次レビューの◎○△×判定を一目で見せる） */
+/* KPI達成バッジ（EMB週次の◎○△×判定を一目で見せる） */
 .kpi-verdict-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
 .kpi-verdict-card {
   flex: 1 1 220px; min-width: 200px; padding: 12px 14px;
@@ -1217,7 +1221,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .kpi-verdict-card.kpi-badge-unknown { border-left-color: var(--hairline); }
 .kpi-tiles-label { font-size: 0.72rem; letter-spacing: 0.05em; color: var(--muted); margin: 4px 0 8px; }
 
-/* 判断待ちリスト（人間ループへの差し戻し・emb週次レビューを永続表示） */
+/* 判断待ちリスト（あなたが決めること・EMB週次を永続表示） */
 .pd-list { display: flex; flex-direction: column; gap: 8px; }
 .pd-item {
   display: flex; align-items: baseline; gap: 8px; font-size: 0.92rem; line-height: 1.5;
@@ -1435,7 +1439,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/10/1 18:45:06","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1789827172657.503,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-powerpoint","fmName":null,"desc":"デジタル庁デザインシステム（DADS）を用いた編集可能なPowerPointを作成・改稿する。DADS指定のスライドに使い、一般資料やWeb UIには使わない。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-powerpoint","real":"~/dev/custom-skills/skills/dads-powerpoint","link":"~/dev/custom-skills/skills/dads-powerpoint","broken":false,"mtimeMs":1789827172680.185,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-web","fmName":null,"desc":"DADS（デジタル庁デザインシステム）準拠のWeb・アプリUIを設計・実装・改稿する。公共向け画面やDADS指定時に使い、スライドは dads-powerpoint、汎用UIは別skillを使う。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-web","real":"~/dev/custom-skills/skills/dads-web","link":"~/dev/custom-skills/skills/dads-web","broken":false,"mtimeMs":1789827172682.4097,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1789827172690.681,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の工数・金額・スケジュールを見積もり、見積書または実績差分を作る。提案書全体、契約書レビュー、マーケ施策には使わない。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1790553807159.7822,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1789827172763.182,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1789827172789.7415,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1789827172793.647,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間離れたリポジトリを調査し、再開用のMD正本と閲覧用HTMLを生成する。コード修正、講義資料化、継続監視には使わない。","tools":14,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1789820361000,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1790553807159.899,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"直近1ヶ月の活動を収集・分析し、SES技術経歴書へ転記できる実績・技術・強みを提案する。シートへの書き込みや週次サマリーには使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1790810516004.7576,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/10/3 18:45:08","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1789827172657.503,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-powerpoint","fmName":null,"desc":"デジタル庁デザインシステム（DADS）を用いた編集可能なPowerPointを作成・改稿する。DADS指定のスライドに使い、一般資料やWeb UIには使わない。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-powerpoint","real":"~/dev/custom-skills/skills/dads-powerpoint","link":"~/dev/custom-skills/skills/dads-powerpoint","broken":false,"mtimeMs":1789827172680.185,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-web","fmName":null,"desc":"DADS（デジタル庁デザインシステム）準拠のWeb・アプリUIを設計・実装・改稿する。公共向け画面やDADS指定時に使い、スライドは dads-powerpoint、汎用UIは別skillを使う。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-web","real":"~/dev/custom-skills/skills/dads-web","link":"~/dev/custom-skills/skills/dads-web","broken":false,"mtimeMs":1789827172682.4097,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1789827172690.681,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の工数・金額・スケジュールを見積もり、見積書または実績差分を作る。提案書全体、契約書レビュー、マーケ施策には使わない。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1790553807159.7822,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1789827172763.182,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1789827172789.7415,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1789827172793.647,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間離れたリポジトリを調査し、再開用のMD正本と閲覧用HTMLを生成する。コード修正、講義資料化、継続監視には使わない。","tools":14,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1789820361000,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1790553807159.899,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"直近1ヶ月の活動を収集・分析し、SES技術経歴書へ転記できる実績・技術・強みを提案する。シートへの書き込みや週次サマリーには使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1790975596800.735,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -3607,7 +3611,7 @@ function renderHarnessView() {
   // 7パネルを3チャンクにグループ化: ①構造 ②数値 ③判断材料（ワーキングメモリ対策）
   var html = '<div class="view-group"><span class="vg-num">①</span>構造 — 思想と配線<span class="vg-sub">Structure</span></div>';
   html += panel('三重ループ（概念図）',
-    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い（内=成果物の質 / 外=仕事の選び方 / 最外=ゲームの選び方）。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す',
+    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い（内ループ=成果物の質 / 外ループ=仕事の選び方 / 人間ループ=ゲームの選び方）。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す',
     renderLoop3Diagram(), 'layer-command', 'sec-hz-loop3');
 
   html += panel('ハーネス構造（思想 × 実配線）',
@@ -3680,7 +3684,7 @@ function renderHarnessView() {
             ? (match.thisWeek === '計測不能'
                 ? '計測不能'
                 : esc(match.thisWeek) + (match.symbol ? ' ' + esc(match.symbol) : '') + (match.prevWeek ? ' <span style="color:var(--muted)">（前週 ' + esc(match.prevWeek) + '）</span>' : ''))
-            : '<span class="empty-note">判定待ち</span>';
+            : '<span class="empty-note">判定前</span>';
           return '<tr data-search="' + esc((v.name + ' ' + v.how).toLowerCase()) + '"' + openAttr(hv.varsPath) + '>' +
             '<td><b>' + esc(v.name) + '</b></td><td>' + esc(v.target) + '</td><td>' + esc(v.how) + '</td><td>' + verdictCell + '</td></tr>';
         }).join('') + '</tbody></table></div>'
@@ -3695,7 +3699,7 @@ function renderHarnessView() {
       : '<div class="empty-note">variables-digest-latest.md 未生成（variables-digest.sh 7 の出力を ~/.takt/logs/ に保存すると表示される）</div>';
     html += panel('母数ダッシュボード（数値化レイヤー）',
       '『数値化の鬼』方式: 率でなく母数を見る。集計 ' + (hv.digestDate ? hv.digestDate + (hv.digestAgeDays != null && hv.digestAgeDays > 0 ? '（' + hv.digestAgeDays + '日前）' : '') + (hv.digestStale ? ' ⚠ 8日超・週次更新が止まっている' : '') : '未生成') +
-      '・判定と施策提案は火曜の emb 週次レビュー',
+      '・判定と施策提案は火曜のEMB週次',
       varsHtml + countsHtml, 'layer-process', 'sec-hz-variables');
   }
 
@@ -3745,8 +3749,8 @@ function renderHarnessView() {
   return html;
 }
 
-// ---- 全体地図ビュー（事業→戦略→ループ→資産。DATA.business は redact/public では null） ----
-// 三重ループ図解 — 全体地図とハーネスビューの共通コンポーネント（書くのはここ1箇所）。
+// ---- 事業マップビュー（事業→戦略→ループ→資産。DATA.business は redact/public では null） ----
+// 三重ループ図解 — 事業マップとハーネスビューの共通コンポーネント（書くのはここ1箇所）。
 // 入れ子＝包含（人間⊃外⊃内）、チップ＝権能（👑専権/🛑緊急停止/🔧修理/🛡結界）、
 // 層間フロー＝統治の円環（⬇委任・割当 / ⬆報告・実績）。
 // 修理3種の正本は takt/facets/instructions/harness-review.md「機械的修理の実施」。
@@ -3768,7 +3772,7 @@ function renderLoop3Diagram() {
   return nest('n-human', '人間ループ', 'どのゲームを戦うか', '月次〜四半期', 'あなた',
       pchip('👑 専権: 採否・閾値・取捨・問いの選択', 'wm-p-crown') +
       pchip('🛑 緊急停止 shinra-tensei — 発動・再装填は神のみ', 'wm-p-danger')) +
-    flow('委任: 仕事とルールを授ける', '報告: 週次レビュー＋答え合わせ（仮説的中・提案採用率）') +
+    flow('委任: 仕事とルールを授ける', '報告: EMB週次＋答え合わせ（仮説的中・提案採用率）') +
     nest('n-outer', '外ループ', '正しい仕事を選んでいるか', '週1・火曜', 'emb = Fable',
       pchip('量: digest') + pchip('質: 手戻り率・ゴム印検知・サンプル監査') + pchip('己: 答え合わせ') +
       pchip('🔧 委譲: 機械的修理3種（モデル名差し替え・ゾンビrun abort・digest再生成）', 'wm-p-grant')) +
@@ -3943,7 +3947,7 @@ function renderKpiSummaryCard() {
         cls = match ? kpiVerdictClass(match.symbol) : 'unknown';
         badgeChar = match ? (match.symbol || '?') : '—';
         if (!match) {
-          actual = '目標 ' + esc(v.target) + ' <span class="kpi-verdict-prev">（判定待ち）</span>';
+          actual = '目標 ' + esc(v.target) + ' <span class="kpi-verdict-prev">（判定前）</span>';
         } else if (match.thisWeek === '計測不能') {
           actual = '計測不能';
         } else {
@@ -3984,7 +3988,7 @@ function renderKpiSummaryCard() {
     return kind + ' ' + date + '（' + days + '日前' + (kind === '母数' ? '・火曜週次。今日のライブではない' : '') + '）';
   }
   var digestSub = hv.digestStale ? '⚠ 母数' + (hv.digestAgeDays != null ? hv.digestAgeDays + '日前' : '8日超') : (hv.digestDate ? '母数 ' + hv.digestDate + (hv.digestAgeDays ? '・' + hv.digestAgeDays + '日前' : '') : '母数未生成');
-  var verdictSub = hv.verdictStale ? '⚠ 判定8日超・週次レビューが止まっている' : (hv.verdictDate ? '判定 ' + hv.verdictDate + (hv.verdictAgeDays ? '・' + hv.verdictAgeDays + '日前' : '') : '判定未生成（emb週次レビュー待ち）');
+  var verdictSub = hv.verdictStale ? '⚠ 判定8日超・EMB週次が止まっている' : (hv.verdictDate ? '判定 ' + hv.verdictDate + (hv.verdictAgeDays ? '・' + hv.verdictAgeDays + '日前' : '') : '判定未生成（EMB週次待ち）');
   var sub = verdictSub + ' ・ ' + digestSub;
   var freshCls = (!hv.digestDate && !hv.verdictDate) ? 'miss' : ((hv.digestStale || hv.verdictStale) ? 'stale' : 'asof');
   var freshText = ageLabel(hv.digestAgeDays, hv.digestDate, hv.digestStale, '母数') +
@@ -3997,7 +4001,7 @@ function renderKpiSummaryCard() {
   return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary layer-command' + (hv.digestStale || hv.verdictStale ? ' kpi-stale' : ''), 'sec-kpi-summary');
 }
 
-// ---- 判断待ちリスト（emb-weekly-review.md「人間ループへの差し戻し」を永続表示）----
+// ---- 判断待ちリスト（emb-weekly-review.md「あなたが決めること」を永続表示）----
 // 従来は火曜のLark通知カードに流れて消えていた。画面に固定表示することで
 // 「あの判断もう答えたっけ」を無くす。carriedOver は直前runとの完全一致のみで判定
 // （文言が変わった継続案件は拾えない・保守的な判定）。
@@ -4012,11 +4016,11 @@ function renderPendingDecisionsCard() {
           '<span class="pd-text">' + esc(plainMd(d.text)) + '</span>' +
           '</div>';
       }).join('')
-    : '<div class="empty-note">今週の差し戻しなし（emb判断: 全て委譲可 or 判断済み）</div>';
+    : '<div class="empty-note">今週の新規なし（emb判断: 全て委譲可 or 判断済み）</div>';
   var sub = pd.reviewStale
-    ? '⚠ 8日超・週次レビューが止まっている'
+    ? '⚠ 8日超・EMB週次が止まっている'
     : (pd.reviewDate ? '判定 ' + pd.reviewDate : '未生成');
-  return panel('🧭 人間の判断待ち（' + pd.items.length + ' 件）', sub, '<div class="pd-list">' + rows + '</div>', 'pending-decisions layer-command', 'sec-pending-decisions');
+  return panel('🧭 あなたが決めること（' + pd.items.length + ' 件）', sub, '<div class="pd-list">' + rows + '</div>', 'pending-decisions layer-command', 'sec-pending-decisions');
 }
 
 function mainScroller() {
@@ -4051,6 +4055,11 @@ function finishRender() {
   applySearch();
   buildPanelNav();
 }
+// ビュー冒頭の1行: このビューが答える問いと、答えない問いの行き先（概観2ビューの役割分担を画面上で明示する）
+function renderViewQuestion(q, other) {
+  return '<p class="view-question"><b>答える問い:</b> ' + esc(q) +
+    (other ? '<span class="vq-other"> ・ ' + esc(other) + 'へ</span>' : '') + '</p>';
+}
 function renderView(keepScroll) {
   const y = getMainScrollY();
   const app = document.getElementById('app');
@@ -4060,9 +4069,10 @@ function renderView(keepScroll) {
   let html = '';
 
   if (activeView === 'worldmap' && DATA.business) {
-    document.getElementById('view-title').textContent = '全体地図';
+    document.getElementById('view-title').textContent = '事業マップ';
     document.getElementById('view-root').textContent = '事業 → 戦略 → ループ → 資産 ・ 正本は Vault / Lark';
-    html = renderWorldMapView();
+    html = renderViewQuestion('何で稼ぎ、どの層を太らせるか（事業判断・月〜四半期）', '日々の異常と判断待ちは「運用ホーム」') +
+      renderWorldMapView();
     app.innerHTML = html;
     finishRender();
     scrollMainTo(keepScroll ? y : 0);
@@ -4080,7 +4090,7 @@ function renderView(keepScroll) {
   }
 
   if (activeView === 'ops' && DATA.ops) {
-    document.getElementById('view-title').textContent = '運用ヘルス';
+    document.getElementById('view-title').textContent = '保守点検';
     document.getElementById('view-root').textContent = '鮮度・コスト・棚卸し ・ 再生成で更新';
     html = renderOpsView();
     app.innerHTML = html;
@@ -4119,7 +4129,7 @@ function renderView(keepScroll) {
       : DATA.scopes.filter(function (s) { return s.id === activeView; });
 
     document.getElementById('view-title').textContent =
-      activeView === 'all' ? '全体サマリー' : scopes[0].label;
+      activeView === 'all' ? '運用ホーム' : scopes[0].label;
     document.getElementById('view-root').textContent =
       activeView === 'all' ? DATA.scopes.length + ' スコープ' : scopes[0].root;
 
@@ -4128,7 +4138,8 @@ function renderView(keepScroll) {
       // 週次KPIは毎回タブ切替+スクロールしないと見えなかった不満に対応し、最上部に固定表示
       // 階層: ①指令 → ②稼働 → ③基盤 → ④保管（添付アーキ図の視覚言語）
       html =
-        '<div class="view-group"><span class="vg-num">①</span>指令 — 見るべき異常とKPI<span class="vg-sub">Direction &amp; Judgment</span></div>' +
+        renderViewQuestion('今なにが壊れていて、何を直す・承認するか（運用・日〜週）', DATA.business ? '事業の判断は「事業マップ」' : '') +
+        '<div class="view-group"><span class="vg-num">①</span>指令 — 運用の異常・判断待ち・KPI<span class="vg-sub">Ops direction</span></div>' +
         renderKpiSummaryCard() +
         renderPendingDecisionsCard() +
         renderAttentionPanel(scopes, stats) +
@@ -4193,17 +4204,18 @@ function renderNav() {
       '<div class="nav-group' + (isCollapsed ? ' collapsed' : '') + '" data-group="' + key + '">' + itemsHtml + '</div>';
   }
 
-  let mapHtml = '';
+  // 概観: 運用ホーム（既定の入口・日〜週の運用）と事業マップ（月〜四半期の事業判断）。運用ホームはスコープの絞り込みではないのでスコープ群に入れない
+  let overviewHtml = '<button class="nav-item active" data-view="all"><span>運用ホーム</span>' +
+    '<span class="nav-right"><span class="nav-cnt">' + uniqueReals(allSkills(DATA.scopes)) + '</span></span></button>';
   if (DATA.business) {
     var strictPct = DATA.business.firstGoal.living
       ? Math.round((DATA.business.firstGoal.strict / DATA.business.firstGoal.living) * 100)
       : null;
-    mapHtml += '<button class="nav-item" data-view="worldmap"><span>全体地図</span>' +
+    overviewHtml += '<button class="nav-item" data-view="worldmap"><span>事業マップ</span>' +
       '<span class="nav-right">' + (strictPct !== null ? '<span class="nav-cnt" title="厳格ゴール（①のみ）進捗">①' + strictPct + '%</span>' : '') + '</span></button>';
   }
 
-  let scopeHtml = '<button class="nav-item active" data-view="all"><span>全体</span>' +
-    '<span class="nav-right"><span class="nav-cnt">' + uniqueReals(allSkills(DATA.scopes)) + '</span></span></button>';
+  let scopeHtml = '';
   DATA.scopes.forEach(function (s) {
     scopeHtml += '<button class="nav-item" data-view="' + esc(s.id) + '"><span>' + esc(s.label) + '</span>' +
       '<span class="nav-right">' + dots(s) + '<span class="nav-cnt">' + uniqueReals(s.skills) + '</span></span></button>';
@@ -4264,7 +4276,7 @@ function renderNav() {
     if (DATA.ops.pipelines.some(function (p) { return p.lastMs == null; })) odots += '<span class="dot red" title="成果物が見つからないパイプラインあり"></span>';
     else if (opsStale > 0) odots += '<span class="dot red" title="鮮度遅延のパイプラインあり"></span>';
     if (opsCleanup > 0) odots += '<span class="dot amber" title="棚卸し候補あり"></span>';
-    harnessHtml += '<button class="nav-item" data-view="ops"><span>運用ヘルス</span>' +
+    harnessHtml += '<button class="nav-item" data-view="ops"><span>保守点検</span>' +
       '<span class="nav-right">' + odots + '<span class="nav-cnt">' + DATA.ops.pipelines.length + '</span></span></button>';
     var flowN = DATA.ops.pipelines.filter(function (p) { return p.chain && p.chain.length; }).length;
     if (flowN > 0) {
@@ -4278,7 +4290,7 @@ function renderNav() {
   }
 
   let html = '';
-  html += group('map', '地図', mapHtml);
+  html += group('overview', '概観', overviewHtml);
   html += group('scope', 'スコープ', scopeHtml);
   html += group('system', 'システム', systemHtml);
   html += group('harness', 'ハーネス', harnessHtml);
@@ -4624,7 +4636,7 @@ document.getElementById('sort').addEventListener('change', function () {
   renderView(true);
 });
 // ---- パネル目次 ----
-// 全体ビューは17パネル・17,583px、ハーネス8・運用ヘルス5。目的の場所へスクロールしか無かった
+// 全体ビューは17パネル・17,583px、ハーネス8・保守点検5。目的の場所へスクロールしか無かった
 function buildPanelNav() {
   const bar = document.getElementById('panelnav');
   if (!bar) return;
