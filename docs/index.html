@@ -506,31 +506,6 @@ details.panel:not([open]) > .panel-head { border-bottom: none; }
   line-height: 1.4;
 }
 .panel-body { padding: 18px 20px; }
-.panel-row { display: grid; grid-template-columns: 2fr 3fr; gap: 20px; align-items: start; }
-.panel-row .panel { margin-bottom: 0; }
-.panel-row { margin-bottom: 20px; }
-
-/* 基盤バー（共通コンテキスト帯） */
-.foundation-bar {
-  background: var(--layer-foundation-tint);
-  border: 1px solid color-mix(in srgb, var(--layer-foundation) 30%, transparent);
-  border-left: 4px solid var(--layer-foundation);
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  font-size: 0.86rem;
-  color: var(--layer-foundation-ink);
-  line-height: 1.55;
-}
-.foundation-bar .fb-label {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--layer-foundation);
-  margin-bottom: 4px;
-}
 
 /* ---- スキルカード ---- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
@@ -910,20 +885,15 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 .wm-p-crown { border-color: var(--amber); color: var(--amber); background: var(--amber-tint); }
 .wm-p-danger { border-color: var(--red); color: var(--red); background: var(--red-tint); }
 .wm-p-grant { border-color: var(--blue); color: var(--blue); background: var(--blue-tint); }
-.wm-flow { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; color: var(--muted); padding: 5px 8px; flex-wrap: wrap; }
-.wm-flow-down { color: var(--ink-2); }
-.wm-flow-up { color: var(--muted); }
-.wm-chips { margin-top: 8px; }
-.wm-assets { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.wm-asset { border: 1px solid var(--hairline); border-radius: 8px; padding: 6px 12px; text-align: center; cursor: pointer; }
-.wm-asset:hover { border-color: var(--blue); color: var(--blue); }
-.wm-asset-n { display: block; font-size: 16px; font-weight: 700; }
-.wm-asset-l { font-size: 11px; color: var(--muted); }
 /* パイプライン詳細フロー（launchd→スクリプト/takt→成果物→消費先の連鎖図） */
 .flow-pipeline { margin: 4px 0 18px; }
 .flow-pipeline-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
 .flow-pipeline-name { font-weight: 700; font-size: 0.92rem; }
 .flow-pipeline-note { font-size: 0.76rem; color: var(--muted); }
+.pf-toggle { margin-left: 8px; font: inherit; font-size: 0.72rem; color: var(--blue); background: none; border: 1px dashed var(--hairline); border-radius: 999px; padding: 0 8px; cursor: pointer; }
+.pf-toggle:hover, .pf-toggle:focus-visible { border-color: var(--blue); }
+.pf-flow-row > td { background: var(--page); white-space: normal; }
+.pf-flow-row .flow-pipeline { margin: 4px 0; overflow-x: auto; }
 /* パイプライン詳細フロー / スキル連携フロー: レーン列＋直交エッジのインラインSVG。
    色は :root の変数だけを使うのでライト/ダークは自動追従する（描画は pfRenderChain） */
 .pf-scroll { overflow-x: auto; overflow-y: hidden; margin: 2px 0 4px; padding-bottom: 2px; }
@@ -981,6 +951,15 @@ body.detail-collapsed #toggle-detail { right: 12px; }
 .hz-chip.miss { border-color: var(--red); background: var(--red-tint); color: var(--red); }
 .hz-chip.hero { border-color: var(--blue); background: var(--blue-tint); }
 .hz-chip[data-open]:hover { border-color: var(--blue); color: var(--blue); }
+.hz-chip.link { cursor: pointer; border-style: dashed; }
+.hz-chip.link:hover, .hz-chip.link:focus-visible { border-color: var(--blue); color: var(--blue); }
+.hz-layer > .hz-nest-head { margin: 2px 0 1px; }
+.hz-layer.l-mm .hz-cad { border-color: var(--amber); color: var(--amber); }
+.hz-layer.l-pos .hz-cad { border-color: var(--blue); color: var(--blue); }
+.hz-layer.l-micro .hz-cad { border-color: var(--st-good); color: var(--st-good); }
+.hz-layer > .wm-powers { margin: 0 0 8px; }
+.hz-brains, .hz-runlist { flex-basis: 100%; }
+.hz-brains > summary, .hz-runlist > summary { cursor: pointer; font-size: 0.72rem; color: var(--muted); padding: 2px 0; }
 
 /* 内ループ: Jinba 風 Workspace → Flow → Step。辺は takt YAML の rules.next */
 .il-ws {
@@ -1151,7 +1130,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 }
 .hz-rail .rail-step.head { border-style: dashed; font-weight: 700; }
 
-/* 全体タブ最上部: 週次KPIサマリーカード（成果変数・毎回スクロール不要で見える） */
+/* 運用ホーム: 週次KPIサマリーカード（成果変数・自動集計母数） */
 .kpi-summary .panel-body { padding-top: 4px; }
 .kpi-summary.layer-command > .panel-body { background: var(--layer-command-tint); }
 .kpi-summary.kpi-stale > .panel-head { background: var(--amber-tint); }
@@ -1210,6 +1189,8 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .kpi-verdict-actual { font-size: 0.92rem; color: var(--ink); font-variant-numeric: tabular-nums; }
 .kpi-verdict-target, .kpi-verdict-prev { font-size: 0.72rem; font-weight: 400; color: var(--muted); }
 .kpi-verdict-note { font-size: 0.74rem; color: var(--ink-2); margin-top: 6px; line-height: 1.45; }
+.kpi-verdict-how { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.kpi-verdict-how > summary { cursor: pointer; }
 .kpi-verdict-card.kpi-badge-good { border-left-color: var(--st-good); background: var(--st-good-tint); }
 .kpi-verdict-card.kpi-badge-good .kpi-badge { background: var(--st-good); border-color: var(--st-good); color: #fff; }
 .kpi-verdict-card.kpi-badge-ok { border-left-color: var(--blue); background: var(--blue-tint); }
@@ -1255,18 +1236,6 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .svchart .seg-oth { fill: var(--amber); }
 .chart-legend { display: flex; gap: 14px; font-size: 0.72rem; color: var(--ink-2); margin: 2px 0 8px; }
 .chart-legend .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-.hbars { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 10px; }
-.hbars .row { display: flex; align-items: center; gap: 10px; font-size: 0.86rem; }
-.hbars .name { width: 38%; max-width: 210px; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
-.hbars .track { flex: 1; min-width: 60px; height: 13px; display: flex; gap: 1px; align-items: stretch; }
-.hbars .track span { height: 100%; }
-.hbars .track span:first-child { border-radius: 3px 0 0 3px; }
-.hbars .track span:last-child { border-radius: 0 3px 3px 0; }
-.hbars .track span:only-child { border-radius: 3px; }
-.hbars .track .seg-cost { background: var(--blue); }
-.hbars .track .seg-real { background: var(--bar); }
-.hbars .track .seg-alt { background: var(--bar-alt); }
-.hbars .val { flex: none; min-width: 64px; text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
 #chart-tip { position: fixed; z-index: 90; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 0.72rem; line-height: 1.5; padding: 5px 9px; border-radius: 6px; box-shadow: 0 2px 10px var(--shadow); display: none; max-width: 340px; }
 .hz-wfbar { display: flex; align-items: center; gap: 10px; margin: 5px 0; font-size: 0.86rem; }
 .hz-wfbar .wf-name { width: 150px; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
@@ -1282,8 +1251,6 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 /* ROIビュー: 成果（分子）/ 投資（分母）/ 元取り度 の3タイル */
 .roi-grid { display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: 12px; }
 .roi-tile { background: var(--page); border: 1px solid var(--hairline); border-radius: 12px; padding: 14px 16px; }
-.roi-tile.clickable { cursor: pointer; }
-.roi-tile.clickable:hover { border-color: var(--ring); }
 .roi-kicker { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
 .roi-num { font-size: 1.5rem; font-weight: 700; color: var(--ink); font-family: ui-monospace, "SF Mono", Menlo, monospace; line-height: 1.3; }
 .roi-num .unit { font-size: 0.78rem; font-weight: 400; color: var(--muted); font-family: inherit; }
@@ -1291,18 +1258,9 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .roi-line:last-of-type { border-bottom: none; }
 .roi-line .v { font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--ink); white-space: nowrap; }
 .roi-note { font-size: 0.72rem; color: var(--muted); margin-top: 8px; line-height: 1.5; }
-.roi-eq { font-size: 0.86rem; color: var(--muted); margin: 0 0 10px; }
-.roi-eq b { color: var(--ink-2); }
 
-/* 三重ループ概念図（入れ子の箱: 内が速く・外が偉い） */
-.hz-nest { border: 2px solid var(--hairline); border-radius: 14px; padding: 12px 16px; background: var(--surface); }
-.hz-nest .hz-nest { margin-top: 10px; background: var(--page); }
-.hz-nest .hz-nest .hz-nest { background: var(--surface); }
-.hz-nest.n-human { border-color: var(--amber); }
-.hz-nest.n-outer { border-color: var(--blue); }
-.hz-nest.n-inner { border-color: var(--st-good); }
+/* ハーネス構造の層見出し（問い・周期） */
 .hz-nest-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.hz-nest-name { font-weight: 700; font-size: 0.92rem; }
 .hz-nest-q { font-size: 0.86rem; color: var(--ink-2); }
 .hz-cad {
   margin-left: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -1310,13 +1268,10 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   border: 1px solid var(--hairline); color: var(--muted); white-space: nowrap;
 }
 .hz-cad::after { content: " ↻"; }
-.n-human > .hz-nest-head .hz-cad { border-color: var(--amber); color: var(--amber); }
-.n-outer > .hz-nest-head .hz-cad { border-color: var(--blue); color: var(--blue); }
-.n-inner > .hz-nest-head .hz-cad { border-color: var(--st-good); color: var(--st-good); }
-.hz-nest-body { font-size: 0.86rem; color: var(--ink-2); margin-top: 3px; }
-.hz-nest-body b { color: var(--ink); font-weight: 600; }
 
 .hidden { display: none !important; }
+/* 鮮度表のフロー図の行は data-search を持たないので、親の行が外れたら一緒に隠す */
+tr.hidden + .pf-flow-row { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 /* ================= 画面幅への追従 =================
    もとは min-width:1480px 固定・幅のメディアクエリ0本で、狭い画面では
@@ -1385,7 +1340,6 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   .roi-grid { grid-template-columns: 1fr; }
   .hz-wfbar { flex-wrap: wrap; }
   .hz-wfbar .wf-cnt { width: auto; }
-  .panel-row { display: block; }
   table.jobs th, table.jobs td { padding: 8px 10px; font-size: 0.86rem; }
 }
 
@@ -1439,7 +1393,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/10/3 18:45:08","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1789827172657.503,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-powerpoint","fmName":null,"desc":"デジタル庁デザインシステム（DADS）を用いた編集可能なPowerPointを作成・改稿する。DADS指定のスライドに使い、一般資料やWeb UIには使わない。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-powerpoint","real":"~/dev/custom-skills/skills/dads-powerpoint","link":"~/dev/custom-skills/skills/dads-powerpoint","broken":false,"mtimeMs":1789827172680.185,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-web","fmName":null,"desc":"DADS（デジタル庁デザインシステム）準拠のWeb・アプリUIを設計・実装・改稿する。公共向け画面やDADS指定時に使い、スライドは dads-powerpoint、汎用UIは別skillを使う。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-web","real":"~/dev/custom-skills/skills/dads-web","link":"~/dev/custom-skills/skills/dads-web","broken":false,"mtimeMs":1789827172682.4097,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1789827172690.681,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の工数・金額・スケジュールを見積もり、見積書または実績差分を作る。提案書全体、契約書レビュー、マーケ施策には使わない。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1790553807159.7822,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1789827172763.182,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1789827172789.7415,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1789827172793.647,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間離れたリポジトリを調査し、再開用のMD正本と閲覧用HTMLを生成する。コード修正、講義資料化、継続監視には使わない。","tools":14,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1789820361000,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1790553807159.899,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"直近1ヶ月の活動を収集・分析し、SES技術経歴書へ転記できる実績・技術・強みを提案する。シートへの書き込みや週次サマリーには使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1790975596800.735,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/10/6 18:45:05","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1789827172657.503,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-powerpoint","fmName":null,"desc":"デジタル庁デザインシステム（DADS）を用いた編集可能なPowerPointを作成・改稿する。DADS指定のスライドに使い、一般資料やWeb UIには使わない。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-powerpoint","real":"~/dev/custom-skills/skills/dads-powerpoint","link":"~/dev/custom-skills/skills/dads-powerpoint","broken":false,"mtimeMs":1789827172680.185,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-web","fmName":null,"desc":"DADS（デジタル庁デザインシステム）準拠のWeb・アプリUIを設計・実装・改稿する。公共向け画面やDADS指定時に使い、スライドは dads-powerpoint、汎用UIは別skillを使う。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-web","real":"~/dev/custom-skills/skills/dads-web","link":"~/dev/custom-skills/skills/dads-web","broken":false,"mtimeMs":1789827172682.4097,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1789827172690.681,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の工数・金額・スケジュールを見積もり、見積書または実績差分を作る。提案書全体、契約書レビュー、マーケ施策には使わない。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1790553807159.7822,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1789827172763.182,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1789827172789.7415,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1789827172793.647,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間離れたリポジトリを調査し、再開用のMD正本と閲覧用HTMLを生成する。コード修正、講義資料化、継続監視には使わない。","tools":14,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1789820361000,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1790553807159.899,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"直近1ヶ月の活動を収集・分析し、SES技術経歴書へ転記できる実績・技術・強みを提案する。シートへの書き込みや週次サマリーには使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1790975596800.735,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1614,7 +1568,7 @@ function computeStats(scopes) {
   };
 }
 
-function renderTiles(stats, withLaunchd) {
+function renderTiles(stats) {
   function tile(value, label, accent, alwaysInk, jump, sort) {
     const zero = value === 0 && !alwaysInk;
     return '<div class="tile ' + (accent || '') + '"' +
@@ -1630,13 +1584,6 @@ function renderTiles(stats, withLaunchd) {
     tile(stats.stale, DATA.staleDays + '日以上未更新', stats.stale > 0 ? 'accent-amber' : '', false, '.scope-panel', 'oldest') +
     tile(stats.workflows, 'takt ワークフロー', '', true, '.sec-takt-wf') +
     tile(stats.personas, 'takt ペルソナ', '', true, '.sec-takt-ps');
-  if (withLaunchd && DATA.launchd && DATA.launchd.length > 0) {
-    const errs = DATA.launchd.filter(function (j) { return j.status === 'error'; }).length;
-    html += tile(DATA.launchd.length, errs > 0 ? 'launchd（エラー ' + errs + ' 件）' : 'launchd ジョブ', errs > 0 ? 'accent-red' : '', true, '#sec-launchd');
-  }
-  if (withLaunchd && DATA.plugins && DATA.plugins.length > 0) {
-    html += tile(DATA.plugins.length, 'プラグイン（Claude/Codex）', '', true, '#sec-plugins');
-  }
   return html + '</div>';
 }
 
@@ -1657,26 +1604,22 @@ function renderDiffStrip() {
 }
 
 // ---- 要注意パネル（全体ビュー: 例外ファースト） ----
-// 正常なものは畳む・異常だけをここに集約する。DATA に既にある情報の集約のみで新規スキャンはしない
-function launchdCalm() {
-  return !(DATA.launchd || []).some(function (j) { return j.status === 'error' || j.status === 'unloaded'; });
+// 異常だけをここに集約し、行クリックで担当ビューへ飛ばす。DATA に既にある情報の集約のみで新規スキャンはしない
+// 異常の述語。ナビ dots と要注意パネルの両方から呼ぶ（乖離防止）
+function launchdByStatus(status) {
+  return (DATA.launchd || []).filter(function (j) { return j.status === status; });
 }
-function pluginsCalm() {
-  return !(DATA.plugins || []).some(function (p) { return (p.inClaude && !p.claudeEnabled) || (p.inCodex && !p.codexEnabled); });
+function pluginsDisabledList() {
+  return (DATA.plugins || []).filter(function (p) { return (p.inClaude && !p.claudeEnabled) || (p.inCodex && !p.codexEnabled); });
 }
-// ~/bin の異常述語。ナビ dots・要注意パネル・パネルの畳み判定の3箇所から呼ぶ（乖離防止）
+function orcaDisabledList() {
+  return (DATA.orcaAutomations || []).filter(function (a) { return !a.enabled; });
+}
 function binOrphanList() {
   return (DATA.bin || []).filter(function (b) { return b.callers.length === 0; });
 }
 function binNoDescList() {
   return (DATA.bin || []).filter(function (b) { return !b.desc; });
-}
-function binCalm() {
-  return binOrphanList().length === 0 && binNoDescList().length === 0;
-}
-function scopeCalm(s) {
-  // ナビの dots と同じ基準（重複）＋リンク切れ。意図的重複は dupCrossReal が除外する
-  return !s.skills.some(function (e) { return e.dupSame || dupCrossReal(e) || e.broken; });
 }
 function renderAttentionPanel(scopes, stats) {
   var items = [];
@@ -1687,13 +1630,13 @@ function renderAttentionPanel(scopes, stats) {
     var iWarn = DATA.ops.integrity.filter(function (f) { return f.level === 'warn'; }).length;
     if (iFail + iWarn > 0) add(iFail > 0 ? 'red' : 'amber', '整合性チェック: fail ' + iFail + ' 件 / warn ' + iWarn + ' 件', 'ops', null);
   }
-  var jErr = (DATA.launchd || []).filter(function (j) { return j.status === 'error'; });
-  var jOff = (DATA.launchd || []).filter(function (j) { return j.status === 'unloaded'; });
+  var jErr = launchdByStatus('error');
+  var jOff = launchdByStatus('unloaded');
   if (jErr.length + jOff.length > 0) {
     add(jErr.length > 0 ? 'red' : 'amber',
       'launchd: エラー ' + jErr.length + ' 件 / 未ロード ' + jOff.length + ' 件' +
       (jErr.length > 0 ? '（' + jErr.map(function (j) { return j.label; }).join('・') + '）' : ''),
-      null, '#sec-launchd');
+      'jobs', null);
   }
   if (DATA.ops) {
     var pMiss = DATA.ops.pipelines.filter(function (p) { return p.lastMs == null; }).length;
@@ -1714,7 +1657,7 @@ function renderAttentionPanel(scopes, stats) {
     }
     var hvAttn = DATA.harness.variables;
     if (hvAttn && hvAttn.digestStale) {
-      add('red', '母数digestが8日超（' + (hvAttn.digestDate || '日付不明') + '）— 全体タブのKPIは止まっている', null, '#sec-kpi-summary');
+      add('red', '母数digestが8日超（' + (hvAttn.digestDate || '日付不明') + '）— 運用ホームのKPIは止まっている', null, '#sec-kpi-summary');
     }
     if (hvAttn && hvAttn.verdictStale) {
       add('amber', 'emb週次判定が8日超（' + (hvAttn.verdictDate || '日付不明') + '）', null, '#sec-kpi-summary');
@@ -1730,10 +1673,18 @@ function renderAttentionPanel(scopes, stats) {
   if (binOrph.length > 0) {
     add('amber', '~/bin 孤児スクリプト: ' + binOrph.length + ' 本（' +
       binOrph.slice(0, 4).map(function (b) { return b.rel; }).join('・') +
-      (binOrph.length > 4 ? ' ほか' : '') + '）— 呼び出し元が見つからない', null, '#sec-bin');
+      (binOrph.length > 4 ? ' ほか' : '') + '）— 呼び出し元が見つからない', 'bin', null);
   }
   if (binNoDesc.length > 0) {
-    add('amber', '~/bin 説明なし: ' + binNoDesc.length + ' 本 — 先頭コメントが無く、何をするか分からない', null, '#sec-bin');
+    add('amber', '~/bin 説明なし: ' + binNoDesc.length + ' 本 — 先頭コメントが無く、何をするか分からない', 'bin', null);
+  }
+  var plOff = pluginsDisabledList();
+  if (plOff.length > 0) {
+    add('amber', 'プラグイン無効化: ' + plOff.length + ' 件（' + plOff.map(function (p) { return p.name; }).join('・') + '）', 'plugins', null);
+  }
+  var orcaOff = orcaDisabledList();
+  if (orcaOff.length > 0) {
+    add('amber', 'Orca オートメーション停止: ' + orcaOff.length + ' 件（' + orcaOff.map(function (o) { return o.name; }).join('・') + '）', 'jobs', null);
   }
 
   var body;
@@ -1750,38 +1701,22 @@ function renderAttentionPanel(scopes, stats) {
     }).join('');
   }
   return panel('要注意（' + items.length + ' 件）',
-    '例外ファースト — 今日見るべきことだけ。正常なパネルは下で畳んである',
+    '例外ファースト — 今日見るべきことだけ。行クリックで該当ビューへ',
     body, 'attn-panel layer-command', 'sec-attn');
 }
 
 function panel(title, sub, bodyHtml, extraClass, id, closed) {
   // <details> はネイティブの開閉（アコーディオン）を提供する。既定は open。
-  // closed=true で畳んで出す（全体ビューの例外ファースト: 正常なものは畳む・異常だけ開く）
-  return '<details class="panel ' + (extraClass || '') + '"' + (closed ? '' : ' open') + (id ? ' id="' + id + '"' : '') + '>' +
+  // closed=true で畳んで出す（検索用に置くカタログや既定で見なくてよい欄）。data-defopen は検索解除時の戻り先
+  return '<details class="panel ' + (extraClass || '') + '"' + (closed ? '' : ' open data-defopen="1"') + (id ? ' id="' + id + '"' : '') + '>' +
     '<summary class="panel-head"><span class="ph-title-wrap"><span class="ph-chevron"></span>' +
     '<span class="ph-title" role="heading" aria-level="2">' + esc(title) + '</span></span>' +
     (sub ? '<span class="ph-sub">' + esc(sub) + '</span>' : '') +
     '</summary><div class="panel-body">' + bodyHtml + '</div></details>';
 }
 
-// ---- 分布パネル（積み上げ: 実体エントリ＋リンク） ----
-function renderDistPanel(scopes) {
-  const rows = scopes.map(function (s) {
-    const real = s.skills.filter(function (e) { return !e.link; }).length;
-    const links = s.skills.filter(function (e) { return e.link; }).length;
-    return {
-      label: s.label,
-      segs: [{ v: real, cls: 'seg-real' }, { v: links, cls: 'seg-alt' }],
-      right: String(real) + (links > 0 ? ' +' + links : ''),
-      tip: s.label + '  実体 ' + real + ' / リンク ' + links,
-    };
-  });
-  return panel('スコープ別エントリ構成', '実体 + リンク',
-    chartLegend([{ color: 'var(--bar)', label: '実体エントリ' }, { color: 'var(--bar-alt)', label: 'リンク' }]) + hBars(rows), 'layer-process');
-}
-
 // ---- 重複マトリクスパネル ----
-function renderMatrixPanel(scopes) {
+function renderMatrixPanel(scopes, closed) {
   const byName = {};
   allSkills(scopes).forEach(function (e) {
     if (!e.dupSame && e.dupCross.length === 0) return;
@@ -1789,7 +1724,7 @@ function renderMatrixPanel(scopes) {
   });
   const names = Object.keys(byName).sort();
   if (names.length === 0) {
-    return panel('重複マトリクス', '', '<div class="empty-note">✓ 重複なし — 同名の別実体は存在しません（リンクによる同一実体の共有は重複に数えません）</div>', 'layer-process', 'sec-matrix');
+    return panel('重複マトリクス', '', '<div class="empty-note">✓ 重複なし — 同名の別実体は存在しません（リンクによる同一実体の共有は重複に数えません）</div>', 'layer-process', 'sec-matrix', closed);
   }
   let html = '<div class="tbl-wrap"><table class="matrix"><thead><tr><th style="text-align:left">スキル名</th>';
   scopes.forEach(function (s) { html += '<th>' + esc(s.label) + '</th>'; });
@@ -1815,7 +1750,7 @@ function renderMatrixPanel(scopes) {
     });
     html += '</tr>';
   });
-  return panel('重複マトリクス', '同名の別実体がどこにあるか。◈=意図的な重複（フォーク対リポジトリの自己完結用・警告対象外）', html + '</tbody></table></div>', 'layer-process', 'sec-matrix');
+  return panel('重複マトリクス', '同名の別実体がどこにあるか。◈=意図的な重複（フォーク対リポジトリの自己完結用・警告対象外）', html + '</tbody></table></div>', 'layer-process', 'sec-matrix', closed);
 }
 
 // ---- リンク一覧パネル ----
@@ -1867,7 +1802,7 @@ function runBtn(j) {
   const cmd = 'launchctl kickstart ' + (j.status === 'running' ? '-k ' : '') + 'gui/' + DATA.uid + '/' + j.label;
   return '<button class="runbtn" data-cmd="' + esc(cmd) + '" title="静的モード: クリックで実行コマンドをコピー（ライブ実行は npm run agent-assets:serve）">⧉ コピー</button>';
 }
-function renderLaunchdPanel(closed) {
+function renderLaunchdPanel() {
   const jobs = DATA.launchd || [];
   if (jobs.length === 0) return '';
   const cnt = { running: 0, ok: 0, error: 0, unloaded: 0 };
@@ -1876,9 +1811,10 @@ function renderLaunchdPanel(closed) {
     (serverMode ? '　（ライブ）' : '　（生成時点のスナップショット）');
 
   let html = '<div class="tbl-wrap"><table class="jobs"><thead><tr>' +
-    '<th>状態</th><th data-nosort>操作</th><th>ジョブ</th><th>処理内容</th><th>スケジュール</th><th>最終実行</th><th>前回結果</th>' +
+    '<th>状態</th><th data-nosort>操作</th><th>ジョブ</th><th>処理内容</th><th>スケジュール</th><th>最終実行</th>' +
     '</tr></thead><tbody>';
-  jobs.forEach(function (j) {
+  // 要対応（エラー）を先頭に、同じ状態の中は元の順（Array.prototype.sort は安定）。終了コードはエラー時だけ状態バッジに出る
+  jobs.slice().sort(function (a, b) { return JOB_STATUS_ORD[a.status] - JOB_STATUS_ORD[b.status]; }).forEach(function (j) {
     let popHtml = '<div class="pop-title">' + esc(j.label) + '</div>' +
       (j.desc ? '<div class="pop-desc">' + esc(plainMd(j.desc)) + '</div>' : '') +
       (j.errTail ? '<div class="pop-sec">stderr 末尾</div><pre class="pop-err">' + esc(j.errTail) + '</pre>' : '') +
@@ -1897,11 +1833,10 @@ function renderLaunchdPanel(closed) {
       '<td class="job-desc">' + (j.desc ? esc(plainMd(j.desc)) : '<span class="cmd">' + esc(j.command) + '</span>') + '</td>' +
       '<td class="mono-cell">' + esc(j.schedule) + '</td>' +
       '<td class="mono-cell" data-sortkey="' + (j.lastRunMs == null ? -1 : j.lastRunMs) + '">' + fmtWhen(j.lastRunMs) + '</td>' +
-      '<td class="mono-cell" data-sortkey="' + (j.lastExit === null ? -1 : j.lastExit) + '">' + (j.lastExit === null ? '—' : 'exit ' + j.lastExit) + '</td>' +
       '</tr>';
   });
   html += '</tbody></table></div>';
-  return panel('launchd ジョブ', sub, html, '', 'sec-launchd', closed);
+  return panel('launchd ジョブ', sub, html, '', 'sec-launchd');
 }
 
 // ---- Orca オートメーションパネル ----
@@ -1916,7 +1851,7 @@ function fmtOrcaNext(ms) {
   const pad2 = function (n) { return n < 10 ? '0' + n : String(n); };
   return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
 }
-function renderOrcaAutomationsPanel(closed) {
+function renderOrcaAutomationsPanel() {
   const list = DATA.orcaAutomations || [];
   if (list.length === 0) return '';
   const enabled = list.filter(function (a) { return a.enabled; }).length;
@@ -1925,7 +1860,7 @@ function renderOrcaAutomationsPanel(closed) {
   let html = '<div class="tbl-wrap"><table class="jobs"><thead><tr>' +
     '<th>状態</th><th>オートメーション</th><th>実行エージェント</th><th>スケジュール</th><th>最終起動</th><th>次回予定</th>' +
     '</tr></thead><tbody>';
-  list.forEach(function (a) {
+  list.slice().sort(function (x, y) { return Number(x.enabled) - Number(y.enabled); }).forEach(function (a) {
     const searchText = (a.name + ' ' + a.agent + ' ' + a.schedule).toLowerCase();
     html += '<tr data-search="' + esc(searchText) + '">' +
       '<td data-sortkey="' + (a.enabled ? 1 : 0) + '">' + orcaAutomationBadge(a) + '</td>' +
@@ -1937,7 +1872,7 @@ function renderOrcaAutomationsPanel(closed) {
       '</tr>';
   });
   html += '</tbody></table></div>';
-  return panel('Orca オートメーション', sub, html, '', 'sec-orca-automations', closed);
+  return panel('Orca オートメーション', sub, html, '', 'sec-orca-automations');
 }
 
 // ---- ~/bin スクリプトパネル ----
@@ -1956,7 +1891,7 @@ function binCallerBadges(b) {
   }).join('');
   return shown + (b.callers.length > 3 ? '<span class="badge b-mute">+' + (b.callers.length - 3) + '</span>' : '');
 }
-function renderBinPanel(closed) {
+function renderBinPanel() {
   const list = DATA.bin || [];
   if (list.length === 0) return '';
   const orphans = binOrphanList();
@@ -1998,7 +1933,7 @@ function renderBinPanel(closed) {
       '</tr>';
   });
   html += '</tbody></table></div>';
-  return panel('~/bin スクリプト', sub, html, '', 'sec-bin', closed);
+  return panel('~/bin スクリプト', sub, html, '', 'sec-bin');
 }
 
 // ---- プラグイン（Claude Code / Codex）パネル ----
@@ -2037,7 +1972,7 @@ function renderPluginCard(p) {
     (p.desc ? '<p class="desc">' + esc(plainMd(p.desc)) + '</p>' : '') +
     '</article>';
 }
-function renderPluginsPanel(closed) {
+function renderPluginsPanel() {
   const plugins = DATA.plugins || [];
   if (plugins.length === 0) return '';
   const nClaude = plugins.filter(function (p) { return p.inClaude; }).length;
@@ -2045,7 +1980,7 @@ function renderPluginsPanel(closed) {
   const nBoth = plugins.filter(function (p) { return p.inClaude && p.inCodex; }).length;
   const sub = 'Claude Code ' + nClaude + '　Codex ' + nCodex + '　両ツール ' + nBoth;
   const html = '<div class="grid">' + plugins.map(renderPluginCard).join('') + '</div>';
-  return panel('プラグイン（Claude Code / Codex）', sub, html, 'plugins-panel', 'sec-plugins', closed);
+  return panel('プラグイン（Claude Code / Codex）', sub, html, 'plugins-panel', 'sec-plugins');
 }
 
 // ---- スキルカード ----
@@ -2204,13 +2139,22 @@ function hzDur(sec) {
 function hzChip(label, state, openPath) {
   return '<span class="hz-chip ' + (state || '') + '"' + openAttr(openPath) + '>' + label + '</span>';
 }
-function hzLayer(cls, name, title, principle, chipsHtml, searchWords) {
-  return '<div class="hz-layer ' + cls + '" data-search="' + esc(('ハーネス ' + title + ' ' + searchWords).toLowerCase()) + '">' +
+/* loop を渡すと三重ループ図解と同じ「問い・判定者・周期・権能」を見出しに出す（judge は HTML） */
+function hzLayer(cls, name, title, principle, chipsHtml, searchWords, loop) {
+  return '<div class="hz-layer ' + cls + '" data-search="' + esc(('ハーネス ' + title + ' ' + searchWords + (loop ? ' ' + loop.q : '')).toLowerCase()) + '">' +
     '<div class="hz-name">' + name + '</div>' +
     '<div class="hz-title">' + esc(title) + '</div>' +
+    (loop ? '<div class="hz-nest-head"><span class="hz-nest-q">「' + esc(loop.q) + '」</span>' +
+      '<span class="wm-judge">判定: ' + loop.judge + '</span><span class="hz-cad">' + esc(loop.cad) + '</span></div>' : '') +
     '<div class="hz-principle">' + esc(principle) + '</div>' +
+    (loop ? '<div class="wm-powers">' + loop.powers + '</div>' : '') +
     '<div class="hz-chips">' + chipsHtml + '</div></div>';
 }
+/* 同じビュー内のパネル（selector）か別ビュー（view）へ飛ぶチップ。数字の詳細は飛び先が持つ */
+function hzJump(label, jump, view) {
+  return '<span class="hz-chip link" role="button" tabindex="0"' + (view ? ' data-goview="' + view + '"' : ' data-jump="' + jump + '"') + '>' + label + '</span>';
+}
+function hzPchip(txt, cls) { return '<span class="wm-pchip' + (cls ? ' ' + cls : '') + '">' + txt + '</span>'; }
 function hzFlow(down, up) {
   return '<div class="hz-flow"><span class="fdown">' + esc(down) + '</span>' +
     '<span class="frule" aria-hidden="true"></span>' +
@@ -2364,18 +2308,6 @@ function svgVBars(cols, opt) {
   return '<div style="overflow-x:auto">' + svg + '</div>';
 }
 /* 横棒チャート。rows=[{label, segs:[{v, cls}], right, tip}]。ラベル省略はホバーで補完 */
-function hBars(rows) {
-  var max = 0.0001;
-  rows.forEach(function (r) { var t = 0; r.segs.forEach(function (s) { t += s.v; }); r.total = t; max = Math.max(max, t); });
-  return '<div class="hbars">' + rows.map(function (r) {
-    return '<div class="row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '>' +
-      '<div class="name">' + esc(r.label) + '</div><div class="track">' +
-      r.segs.filter(function (s) { return s.v > 0; }).map(function (s) {
-        return '<span class="' + s.cls + '" style="width:' + (s.v / max * 100) + '%"></span>';
-      }).join('') +
-      '</div><div class="val">' + (r.right || '') + '</div></div>';
-  }).join('') + '</div>';
-}
 function chartLegend(items) {
   return '<div class="chart-legend">' + items.map(function (it) {
     return '<span><span class="sw" style="background:' + it.color + '"></span>' + esc(it.label) + '</span>';
@@ -2411,6 +2343,42 @@ function hzDayChart(runs, days) {
     { color: 'var(--red)', label: '失敗・中断' },
     { color: 'var(--amber)', label: 'その他' },
   ]) + svgVBars(cols, { showCnt: true, labelEvery: 2 });
+}
+/* 終了済み run の分布（step 刻み・成否で積み上げ）。cap 以上は右端の「N+」にまとめる。未終了は値が確定していないので数えない */
+function hzRunHist(runs, value, step, cap, range) {
+  var done = runs.filter(function (r) { return value(r) != null && HZ_TERMINAL[r.status]; });
+  if (!done.length) return '<div class="hz-legend">終了済みの run なし</div>';
+  var bins = [];
+  for (var lo = 0; lo <= cap; lo += step) bins.push({ lo: lo, ok: 0, ng: 0 });
+  done.forEach(function (r) {
+    // meta の endTime が startTime より前だと負になる。0 のビンに寄せて落とさない
+    var b = bins[Math.min(Math.max(0, Math.floor(value(r) / step)), bins.length - 1)];
+    if (r.status === 'completed') b.ok++;
+    else b.ng++;
+  });
+  var cols = bins.map(function (b, i) {
+    var last = i === bins.length - 1;
+    return {
+      label: last ? b.lo + '+' : String(b.lo),
+      cnt: (b.ok + b.ng) || '',
+      segs: [{ v: b.ok, cls: 'seg-ok' }, { v: b.ng, cls: 'seg-ng' }],
+      tip: range(b.lo, last) + '  完了 ' + b.ok + ' / 失敗 ' + b.ng,
+    };
+  });
+  return chartLegend([
+    { color: 'var(--st-good)', label: '完了' },
+    { color: 'var(--red)', label: '失敗・中断' },
+  ]) + svgVBars(cols, { showCnt: true, gap: 2, barW: 22 });
+}
+/* 所要時間（10分刻み）。60分で頭打ちにするのは、放置 run が後から終わると数千分になり全体が左に潰れるため */
+function hzDurationHist(runs) {
+  return hzRunHist(runs, function (r) { return r.elapsedSec == null ? null : r.elapsedSec / 60; }, 10, 60,
+    function (lo, last) { return last ? lo + '分以上' : lo + '〜' + (lo + 10) + '分'; });
+}
+/* 反復回数（1回刻み）。10回以上はまれなので右端にまとめる */
+function hzIterationHist(runs) {
+  return hzRunHist(runs, function (r) { return r.iterations; }, 1, 10,
+    function (lo, last) { return lo + (last ? '回以上' : '回'); });
 }
 /* workflow 別の成否積み上げ横棒 */
 function hzWorkflowBars(runs) {
@@ -2517,46 +2485,35 @@ function renderOpsView() {
       : p.stale ? '<span class="hz-st other">⚠ 遅延</span>'
       : '<span class="hz-st completed">OK</span>';
     var js = p.jobLabel ? jobStatus(p.jobLabel) : null;
+    var hasFlow = !!(p.chain && p.chain.length);
     return '<tr data-search="' + esc((p.name + ' ' + p.artifact).toLowerCase()) + '"' + openAttr(p.openPath) + '>' +
-      '<td><b>' + esc(p.name) + '</b>' + (p.note ? '<div style="font-size:0.72rem;color:var(--muted)">' + esc(p.note) + '</div>' : '') + '</td>' +
+      // 注記が長いので名前列だけ折り返す（.hz-runs は nowrap。折り返さないと判定列が枠外に出る）
+      '<td style="white-space:normal;min-width:220px"><b>' + esc(p.name) + '</b>' +
+      (hasFlow ? '<button type="button" class="pf-toggle" aria-expanded="false">▸ フロー</button>' : '') +
+      (p.note ? '<div style="font-size:0.72rem;color:var(--muted)">' + esc(p.note) + '</div>' : '') + '</td>' +
       '<td>' + st + '</td>' +
       '<td>' + fmtAge(p.lastMs) + '</td>' +
       '<td>' + (p.expectHours >= 48 ? Math.round(p.expectHours / 24) + 'd' : p.expectHours + 'h') + '</td>' +
       '<td>' + (js ? '<span class="hz-st ' + (js === 'error' ? 'failed' : js === 'ok' || js === 'running' ? 'completed' : 'other') + '">' + esc(js) + '</span>' : '—') + '</td>' +
-      '<td style="white-space:normal;font-size:0.72rem;color:var(--muted)">' + esc(p.artifact) + '</td></tr>';
+      '<td style="white-space:normal;font-size:0.72rem;color:var(--muted)">' + esc(p.artifact) + '</td></tr>' +
+      (hasFlow ? '<tr class="pf-flow-row" hidden><td colspan="6">' + renderPipelineFlow(p) + '</td></tr>' : '');
   }).join('');
-  var staleN = o.pipelines.filter(function (p) { return p.stale; }).length;
   html += panel('パイプライン鮮度（成果物ベース）',
-    'launchd の status は「動いたか」しか見ない。ここは「成果物が出続けているか」を期待周期と比較する。行クリックで成果物を開く',
-    '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>パイプライン</th><th>判定</th><th>最終成果物</th><th>期待周期</th><th>launchd</th><th>成果物</th></tr></thead><tbody>' + plRows + '</tbody></table></div>',
+    'launchd の status は「動いたか」しか見ない。ここは「成果物が出続けているか」を期待周期と比較する。行クリックで成果物を開く・「フロー」で起動→実行→成果物→消費先の図を開く',
+    pfDefs() + '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>パイプライン</th><th>判定</th><th>最終成果物</th><th>期待周期</th><th>launchd</th><th>成果物</th></tr></thead><tbody>' + plRows + '</tbody></table></div>',
     '', 'sec-ops-pipelines');
 
-  // --- ROIビュー（成果 ÷ 投資） ---
+  // --- コスト（固定費・元取り度・トークン使用量）。ROI の分子＝成果変数は運用ホームの週次KPIが持つ ---
+  var costHtml = '';
   if (o.usage) {
     var u = o.usage;
-    var hv = DATA.harness && DATA.harness.variables;
-    // ① 成果（分子）: 成果変数（人間指定・最大3個）
-    var varNum, varLines, varsOpen = null;
-    if (hv && hv.vars.length) {
-      varNum = hv.vars.length + '<span class="unit"> 変数（人間指定・最大3）</span>';
-      varLines = hv.vars.map(function (v) {
-        return '<div class="roi-line"><span>' + esc(v.name) + '</span><span class="v">' + esc(v.target) + '/週</span></div>';
-      }).join('');
-      varsOpen = hv.varsPath;
-    } else {
-      varNum = '<span class="unit">未設定</span>';
-      varLines = '<div class="roi-note">成果変数.md が未作成。変数の指定は人間の仕事（人間ループ）</div>';
-    }
-    var digestNote = hv && hv.digestDate
-      ? '実績の判定は火曜EMB週次（母数digest: ' + esc(hv.digestDate) + (hv.digestStale ? ' ⚠ 8日超stale' : '') + '）。数値表はハーネスビュー→数値化レイヤー'
-      : '母数digest未生成（火曜の weekly-report-emb が生成する）';
-    // ② 投資（分母）: サブスク固定費
+    // 投資（分母）: サブスク固定費
     var subTotal = 0, unknownPlan = false;
     (u.plans || []).forEach(function (p) { if (p.priceUsd == null) unknownPlan = true; else subTotal += p.priceUsd; });
     var planLines = (u.plans || []).map(function (p) {
       return '<div class="roi-line"><span>' + esc(p.tool + ' ' + p.plan) + '</span><span class="v">' + (p.priceUsd == null ? '単価不明' : '$' + p.priceUsd + '/月') + '</span></div>';
     }).join('') || '<div class="roi-note">プラン情報をローカル設定から取得できなかった</div>';
-    // ③ 元取り度（補助指標）: API換算の月額相当 ÷ 固定費
+    // 元取り度（補助指標）: API換算の月額相当 ÷ 固定費
     var monthlyEq = u.days > 0 ? u.totalCostKnown / u.days * 30 : 0;
     var mult = subTotal > 0 && monthlyEq > 0 ? monthlyEq / subTotal : null;
     // 単価未登録モデルの比率（10%超なら換算は下限値と明示。整合性チェックと同じ規則）
@@ -2566,31 +2523,6 @@ function renderOpsView() {
     var lowerBoundNote = outTot > 0 && outUnpriced / outTot > 0.1
       ? '⚠ 単価未登録モデルが Claude 出力の' + Math.round(outUnpriced / outTot * 100) + '%を占めるため下限値。'
       : '';
-    html += panel('ROIビュー（成果 ÷ 投資）',
-      'トークンは費用ではなく稼働量（全ツールがサブスクで変動費ゼロ）。ROIの分子は成果変数、分母はサブスク固定費＋人の介入時間',
-      '<div class="roi-eq"><b>ROI = ① 成果変数の達成 ÷ ② サブスク固定費＋人の介入時間</b>。③は補助指標＝同じ仕事量をAPI従量課金で買った場合の金額が固定費の何倍か（サブスクの元取り度）</div>' +
-      '<div class="roi-grid">' +
-      '<div class="roi-tile' + (varsOpen ? ' clickable' : '') + '"' + (varsOpen ? openAttr(varsOpen) : '') + '>' +
-        '<div class="roi-kicker">① 成果（分子）: 成果変数の週次母数目標</div>' +
-        '<div class="roi-num">' + varNum + '</div>' + varLines +
-        '<div class="roi-note">' + digestNote + '</div></div>' +
-      '<div class="roi-tile">' +
-        '<div class="roi-kicker">② 投資（分母）: サブスク固定費</div>' +
-        '<div class="roi-num">$' + subTotal + '<span class="unit">/月' + (unknownPlan ? '＋単価不明分' : '') + '</span></div>' + planLines +
-        '<div class="roi-note">変動費 $0（API従量課金なし）。真の分母はこれ＋人の介入時間（問いストック・火曜カードの判断）</div></div>' +
-      '<div class="roi-tile">' +
-        '<div class="roi-kicker">③ 元取り度（補助指標）: API換算 ÷ 固定費</div>' +
-        '<div class="roi-num">' + (mult == null ? '—' : '約' + mult.toFixed(1) + '<span class="unit">倍</span>') + '</div>' +
-        '<div class="roi-line"><span>API換算（直近' + u.days + '日・単価既知分）</span><span class="v">$' + u.totalCostKnown + '</span></div>' +
-        '<div class="roi-line"><span>月額相当</span><span class="v">$' + Math.round(monthlyEq) + '</span></div>' +
-        '<div class="roi-line"><span>サブスク固定費</span><span class="v">$' + subTotal + '/月</span></div>' +
-        '<div class="roi-note">' + lowerBoundNote + '高い＝固定費を使い切れている。ただし稼働が成果に化けたかは①でしか測れない。内訳は下の表</div></div>' +
-      '</div>', '', 'sec-ops-roi');
-  }
-
-  // --- 稼働量の内訳（トークン使用量） ---
-  if (o.usage) {
-    var u = o.usage;
     var chart = svgVBars(u.daily.map(function (d) {
       var md = d.date.slice(5).split('-');
       return {
@@ -2599,16 +2531,6 @@ function renderOpsView() {
         tip: d.date + '  API換算 $' + d.costUsd.toFixed(2) + '・出力 ' + fmtTok(d.outTok) + ' tok',
       };
     }), { height: 88, labelEvery: 2, fmtY: function (v) { return '$' + v; } });
-    // モデル別コスト構成（単価既知分のみ。未登録・推計モデルは下の表で確認）
-    var priced = u.models.filter(function (m) { return m.costUsd != null && m.costUsd > 0; });
-    var modelBars = priced.length ? hBars(priced.map(function (m) {
-      return {
-        label: m.model,
-        segs: [{ v: m.costUsd, cls: 'seg-cost' }],
-        right: '$' + m.costUsd.toFixed(2),
-        tip: m.model + '  $' + m.costUsd.toFixed(2) + '・出力 ' + fmtTok(m.output) + ' tok',
-      };
-    })) : '';
     var mRows = u.models.map(function (m) {
       return '<tr data-search="' + esc(m.model.toLowerCase()) + '">' +
         '<td>' + esc(m.model) + '</td>' +
@@ -2616,12 +2538,23 @@ function renderOpsView() {
         '<td>' + fmtTok(m.cacheWrite) + '</td><td>' + fmtTok(m.cacheRead) + '</td>' +
         '<td>' + (m.costUsd == null ? '<span style="color:var(--muted)">' + (m.model.indexOf('推計') >= 0 ? 'トークン記録なし' : '単価未登録') + '</span>' : '$' + m.costUsd.toFixed(2)) + '</td></tr>';
     }).join('');
-    html += panel('稼働量の内訳: トークン使用量（Claude Code + Codex CLI + Cursor Agent CLI・直近' + u.days + '日）',
-      '上のROIビュー③の内訳。$ はAPI単価換算の参考値＝利用量の物差し（実支払いではない）。~/.claude/projects の jsonl 集計（' + u.parsedFiles + ' ファイル）＋ ~/.codex/sessions の token_count 集計（' + u.codexFiles + ' セッション）＋ ~/.cursor/chats の推計（Cursor はトークン数を記録しないため文字数/4 の概算）。ローカルLLM・takt の他プロバイダ（GLM等）は含まない',
-      '<div class="hz-chart-head">日別API換算額（参考値・単価既知モデル分）</div>' + chart +
-      (modelBars ? '<div class="hz-chart-head" style="margin-top:14px">モデル別API換算額（単価既知分）</div>' + modelBars : '') +
+    costHtml = panel('コスト（固定費 $' + subTotal + '/月' + (mult == null ? '' : '・元取り度 約' + mult.toFixed(1) + '倍') + '）',
+      'トークンは費用ではなく稼働量（全ツールがサブスクで変動費ゼロ）。ROI の分子＝成果変数は運用ホームの週次KPI。$ はAPI単価換算の参考値（実支払いではない）。~/.claude/projects の jsonl（' + u.parsedFiles + ' ファイル）＋ ~/.codex/sessions（' + u.codexFiles + ' セッション）＋ ~/.cursor/chats の推計（文字数/4）。ローカルLLM・takt の他プロバイダ（GLM等）は含まない',
+      '<div class="roi-grid">' +
+      '<div class="roi-tile">' +
+        '<div class="roi-kicker">投資（分母）: サブスク固定費</div>' +
+        '<div class="roi-num">$' + subTotal + '<span class="unit">/月' + (unknownPlan ? '＋単価不明分' : '') + '</span></div>' + planLines +
+        '<div class="roi-note">変動費 $0（API従量課金なし）。真の分母はこれ＋人の介入時間（問いストック・火曜カードの判断）</div></div>' +
+      '<div class="roi-tile">' +
+        '<div class="roi-kicker">元取り度（補助指標）: API換算 ÷ 固定費</div>' +
+        '<div class="roi-num">' + (mult == null ? '—' : '約' + mult.toFixed(1) + '<span class="unit">倍</span>') + '</div>' +
+        '<div class="roi-line"><span>API換算（直近' + u.days + '日・単価既知分）</span><span class="v">$' + u.totalCostKnown + '</span></div>' +
+        '<div class="roi-line"><span>月額相当</span><span class="v">$' + Math.round(monthlyEq) + '</span></div>' +
+        '<div class="roi-note">' + lowerBoundNote + '高い＝固定費を使い切れている。ただし稼働が成果に化けたかは週次KPIでしか測れない</div></div>' +
+      '</div>' +
+      '<div class="hz-chart-head" style="margin-top:14px">日別API換算額（参考値・単価既知モデル分）</div>' + chart +
       '<div style="overflow:auto;margin-top:14px"><table class="hz-runs"><thead><tr><th>model</th><th>入力</th><th>出力</th><th>cache書込</th><th>cache読出</th><th>API換算（参考）</th></tr></thead><tbody>' + mRows + '</tbody></table></div>',
-      '', 'sec-ops-usage');
+      '', 'sec-ops-cost', true);
   }
 
   // --- 棚卸し候補 ---
@@ -2648,7 +2581,7 @@ function renderOpsView() {
   html += panel('棚卸し候補（削除ファースト）',
     '四半期棚卸しの判断材料。「消す・統合する・残す理由を書く」のどれかを火曜カードで決める。一覧はローカル実データから自動抽出',
     cleanupHtml, '', 'sec-ops-cleanup');
-  return html;
+  return html + costHtml;
 }
 
 // ---- フロー図SVGレンダラ（レーン列・直交エッジ・マスク付きラベル） ----
@@ -3464,13 +3397,9 @@ function pfRenderChain(chain, cfg) {
     pfLanes(laneLabels, geo.height) + edges + nodesSvg + '</svg></div>';
 }
 
-// ---- パイプライン詳細フロー画面（launchd→スクリプト/takt→成果物→消費先を1本ずつ図解） ----
-function renderPipelinesView() {
-  var pipelines = ((DATA.ops && DATA.ops.pipelines) || []).filter(function (p) { return p.chain && p.chain.length; });
-  function jobStatus(label) {
-    var j = (DATA.launchd || []).filter(function (x) { return x.label === label; })[0];
-    return j ? j.status : null;
-  }
+// ---- パイプラインのフロー図（launchd→スクリプト/takt→成果物→消費先。保守点検の鮮度表の行から開く） ----
+// 鮮度・launchd 状態・注記は鮮度表の行が持つので、図だけを描く
+function renderPipelineFlow(p) {
   var KIND_LABEL = { trigger: '起動', exec: '実行', artifact: '成果物', consumer: '消費先' };
   var LANE_OF = { trigger: 0, exec: 1, artifact: 2, consumer: 3 };
   function artifactInPar(s, chain) {
@@ -3482,7 +3411,7 @@ function renderPipelinesView() {
   }
   // クリック先: 手書き path 最優先、trigger は jobLabel から plist、単独 artifact だけ
   // PipelineEntry.openPath にフォールバック。並列段を主成果物に倒すと別物が開く
-  function resolveStepPath(s, p) {
+  function resolveStepPath(s) {
     if (s.path) return s.path;
     if (s.kind === 'trigger' && p.jobLabel) {
       var job = (DATA.launchd || []).filter(function (j) { return j.label === p.jobLabel; })[0];
@@ -3491,30 +3420,13 @@ function renderPipelinesView() {
     if (s.kind === 'artifact' && !artifactInPar(s, p.chain)) return p.openPath;
     return null;
   }
-  var body = pipelines.map(function (p) {
-    var js = p.jobLabel ? jobStatus(p.jobLabel) : null;
-    var stCls = js === 'error' ? 'failed' : js === 'ok' || js === 'running' ? 'completed' : 'other';
-    var searchBits = [p.name, p.note || ''];
-    (function walk(n) {
-      if (n && n.takt) { searchBits.push(n.takt); if (n.note) searchBits.push(n.note); }
-      if (n && n.label) searchBits.push(n.label);
-      if (n && n.detail) searchBits.push(n.detail);
-      (n.par || n.then || []).forEach(walk);
-    })({ then: p.chain });
-    return '<div class="flow-pipeline" data-search="' + esc(searchBits.join(' ').toLowerCase()) + '">' +
-      '<div class="flow-pipeline-head"><span class="flow-pipeline-name">' + esc(p.name) + '</span>' +
-      (js ? '<span class="hz-st ' + stCls + '">launchd: ' + esc(js) + '</span>' : '') +
-      (p.note ? '<span class="flow-pipeline-note">' + esc(p.note) + '</span>' : '') + '</div>' +
-      pfRenderChain(p.chain, {
-        lanes: ['起動', '実行', '成果物', '消費先'],
-        laneOf: function (k) { return LANE_OF[k] != null ? LANE_OF[k] : 1; },
-        rank: LANE_OF, kindLabel: KIND_LABEL, monoKinds: ['exec', 'artifact'],
-        resolvePath: function (s) { return resolveStepPath(s, p); }
-      }) + '</div>';
-  }).join('');
-  return panel('パイプライン詳細フロー（' + pipelines.length + '件）',
-    '列＝ステージ、行＝列内の順序。takt 内ループは YAML 正本（再生成で追従）。枠のあるboxはクリックで実ファイルを開き、ホバー/フォーカスで右ペインに全文が出る',
-    pfDefs() + body, '', 'sec-pipelines');
+  return '<div class="flow-pipeline">' +
+    pfRenderChain(p.chain, {
+      lanes: ['起動', '実行', '成果物', '消費先'],
+      laneOf: function (k) { return LANE_OF[k] != null ? LANE_OF[k] : 1; },
+      rank: LANE_OF, kindLabel: KIND_LABEL, monoKinds: ['exec', 'artifact'],
+      resolvePath: resolveStepPath
+    }) + '</div>';
 }
 
 // ---- スキル連携フロー画面（他skill/他ファイルへの参照関係。複数ファイル・他skillを跨ぐ複雑なものだけが対象） ----
@@ -3552,26 +3464,39 @@ function renderHarnessView() {
   var stuckN = h.runs.filter(function (r) { return r.stuck; }).length;
   var zombieN = h.runs.filter(function (r) { return r.zombie; }).length;
   var failedN = h.runs.filter(function (r) { return r.status === 'failed' || r.status === 'aborted'; }).length;
+  var doneN = h.runs.filter(function (r) { return HZ_TERMINAL[r.status]; }).length;
+  var okN = h.runs.filter(function (r) { return r.status === 'completed'; }).length;
   var qs = h.questions;
   var hv = h.variables;
   var mbStatus = jobStatus('com.shoma.claude-morning-brief');
   var wkStatus = jobStatus('com.shoma.weekly-report-emb');
+  var brains = h.personaModels.filter(function (pm) { return pm.outerLoop; });
 
-  // --- 思想レイヤー図 ---
+  // --- 構造（三重ループ × 実配線） ---
   var layers = '';
   layers += hzLayer('l-mm', '人間ループ', '人間接点',
     '決定は朝夕2回に集約する。仕事が片付く環境だからこそ「問い」を準備する（認知負荷・タスク爆発対策）',
     hzChip('朝刊ハーネス司令塔: ' + (h.wiring.morningBriefSection ? '配線済' : '未配線') + (mbStatus ? '・job=' + esc(mbStatus) : ''),
       h.wiring.morningBriefSection ? 'ok' : 'miss', '~/bin/claude-cron/morning-brief.sh') +
-    hzChip('問いストック: ' + (qs ? '未消化 <b>' + qs.count + '</b> 件' : '未作成'),
-      qs ? (qs.count > 0 ? 'ok' : 'warn') : 'miss', qs ? qs.path : null) +
-    hzChip('成果変数: ' + (hv && hv.vars.length ? '<b>' + hv.vars.length + '</b> 個（変数指定は人間のみ）' : '未設定'),
-      hv && hv.vars.length ? 'ok' : 'miss', hv ? hv.varsPath : null) +
+    (qs && qs.items.length
+      ? hzJump('問いストック: 未消化 ' + qs.count + ' 件 ↓', '#sec-hz-questions')
+      : hzChip('問いストック: ' + (qs ? '未消化 0 件' : '未作成'), qs ? 'warn' : 'miss', qs ? qs.path : null)) +
+    (hv && hv.vars.length
+      ? hzJump('成果変数: ' + hv.vars.length + ' 個 → 運用ホームの週次KPI', null, 'all')
+      : hzChip('成果変数: 未設定', 'miss', null)) +
     hzChip('外部送信は承認ゲート／ドラフト行き', 'ok', null),
-    '人間接点 問い 朝刊 司令塔 承認ゲート 成果変数 macro');
-  layers += hzFlow('朝ゲート（今日のキュー確認・投入）', '火曜カード（週次判断を人間へ）');
+    '人間接点 問い 朝刊 司令塔 承認ゲート 成果変数 macro',
+    { q: 'どのゲームを戦うか', judge: '<b>あなた</b>', cad: '月次〜四半期',
+      powers: hzPchip('👑 専権: 採否・閾値・取捨・問いの選択', 'wm-p-crown') + hzPchip('🛑 緊急停止 shinra-tensei — 発動・再装填は神のみ', 'wm-p-danger') });
+  layers += hzFlow('委任 — 朝ゲート（今日のキュー確認・投入）', '報告 — 火曜カード（EMB週次＋答え合わせ）');
+  var pmRows = h.personaModels.map(function (pm) {
+    return '<tr data-search="' + esc((pm.persona + ' ' + pm.provider + ' ' + pm.model).toLowerCase()) + '"' + (pm.outerLoop ? ' style="background:var(--blue-tint)"' : '') + '>' +
+      '<td>' + esc(pm.persona) + (pm.outerLoop ? ' 🧠' : '') + '</td>' +
+      '<td>' + esc(pm.provider) + '</td>' +
+      '<td>' + (pm.outerLoop ? '<b>' + esc(pm.model) + '</b>（外ループ判断役）' : esc(pm.model)) + '</td></tr>';
+  }).join('');
   layers += hzLayer('l-pos', '外ループ', 'プロジェクトOS（接合部）',
-    '内ループの結果を見て外ループの次の割り振りを変える。決定的な集計はスクリプト、判断だけ LLM',
+    '内ループの結果を見て外ループの次の割り振りを変える。決定的な集計はスクリプト、判断だけ LLM。最強モデルは週次の外ループ判断に限定してコストを抑える',
     hzChip('harness-digest.sh: ' + (h.wiring.digestScript ? 'あり' : 'なし'),
       h.wiring.digestScript ? 'ok' : 'miss', '~/bin/harness/harness-digest.sh') +
     hzChip('weekly-report-emb: ' + (h.wiring.weeklyHarnessStep ? '配線済' : '未配線') + (wkStatus ? '・job=' + esc(wkStatus) : ''),
@@ -3580,47 +3505,46 @@ function renderHarnessView() {
       h.wiring.knowledgeProjectOs ? 'ok' : 'miss', '~/.takt/facets/knowledge/project-os.md') +
     hzChip('variables-digest.sh（母数の数値化）: ' + (hv && hv.digestScript ? 'あり' : 'なし'),
       hv && hv.digestScript ? 'ok' : 'miss', '~/bin/harness/variables-digest.sh') +
-    h.personaModels.filter(function (pm) { return pm.outerLoop; }).map(function (pm) {
-      return hzChip('外ループの脳: ' + esc(pm.persona) + ' = <b>' + esc(pm.model) + '</b>', 'hero', '~/.takt/config.yaml');
-    }).join(''),
-    'プロジェクトOS 接合部 digest 週次 再配分 knowledge fable macro micro');
-  layers += hzFlow('実行（workflow へ委譲）', 'runs 集計（実績が判断材料）');
+    (h.personaModels.length
+      ? '<details class="hz-brains" id="sec-hz-brain"><summary>persona × model（' + h.personaModels.length + '件・~/.takt/runtime.yaml provider.targets.personas）</summary>' +
+        '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>persona</th><th>provider</th><th>model</th></tr></thead><tbody>' + pmRows + '</tbody></table></div></details>'
+      : ''),
+    'プロジェクトOS 接合部 digest 週次 再配分 knowledge fable macro micro persona model',
+    { q: '正しい仕事を選んでいるか', cad: '週1・火曜',
+      judge: brains.length ? brains.map(function (pm) { return esc(pm.persona) + ' = <b>' + esc(pm.model) + '</b>'; }).join('・') : '<b>emb</b>',
+      powers: hzPchip('量: digest') + hzPchip('質: 手戻り率・ゴム印検知・サンプル監査') + hzPchip('己: 答え合わせ') +
+        hzPchip('🔧 委譲: 機械的修理3種（モデル名差し替え・ゾンビrun abort・digest再生成）', 'wm-p-grant') });
+  layers += hzFlow('割当 — タスク投入・機械的修理（workflow へ委譲）', '実績 — runs 集計（成功率・反復・所要）');
   layers += hzLayer('l-micro', '内ループ', 'takt workflow 群',
-    'Fable 前提で薄く作る。停止条件（スコア・回数・時間）は保険であり、監視は強化しない。step と分岐は直下のパネル',
+    'Fable 前提で薄く作る。停止条件（スコア・回数・時間）は保険であり、監視は強化しない',
     (function () {
       var chips = '';
       DATA.scopes.forEach(function (s) {
         if (!s.takt || !s.takt.workflows.length) return;
-        chips += hzChip(esc(s.label) + ': <b>' + s.takt.workflows.length + '</b> 本', '', s.takt.root + '/workflows');
+        chips += hzJump(esc(s.label) + ': ' + s.takt.workflows.length + ' 本 ↓', '#sec-hz-inner-flows');
       });
       return chips || hzChip('takt なし', 'miss', null);
     }()),
     'ミクロ workflow persona 停止条件 micro ' + DATA.scopes.map(function (s) {
       return s.takt ? s.takt.workflows.map(function (w) { return w.name + ' ' + w.stepNames.join(' '); }).join(' ') : '';
-    }).join(' '));
+    }).join(' '),
+    { q: 'この仕事を正しくやれているか', judge: '<b>reviewer / supervisor</b>', cad: '分〜時間',
+      powers: hzPchip('🛡 結界: max_steps') + hzPchip('🛡 loop_monitors — 3周で強制判定') });
   layers += hzFlow('実行ログを書き残す', '');
   layers += hzLayer('l-data', 'DATA', 'データ地盤（runs）',
     '実行ログが再配分の燃料。データの発生源を自分で持つ',
-    hzChip('直近' + h.days + '日: <b>' + h.runs.length + '</b> run', '', null) +
-    hzChip('WIP: <b>' + wip + '</b> 本' + (wip > 3 ? '（3本超・新規投入より完了を優先）' : ''), wip > 3 ? 'warn' : '', null) +
-    hzChip('滞留: <b>' + stuckN + '</b>', stuckN > 0 ? 'warn' : '', null) +
-    hzChip('放置（ゾンビ疑い）: <b>' + zombieN + '</b>' + (zombieN > 0 ? '・meta.json 後始末推奨' : ''), zombieN > 0 ? 'warn' : '', null) +
-    hzChip('失敗/中断: <b>' + failedN + '</b>', failedN > 0 ? 'warn' : '', null),
+    hzJump('直近' + h.days + '日: ' + h.runs.length + ' run ↓', '#sec-hz-runs'),
     'データ runs 実績 meta.json');
 
-  // 7パネルを3チャンクにグループ化: ①構造 ②数値 ③判断材料（ワーキングメモリ対策）
-  var html = '<div class="view-group"><span class="vg-num">①</span>構造 — 思想と配線<span class="vg-sub">Structure</span></div>';
-  html += panel('三重ループ（概念図）',
-    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い（内ループ=成果物の質 / 外ループ=仕事の選び方 / 人間ループ=ゲームの選び方）。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す',
-    renderLoop3Diagram(), 'layer-command', 'sec-hz-loop3');
-
-  html += panel('ハーネス構造（思想 × 実配線）',
-    '上から人間ループ・外ループ・内ループ。右の帰還レールが外ループ＝「内ループの結果で次の割り振りを変える」。chips は実ファイル・実データから自動生成',
+  var html = '<div class="view-group"><span class="vg-num">①</span>構造 — 配線<span class="vg-sub">Structure</span></div>';
+  html += panel('ハーネス構造（三重ループ × 実配線）',
+    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す。右の帰還レール＝内ループの結果で次の割り振りを変える。chips は実ファイル・実データから自動生成',
     '<div class="hz-loopwrap"><div class="hz-stack">' + layers + '</div>' +
     '<div class="hz-rail"><div class="bracket"></div>' +
     ['外ループ ↑', '再配分', '週次判断（火曜）', 'digest', 'runs 実績'].map(function (t, i) {
       return '<div class="rail-step' + (i === 0 ? ' head' : '') + '">' + esc(t) + '</div>';
-    }).join('') + '</div></div>',
+    }).join('') + '</div></div>' +
+    '<div class="wm-note">メタ軸（ハーネス自体を作り替える。KPIは削除数と工数削減）: harness-review 週次 ・ automation-scout 半月 ・ 四半期棚卸し</div>',
     '', 'sec-hz-layers');
 
   html += panel('内ループの流れ（takt workflows）',
@@ -3660,50 +3584,9 @@ function renderHarnessView() {
       vrGroups, 'layer-storage', 'sec-hz-vault');
   }
 
-  html += '<div class="view-group"><span class="vg-num">②</span>数値 — 実績と母数<span class="vg-sub">Metrics</span></div>';
+  html += '<div class="view-group"><span class="vg-num">②</span>実績 — 内ループの結果<span class="vg-sub">Runs</span></div>';
 
-  // --- 母数ダッシュボード（数値化レイヤー: 変数指定=人間・数値化=スクリプト・分析=emb週次） ---
-  if (hv) {
-    var trend = function (now, prev) {
-      var a = parseInt(now, 10), b = parseInt(prev, 10);
-      if (isNaN(a) || isNaN(b)) return '';
-      return a > b ? ' <span style="color:var(--green,#1a7f37)">↑</span>' : a < b ? ' <span style="color:var(--red,#cf222e)">↓</span>' : ' →';
-    };
-    var verdictsForTable = hv.verdicts || [];
-    var varsHtml = hv.vars.length
-      ? '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>変数（人間指定・最大3個）</th><th>週次母数目標</th><th>数え方</th><th>今週の判定（emb）</th></tr></thead><tbody>' +
-        hv.vars.map(function (v) {
-          var match = findKpiVerdict(verdictsForTable, v.name);
-          // 決定的集計がある変数は digest のライブ値＋機械判定（KPIカードと同じ源）を出す。
-          // ここで emb 判定を使うとカードと数字が食い違うため、優先順位を揃えておく
-          var liveRow = findLiveCount(hv.counts, v.name);
-          var verdictCell = liveRow
-            ? esc(liveRow.thisWeek) + (kpiSymbolFor(liveRow.thisWeek, v.target) ? ' ' + esc(kpiSymbolFor(liveRow.thisWeek, v.target)) : '') +
-              ' <span style="color:var(--muted)">（前週 ' + esc(liveRow.prevWeek) + '・自動集計）</span>'
-            : match
-            ? (match.thisWeek === '計測不能'
-                ? '計測不能'
-                : esc(match.thisWeek) + (match.symbol ? ' ' + esc(match.symbol) : '') + (match.prevWeek ? ' <span style="color:var(--muted)">（前週 ' + esc(match.prevWeek) + '）</span>' : ''))
-            : '<span class="empty-note">判定前</span>';
-          return '<tr data-search="' + esc((v.name + ' ' + v.how).toLowerCase()) + '"' + openAttr(hv.varsPath) + '>' +
-            '<td><b>' + esc(v.name) + '</b></td><td>' + esc(v.target) + '</td><td>' + esc(v.how) + '</td><td>' + verdictCell + '</td></tr>';
-        }).join('') + '</tbody></table></div>'
-      : '<div class="empty-note">成果変数.md が未設定（変数の指定は人間の仕事）</div>';
-    var countsHtml = hv.counts.length
-      ? '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>自動集計した母数</th><th>今週</th><th>前週</th><th>今週/前週</th></tr></thead><tbody>' +
-        hv.counts.map(function (c) {
-          return '<tr data-search="' + esc(c.label.toLowerCase()) + '"' + openAttr('~/.takt/logs/variables-digest-latest.md') + '>' +
-            '<td>' + esc(c.label) + '</td><td><b>' + esc(c.thisWeek) + '</b>' + trend(c.thisWeek, c.prevWeek) + '</td><td>' + esc(c.prevWeek) + '</td>' +
-            '<td>' + hzPairBars(c.thisWeek, c.prevWeek) + '</td></tr>';
-        }).join('') + '</tbody></table></div>'
-      : '<div class="empty-note">variables-digest-latest.md 未生成（variables-digest.sh 7 の出力を ~/.takt/logs/ に保存すると表示される）</div>';
-    html += panel('母数ダッシュボード（数値化レイヤー）',
-      '『数値化の鬼』方式: 率でなく母数を見る。集計 ' + (hv.digestDate ? hv.digestDate + (hv.digestAgeDays != null && hv.digestAgeDays > 0 ? '（' + hv.digestAgeDays + '日前）' : '') + (hv.digestStale ? ' ⚠ 8日超・週次更新が止まっている' : '') : '未生成') +
-      '・判定と施策提案は火曜のEMB週次',
-      varsHtml + countsHtml, 'layer-process', 'sec-hz-variables');
-  }
-
-  // --- runs 実績表 ---
+  // --- runs 実績 ---
   var rows = h.runs.map(function (r) {
     var stCls = HZ_TERMINAL[r.status] ? (r.status === 'completed' ? 'completed' : r.status) : 'other';
     return '<tr data-search="' + esc((r.workflow + ' ' + r.status).toLowerCase()) + '"' + openAttr(r.dir) + '>' +
@@ -3713,9 +3596,18 @@ function renderHarnessView() {
       '<td>' + r.iterations + '</td>' +
       '<td>' + hzDur(r.elapsedSec) + '</td></tr>';
   }).join('');
+  var runSummary = '<div class="hz-chips" style="margin-bottom:12px">' +
+    hzChip('成功率: <b>' + (doneN ? Math.round(okN / doneN * 100) + '%' : '—') + '</b>（終了 ' + doneN + ' 本中 完了 ' + okN + '）', '', null) +
+    hzChip('失敗/中断: <b>' + failedN + '</b>', failedN > 0 ? 'warn' : '', null) +
+    hzChip('WIP: <b>' + wip + '</b> 本' + (wip > 3 ? '（3本超・新規投入より完了を優先）' : ''), wip > 3 ? 'warn' : '', null) +
+    hzChip('滞留: <b>' + stuckN + '</b>', stuckN > 0 ? 'warn' : '', null) +
+    hzChip('放置（ゾンビ疑い）: <b>' + zombieN + '</b>' + (zombieN > 0 ? '・meta.json 後始末推奨' : ''), zombieN > 0 ? 'warn' : '', null) +
+    '</div>';
   var runCharts = h.runs.length
     ? '<div class="hz-charts">' +
       '<div class="hz-chart-box"><div class="hz-chart-head">日別 run 数</div>' + hzDayChart(h.runs, h.days) + '</div>' +
+      '<div class="hz-chart-box"><div class="hz-chart-head">所要時間の分布（分）</div>' + hzDurationHist(h.runs) + '</div>' +
+      '<div class="hz-chart-box"><div class="hz-chart-head">反復回数の分布（回）</div>' + hzIterationHist(h.runs) + '</div>' +
       '<div class="hz-chart-box" style="flex:1;min-width:300px"><div class="hz-chart-head">workflow 別 成否</div>' + hzWorkflowBars(h.runs) +
       '<div class="hz-legend"><span><span class="sw" style="background:var(--st-good)"></span>completed</span>' +
       '<span><span class="sw" style="background:var(--red)"></span>failed / aborted</span>' +
@@ -3723,25 +3615,14 @@ function renderHarnessView() {
     : '';
   html += panel('runs 実績（直近' + h.days + '日＋未終了）', 'harness-digest.sh と同じ集計規則。行クリックで run ディレクトリを開く',
     h.runs.length
-      ? runCharts + '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>開始</th><th>workflow</th><th>status</th><th>反復</th><th>所要</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      ? runSummary + runCharts + '<details class="hz-runlist"><summary>run 一覧（' + h.runs.length + '件）</summary>' +
+        '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>開始</th><th>workflow</th><th>status</th><th>反復</th><th>所要</th></tr></thead><tbody>' + rows + '</tbody></table></div></details>'
       : '<div class="empty-note">期間内の run はありません</div>',
     'layer-process', 'sec-hz-runs');
 
-  html += '<div class="view-group"><span class="vg-num">③</span>判断材料 — 脳と問い<span class="vg-sub">Judgment</span></div>';
-
-  // --- 外ループの脳（persona × provider × model） ---
-  var pmRows = h.personaModels.map(function (pm) {
-    return '<tr data-search="' + esc((pm.persona + ' ' + pm.provider + ' ' + pm.model).toLowerCase()) + '"' + (pm.outerLoop ? ' style="background:var(--blue-tint)"' : '') + '>' +
-      '<td>' + esc(pm.persona) + (pm.outerLoop ? ' 🧠' : '') + '</td>' +
-      '<td>' + esc(pm.provider) + '</td>' +
-      '<td>' + (pm.outerLoop ? '<b>' + esc(pm.model) + '</b>（外ループ判断役）' : esc(pm.model)) + '</td></tr>';
-  }).join('');
-  html += panel('外ループの脳（persona × model）', '~/.takt/runtime.yaml provider.targets.personas。最強モデルは週次の外ループ判断に限定してコストを抑える',
-    '<div style="overflow:auto"><table class="hz-runs"><thead><tr><th>persona</th><th>provider</th><th>model</th></tr></thead><tbody>' + pmRows + '</tbody></table></div>',
-    '', 'sec-hz-brain');
-
   // --- 未消化の問い ---
   if (qs && qs.items.length) {
+    html += '<div class="view-group"><span class="vg-num">③</span>問い — 人間ループへの入力<span class="vg-sub">Questions</span></div>';
     html += panel('未消化の問い（先頭' + qs.items.length + '件 / 全' + qs.count + '件）', '朝刊が日替わりで1つ提示・週次ハーネスレビューが補充する',
       qs.items.map(function (q) { return '<div class="hz-q" data-search="' + esc(q.toLowerCase()) + '"' + openAttr(qs.path) + '>' + esc(q) + '</div>'; }).join(''),
       '', 'sec-hz-questions');
@@ -3749,46 +3630,14 @@ function renderHarnessView() {
   return html;
 }
 
-// ---- 事業マップビュー（事業→戦略→ループ→資産。DATA.business は redact/public では null） ----
-// 三重ループ図解 — 事業マップとハーネスビューの共通コンポーネント（書くのはここ1箇所）。
-// 入れ子＝包含（人間⊃外⊃内）、チップ＝権能（👑専権/🛑緊急停止/🔧修理/🛡結界）、
-// 層間フロー＝統治の円環（⬇委任・割当 / ⬆報告・実績）。
-// 修理3種の正本は takt/facets/instructions/harness-review.md「機械的修理の実施」。
-// requeue は人間ループの専権なので、外ループの権能チップには置かない（同 instruction）。
-function renderLoop3Diagram() {
-  function nest(cls, name, q, cad, judge, powers) {
-    return '<div class="hz-nest ' + cls + '" data-search="' + esc(('ループ ' + name + ' ' + q).toLowerCase()) + '">' +
-      '<div class="hz-nest-head"><span class="hz-nest-name">' + esc(name) + '</span>' +
-      '<span class="hz-nest-q">「' + esc(q) + '」</span>' +
-      '<span class="wm-judge">判定: <b>' + esc(judge) + '</b></span>' +
-      '<span class="hz-cad">' + esc(cad) + '</span></div>' +
-      (powers ? '<div class="wm-powers">' + powers + '</div>' : '') +
-      '<div class="hz-nest-body">';
-  }
-  function flow(down, up) {
-    return '<div class="wm-flow"><span class="wm-flow-down">⬇ ' + esc(down) + '</span><span class="wm-flow-up">⬆ ' + esc(up) + '</span></div>';
-  }
-  function pchip(txt, cls) { return '<span class="wm-pchip' + (cls ? ' ' + cls : '') + '">' + txt + '</span>'; }
-  return nest('n-human', '人間ループ', 'どのゲームを戦うか', '月次〜四半期', 'あなた',
-      pchip('👑 専権: 採否・閾値・取捨・問いの選択', 'wm-p-crown') +
-      pchip('🛑 緊急停止 shinra-tensei — 発動・再装填は神のみ', 'wm-p-danger')) +
-    flow('委任: 仕事とルールを授ける', '報告: EMB週次＋答え合わせ（仮説的中・提案採用率）') +
-    nest('n-outer', '外ループ', '正しい仕事を選んでいるか', '週1・火曜', 'emb = Fable',
-      pchip('量: digest') + pchip('質: 手戻り率・ゴム印検知・サンプル監査') + pchip('己: 答え合わせ') +
-      pchip('🔧 委譲: 機械的修理3種（モデル名差し替え・ゾンビrun abort・digest再生成）', 'wm-p-grant')) +
-    flow('割当: タスク投入・機械的修理', '実績: 成功率・反復・所要・abort 原因') +
-    nest('n-inner', '内ループ', 'この仕事を正しくやれているか', '分〜時間', 'reviewer / supervisor',
-      pchip('🛡 結界: max_steps') + pchip('🛡 loop_monitors — 3周で強制判定')) +
-    '</div></div>'.repeat(3);
-}
-
+// ---- 事業マップビュー（ゴール→3層ポートフォリオ→優先度。DATA.business は redact/public では null） ----
+// 成果変数・問い・三重ループ・資産件数は運用ホーム／ハーネス構造／ナビが持つので、ここには置かない
 function renderWorldMapView() {
   var b = DATA.business;
-  var h = DATA.harness;
   function yen(n) { return '¥' + Number(n).toLocaleString('ja-JP'); }
   var html = '';
 
-  // 1. 人間ループ（神の間）: ファーストゴール＋成果変数＋問い
+  // ファーストゴール（3層ポートフォリオと同じパネルの先頭）
   var god = '';
   if (b.firstGoal.living) {
     var living = b.firstGoal.living;
@@ -3804,26 +3653,14 @@ function renderWorldMapView() {
     god += goalBar('広義（①＋②）', b.firstGoal.broad, 'mid');
     god += goalBar('厳格（①のみ）', b.firstGoal.strict, 'low');
   }
-  var hv = h && h.variables;
-  var qs = h && h.questions;
-  god += '<div class="wm-chips">' +
-    hzChip('成果変数: ' + (hv && hv.vars.length
-      ? hv.vars.map(function (v) { return esc(v.name) + ' 週' + esc(v.target); }).join(' ／ ')
-      : '未設定'), hv && hv.vars.length ? 'ok' : 'miss', hv ? hv.varsPath : null) +
-    hzChip('未消化の問い: ' + (qs ? '<b>' + qs.count + '</b> 件' : '未作成'), qs ? '' : 'miss', qs ? qs.path : null) +
-    hzChip('変数指定・事業取捨・3層分類は人間の専権', 'hero', null) +
-    hzChip('緊急停止 shinra-tensei.sh — 発動（--run）と再装填（launchctl load）は神のみ', 'hero', null) +
-    '</div>';
-  html += panel('人間ループ — 神の間', '判定者はあなた。どのゲームを戦うかをここで決める（金額の最終正本は Lark 事業計画シート）', god, 'layer-command', 'sec-wm-god');
-
-  // 2. 事業3層ポートフォリオ
+  // 事業3層ポートフォリオ
   var total = b.layerTotals.labor + b.layerTotals.light + b.layerTotals.auto;
   var LAYERS = [
     { key: '③', amt: b.layerTotals.labor, name: '③ 労働', cls: 'l3', hint: '足場 — 時間の切り売り。圧縮して上の層へ転嫁する' },
     { key: '②', amt: b.layerTotals.light, name: '② 少労（顧問）', cls: 'l2', hint: '継続KPI — チャーン防止が仕事' },
     { key: '①', amt: b.layerTotals.auto, name: '① 自動', cls: 'l1', hint: '偉い — 稼働≈0で積み上がる資産。ここを太らせる' },
   ];
-  var biz = '<div class="wm-note">月額合計 <b>' + yen(total) + '</b> ・ サブスクの偉い順: ① ← ② ← ③（③で稼ぎながら①を積む）</div>';
+  var biz = god + '<div class="wm-note">月額合計 <b>' + yen(total) + '</b> ・ サブスクの偉い順: ① ← ② ← ③（③で稼ぎながら①を積む）</div>';
   LAYERS.forEach(function (L) {
     var pct = total ? Math.round((L.amt / total) * 100) : 0;
     biz += '<div class="wm-layer" data-search="' + esc(('事業 ' + L.name).toLowerCase()) + '">' +
@@ -3838,33 +3675,15 @@ function renderWorldMapView() {
     });
     biz += '</div>';
   });
-  html += panel('事業 3層ポートフォリオ', '金額正本: Lark事業シート → 契約マスター ' + esc(b.contractMasterPath) + '。層分類・除外は人間の判断事項（AIは転記のみ）', biz, 'layer-process', 'sec-wm-biz');
+  html += panel('ファーストゴールと事業 3層ポートフォリオ', '判定者はあなた。金額正本: Lark事業シート → 契約マスター ' + b.contractMasterPath + '。層分類・除外は人間の判断事項（AIは転記のみ）', biz, 'layer-process', 'sec-wm-biz');
 
-  // 3. 事業優先度
+  // 事業優先度
   if (b.priorities.length) {
     var pr = b.priorities.map(function (p, i) {
       return '<div class="wm-prio" data-search="優先度 ' + esc(p.toLowerCase()) + '"><span class="wm-prio-n">' + (i + 1) + '</span><span>' + esc(p) + '</span></div>';
     }).join('');
     html += panel('事業優先度', 'ロードマップ「事業戦略まとめ」の要点スナップショット（' + esc(b.roadmapPath) + '）。判断は必ず正本の Lark doc で行う', pr, 'layer-process', 'sec-wm-prio');
   }
-
-  // 4. ループと資産 — 三重ループ図解はハーネスビューと共通コンポーネント
-  var loops = renderLoop3Diagram();
-  loops += '<div class="wm-note">メタ軸（ハーネス自体を作り替える。KPIは削除数と工数削減）: harness-review 週次 ・ automation-scout 半月 ・ 四半期棚卸し</div>';
-  var gTakt = null;
-  DATA.scopes.forEach(function (s) { if (s.id === 'global' && s.takt) gTakt = s.takt; });
-  var asset = function (view, label, count) {
-    return '<div class="wm-asset wm-goview" data-goview="' + view + '"><span class="wm-asset-n">' + count + '</span><span class="wm-asset-l">' + esc(label) + '</span></div>';
-  };
-  var assets = '<div class="wm-assets">';
-  assets += asset('all', 'skills', uniqueReals(allSkills(DATA.scopes)));
-  if (gTakt) assets += asset('harness', 'workflows', gTakt.workflows.length) + asset('harness', 'personas', gTakt.personas.length);
-  if (DATA.launchd && DATA.launchd.length) assets += asset('launchd', 'launchd', DATA.launchd.length);
-  if (DATA.bin && DATA.bin.length) assets += asset('bin', '~/bin', DATA.bin.length);
-  if (DATA.plugins && DATA.plugins.length) assets += asset('plugins', 'plugins', DATA.plugins.length);
-  if (DATA.ops) assets += asset('ops', 'パイプライン', DATA.ops.pipelines.length);
-  assets += '</div>';
-  html += panel('ループと資産 — 機械の間', '三重ループが事業を回す。数字クリックで各ビューへ', loops + assets, '', 'sec-wm-loops');
 
   return html;
 }
@@ -3875,7 +3694,7 @@ function trendArrow(now, prev) {
   return a > b ? ' <span style="color:var(--green,#1a7f37)">↑</span>' : a < b ? ' <span style="color:var(--red,#cf222e)">↓</span>' : ' →';
 }
 
-// ---- 週次KPIサマリーカード（全体タブ最上部・ハーネス構造タブの母数ダッシュボードと同じデータ源）----
+// ---- 週次KPIサマリーカード（運用ホーム。成果変数・自動集計母数を出すのはここだけ）----
 // 達成バッジ（◎○△×）は emb-weekly-review.md の「母数ダッシュボード」判定を変数名で突合して出す
 // （成果変数.md 自体は目標のみで実測値を持たないため、判定は毎週火曜のemb判断が正本）。
 // 「自動集計した母数」（Larkタスク完了数など）は判定に使った生データの一部を参考表示するだけで、
@@ -3930,6 +3749,7 @@ function renderKpiSummaryCard() {
         var match = findKpiVerdict(verdicts, v.name);
         var live = findLiveCount(hv.counts, v.name);
         var actual, cls, badgeChar, note;
+        var howHtml = v.how ? '<details class="kpi-verdict-how"><summary>数え方</summary>' + esc(v.how) + '</details>' : '';
         if (live) {
           // 決定的集計あり: 数字もバッジも digest から。emb 由来は注記だけ使う
           var liveSymbol = kpiSymbolFor(live.thisWeek, v.target);
@@ -3940,7 +3760,7 @@ function renderKpiSummaryCard() {
           note = match && match.note && match.thisWeek === live.thisWeek ? match.note : '';
           return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
             '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
-            '<div class="kpi-verdict-actual">' + actual + '</div>' +
+            '<div class="kpi-verdict-actual">' + actual + '</div>' + howHtml +
             (note ? '<div class="kpi-verdict-note">' + esc(plainMd(note.slice(0, 90))) + (note.length > 90 ? '…' : '') + '</div>' : '') +
             '</div>';
         }
@@ -3965,7 +3785,7 @@ function renderKpiSummaryCard() {
         if (note.length > 90) note = note.slice(0, 90) + '…';
         return '<div class="kpi-verdict-card kpi-badge-' + cls + '">' +
           '<div class="kpi-verdict-top"><span class="kpi-badge">' + esc(badgeChar) + '</span><span class="kpi-verdict-name">' + esc(v.name) + '</span></div>' +
-          '<div class="kpi-verdict-actual">' + actual + '</div>' +
+          '<div class="kpi-verdict-actual">' + actual + '</div>' + howHtml +
           (note ? '<div class="kpi-verdict-note">' + esc(plainMd(note)) + '</div>' : '') +
           '</div>';
       }).join('')
@@ -3996,8 +3816,7 @@ function renderKpiSummaryCard() {
   var body =
     '<div class="kpi-freshness ' + freshCls + '"' + openAttr(hv.digestDate ? '~/.takt/logs/variables-digest-latest.md' : null) + '>' + esc(freshText) + '</div>' +
     '<div class="kpi-verdict-grid">' + verdictCards + '</div>' +
-    (tiles ? '<div class="kpi-tiles-label">参考: 自動集計した母数（判定材料の一部）</div><div class="kpi-tiles">' + tiles + '</div>' : '<div class="empty-note">自動集計した母数が未生成</div>') +
-    '<div class="wm-goview" data-goview="harness" style="margin-top:10px;cursor:pointer;font-size:0.78rem;color:var(--muted)">詳細（母数ダッシュボード）を見る →</div>';
+    (tiles ? '<div class="kpi-tiles-label">参考: 自動集計した母数（判定材料の一部）</div><div class="kpi-tiles">' + tiles + '</div>' : '<div class="empty-note">自動集計した母数が未生成</div>');
   return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary layer-command' + (hv.digestStale || hv.verdictStale ? ' kpi-stale' : ''), 'sec-kpi-summary');
 }
 
@@ -4070,7 +3889,7 @@ function renderView(keepScroll) {
 
   if (activeView === 'worldmap' && DATA.business) {
     document.getElementById('view-title').textContent = '事業マップ';
-    document.getElementById('view-root').textContent = '事業 → 戦略 → ループ → 資産 ・ 正本は Vault / Lark';
+    document.getElementById('view-root').textContent = 'ゴール → 3層ポートフォリオ → 優先度 ・ 正本は Vault / Lark';
     html = renderViewQuestion('何で稼ぎ、どの層を太らせるか（事業判断・月〜四半期）', '日々の異常と判断待ちは「運用ホーム」') +
       renderWorldMapView();
     app.innerHTML = html;
@@ -4082,7 +3901,8 @@ function renderView(keepScroll) {
   if (activeView === 'harness' && DATA.harness) {
     document.getElementById('view-title').textContent = 'ハーネス構造';
     document.getElementById('view-root').textContent = '三重ループハーネス v2 ・ 再生成で自動反映';
-    html = renderHarnessView();
+    html = renderViewQuestion('ハーネスは配線どおりで、内ループの実績はどうか（仕組み・週）', 'KPI と判断待ちは「運用ホーム」') +
+      renderHarnessView();
     app.innerHTML = html;
     finishRender();
     scrollMainTo(keepScroll ? y : 0);
@@ -4091,26 +3911,20 @@ function renderView(keepScroll) {
 
   if (activeView === 'ops' && DATA.ops) {
     document.getElementById('view-title').textContent = '保守点検';
-    document.getElementById('view-root').textContent = '鮮度・コスト・棚卸し ・ 再生成で更新';
-    html = renderOpsView();
+    document.getElementById('view-root').textContent = '整合性・鮮度・棚卸し・コスト ・ 再生成で更新';
+    html = renderViewQuestion('宣言どおりに動き続けているか、何を消すか（保守・週〜四半期）', '今日の異常の一覧は「運用ホーム」') +
+      renderOpsView();
     app.innerHTML = html;
     finishRender();
     scrollMainTo(keepScroll ? y : 0);
     return;
   }
 
-  if (activeView === 'launchd') {
-    document.getElementById('view-title').textContent = 'launchd ジョブ';
-    document.getElementById('view-root').textContent = '~/Library/LaunchAgents';
-    html = renderLaunchdPanel() || '<div class="empty-note">launchd ジョブなし</div>';
-  } else if (activeView === 'orca-automations') {
-    document.getElementById('view-title').textContent = 'Orca オートメーション';
-    document.getElementById('view-root').textContent = 'Orca CLI（実行メタデータのみ）';
-    html = renderOrcaAutomationsPanel() || '<div class="empty-note">Orcaオートメーションなし</div>';
-  } else if (activeView === 'pipelines' && DATA.ops) {
-    document.getElementById('view-title').textContent = 'パイプライン';
-    document.getElementById('view-root').textContent = 'launchd → スクリプト/takt → 成果物 → 消費先';
-    html = renderPipelinesView();
+  if (activeView === 'jobs') {
+    document.getElementById('view-title').textContent = '定期ジョブ';
+    document.getElementById('view-root').textContent = 'launchd（~/Library/LaunchAgents）・Orca オートメーション';
+    html = renderViewQuestion('定期ジョブで止まっている・失敗しているものはあるか（運用・日）', '成果物が出続けているかは「保守点検」の鮮度表') +
+      renderLaunchdPanel() + renderOrcaAutomationsPanel();
   } else if (activeView === 'skillflow' && DATA.skillFlows) {
     document.getElementById('view-title').textContent = 'スキル連携';
     document.getElementById('view-root').textContent = '複数ファイル・他skillを跨ぐ複雑なskillの参照関係';
@@ -4135,27 +3949,20 @@ function renderView(keepScroll) {
 
     const stats = computeStats(scopes);
     if (activeView === 'all') {
-      // 週次KPIは毎回タブ切替+スクロールしないと見えなかった不満に対応し、最上部に固定表示
-      // 階層: ①指令 → ②稼働 → ③基盤 → ④保管（添付アーキ図の視覚言語）
+      // 対応が要る順（異常 → 判断待ち → 定点の KPI）。KPI を先に置くと要注意が画面外に落ちる。
+      // 実行基盤（launchd・Orca・~/bin・plugins）は専用ビューが持ち、異常は要注意から各ビューへ飛ぶ
       html =
         renderViewQuestion('今なにが壊れていて、何を直す・承認するか（運用・日〜週）', DATA.business ? '事業の判断は「事業マップ」' : '') +
         '<div class="view-group"><span class="vg-num">①</span>指令 — 運用の異常・判断待ち・KPI<span class="vg-sub">Ops direction</span></div>' +
-        renderKpiSummaryCard() +
-        renderPendingDecisionsCard() +
         renderAttentionPanel(scopes, stats) +
-        '<div class="view-group"><span class="vg-num">②</span>稼働 — 資産の現在値<span class="vg-sub">Working state</span></div>' +
-        renderTiles(stats, true) +
+        renderPendingDecisionsCard() +
+        renderKpiSummaryCard() +
+        '<div class="view-group"><span class="vg-num">②</span>保管 — スコープ横断カタログ<span class="vg-sub">Storage</span></div>' +
         renderDiffStrip() +
-        '<div class="panel-row">' + renderDistPanel(DATA.scopes) + renderMatrixPanel(scopes) + '</div>' +
-        '<div class="view-group"><span class="vg-num">③</span>基盤 — 実行と接続<span class="vg-sub">Foundation</span></div>' +
-        '<div class="foundation-bar"><div class="fb-label">実行基盤</div>launchd・~/bin・プラグイン・リンク関係。正常なものは畳んである。異常は上の要注意ゲートへ集約。</div>' +
-        renderLaunchdPanel(launchdCalm()) +
-        renderOrcaAutomationsPanel(true) +
-        renderBinPanel(binCalm()) +
-        renderPluginsPanel(pluginsCalm()) +
-        renderLinksPanel(scopes, true) +
-        '<div class="view-group"><span class="vg-num">④</span>保管 — スコープ別カタログ<span class="vg-sub">Storage</span></div>';
-      scopes.forEach(function (s) { html += renderScopePanel(s, scopeCalm(s)); });
+        // 畳んでおく。上の検索に当たると自動で開き、要注意の行からも開いて飛ぶ
+        renderMatrixPanel(scopes, true) +
+        renderLinksPanel(scopes, true);
+      scopes.forEach(function (s) { html += renderScopePanel(s, true); });
     } else if (stats.real === 0 && stats.links === 0 && stats.workflows === 0 && stats.personas === 0) {
       // 中身ゼロのスコープに 0 が並んだタイル7枚と「重複なし」を出しても読むものが無い
       const s0 = scopes[0];
@@ -4165,7 +3972,7 @@ function renderView(keepScroll) {
         '<div class="es-path"' + openAttr(s0.root) + '>' + esc(s0.root) + '</div>' +
         '</div>';
     } else {
-      html = renderTiles(stats, false);
+      html = renderTiles(stats);
       html += renderMatrixPanel(scopes);
       html += renderLinksPanel(scopes);
       scopes.forEach(function (s) { html += renderScopePanel(s); });
@@ -4222,24 +4029,19 @@ function renderNav() {
   });
 
   let systemHtml = '';
-  const hasLaunchd = DATA.launchd && DATA.launchd.length > 0;
-  const hasOrcaAutomations = DATA.orcaAutomations && DATA.orcaAutomations.length > 0;
+  const jobN = (DATA.launchd || []).length + (DATA.orcaAutomations || []).length;
   const hasPlugins = DATA.plugins && DATA.plugins.length > 0;
-  if (hasLaunchd) {
+  if (jobN > 0) {
+    // launchd と Orca は「定期的に何かを起動する」という同じ問いに答えるので1ビューにまとめる
     let jdots = '';
-    if (DATA.launchd.some(function (j) { return j.status === 'error'; })) jdots += '<span class="dot red" title="エラーあり"></span>';
-    if (DATA.launchd.some(function (j) { return j.status === 'unloaded'; })) jdots += '<span class="dot amber" title="未ロードあり"></span>';
-    systemHtml += '<button class="nav-item" data-view="launchd"><span>launchd</span>' +
-      '<span class="nav-right">' + jdots + '<span class="nav-cnt">' + DATA.launchd.length + '</span></span></button>';
-  }
-  if (hasOrcaAutomations) {
-    const disabled = DATA.orcaAutomations.filter(function (a) { return !a.enabled; }).length;
-    systemHtml += '<button class="nav-item" data-view="orca-automations"><span>Orcaオートメーション</span>' +
-      '<span class="nav-right">' + (disabled > 0 ? '<span class="dot amber" title="停止中のオートメーションあり"></span>' : '') +
-      '<span class="nav-cnt">' + DATA.orcaAutomations.length + '</span></span></button>';
+    if (launchdByStatus('error').length > 0) jdots += '<span class="dot red" title="launchd エラーあり"></span>';
+    if (launchdByStatus('unloaded').length > 0) jdots += '<span class="dot amber" title="launchd 未ロードあり"></span>';
+    if (orcaDisabledList().length > 0) jdots += '<span class="dot amber" title="停止中の Orca オートメーションあり"></span>';
+    systemHtml += '<button class="nav-item" data-view="jobs"><span>定期ジョブ</span>' +
+      '<span class="nav-right">' + jdots + '<span class="nav-cnt">' + jobN + '</span></span></button>';
   }
   if (DATA.bin && DATA.bin.length > 0) {
-    // dots は要注意パネル・パネルの畳み判定と同じ述語を使う（3箇所の乖離防止）
+    // dots は要注意パネルと同じ述語を使う（乖離防止）
     let bdots = '';
     if (binOrphanList().length > 0) bdots += '<span class="dot amber" title="呼び出し元が見つからないスクリプトあり"></span>';
     if (binNoDescList().length > 0) bdots += '<span class="dot amber" title="説明コメントが無いスクリプトあり"></span>';
@@ -4248,7 +4050,7 @@ function renderNav() {
   }
   if (hasPlugins) {
     let pdots = '';
-    if (DATA.plugins.some(function (p) { return (p.inClaude && !p.claudeEnabled) || (p.inCodex && !p.codexEnabled); })) {
+    if (pluginsDisabledList().length > 0) {
       pdots += '<span class="dot amber" title="無効化されたプラグインあり"></span>';
     }
     systemHtml += '<button class="nav-item" data-view="plugins"><span>plugins</span>' +
@@ -4273,16 +4075,12 @@ function renderNav() {
     var odots = '';
     var opsStale = DATA.ops.pipelines.filter(function (p) { return p.stale; }).length;
     var opsCleanup = DATA.ops.cleanup.staleSkills.length + DATA.ops.cleanup.unusedPersonas.length + DATA.ops.cleanup.idleWorkflows.length;
+    if ((DATA.ops.integrity || []).some(function (f) { return f.level === 'fail'; })) odots += '<span class="dot red" title="整合性チェック FAIL あり"></span>';
     if (DATA.ops.pipelines.some(function (p) { return p.lastMs == null; })) odots += '<span class="dot red" title="成果物が見つからないパイプラインあり"></span>';
     else if (opsStale > 0) odots += '<span class="dot red" title="鮮度遅延のパイプラインあり"></span>';
     if (opsCleanup > 0) odots += '<span class="dot amber" title="棚卸し候補あり"></span>';
     harnessHtml += '<button class="nav-item" data-view="ops"><span>保守点検</span>' +
       '<span class="nav-right">' + odots + '<span class="nav-cnt">' + DATA.ops.pipelines.length + '</span></span></button>';
-    var flowN = DATA.ops.pipelines.filter(function (p) { return p.chain && p.chain.length; }).length;
-    if (flowN > 0) {
-      harnessHtml += '<button class="nav-item" data-view="pipelines"><span>パイプライン</span>' +
-        '<span class="nav-right"><span class="nav-cnt">' + flowN + '</span></span></button>';
-    }
   }
   if (DATA.skillFlows && DATA.skillFlows.length) {
     harnessHtml += '<button class="nav-item" data-view="skillflow"><span>スキル連携</span>' +
@@ -4328,6 +4126,7 @@ function renderNav() {
 }
 
 // ---- 検索 ----
+var prevSearchQuery = '';
 function applySearch() {
   const q = document.getElementById('search').value.trim().toLowerCase();
   document.querySelectorAll('[data-search]').forEach(function (el) {
@@ -4349,6 +4148,18 @@ function applySearch() {
       function (el) { return !el.classList.contains('hidden'); }
     );
   });
+  // 畳んだパネルとパネル内の畳み（run 一覧・persona 表）も同じく開く。手で開閉したものを検索のたびに
+  // 戻さないよう、既定の開閉へ戻すのは検索を解除した時だけ
+  var folds = 'details.panel, details.hz-runlist, details.hz-brains';
+  if (q !== '') {
+    document.querySelectorAll(folds).forEach(function (d) {
+      var hasHit = Array.prototype.some.call(d.querySelectorAll('[data-search]'), function (el) { return !el.classList.contains('hidden'); });
+      if (hasHit) d.open = true;
+    });
+  } else if (prevSearchQuery !== '') {
+    document.querySelectorAll(folds).forEach(function (d) { d.open = d.hasAttribute('data-defopen'); });
+  }
+  prevSearchQuery = q;
   updateFilterBar(q);
 }
 /** 絞り込みバーの開閉に合わせて目次の吸着位置を直す */
@@ -4468,9 +4279,28 @@ document.addEventListener('keydown', function (ev) {
   jumpToTile(tile);
 });
 
-// ---- 要注意パネルの行クリック（別ビューへ切替 or 同ビュー内アンカーへジャンプ） ----
+// ---- 保守点検の鮮度表: 「フロー」で行の直下の図を開閉（行クリックの成果物オープンはボタンを除外済み） ----
 document.addEventListener('click', function (ev) {
-  const row = ev.target && ev.target.closest ? ev.target.closest('.attn-row, .wm-goview') : null;
+  const btn = ev.target && ev.target.closest ? ev.target.closest('.pf-toggle') : null;
+  if (!btn) return;
+  const row = btn.closest('tr');
+  const flowRow = row && row.nextElementSibling;
+  if (!flowRow || !flowRow.classList.contains('pf-flow-row')) return;
+  flowRow.hidden = !flowRow.hidden;
+  btn.setAttribute('aria-expanded', String(!flowRow.hidden));
+  btn.textContent = flowRow.hidden ? '▸ フロー' : '▾ フロー';
+});
+
+// ---- 要注意パネルの行クリック（別ビューへ切替 or 同ビュー内アンカーへジャンプ） ----
+document.addEventListener('keydown', function (ev) {
+  if (ev.key !== 'Enter' && ev.key !== ' ') return;
+  const chip = ev.target && ev.target.closest ? ev.target.closest('.hz-chip.link') : null;
+  if (!chip) return;
+  ev.preventDefault();
+  chip.click();
+});
+document.addEventListener('click', function (ev) {
+  const row = ev.target && ev.target.closest ? ev.target.closest('.attn-row, .hz-chip.link') : null;
   if (!row) return;
   const v = row.getAttribute('data-goview');
   if (v) {
@@ -4552,7 +4382,7 @@ function pollStatus(remain) {
       .then(function (r) { return r.json(); })
       .then(function (jobs) {
         DATA.launchd = jobs;
-        if (activeView === 'launchd' || activeView === 'all') renderView(true);
+        if (activeView === 'jobs') renderView(true);
         if (remain > 1) pollStatus(remain - 1);
       })
       .catch(function () {});
@@ -4636,7 +4466,7 @@ document.getElementById('sort').addEventListener('change', function () {
   renderView(true);
 });
 // ---- パネル目次 ----
-// 全体ビューは17パネル・17,583px、ハーネス8・保守点検5。目的の場所へスクロールしか無かった
+// パネルが3枚以上のビューで、見出しチップから各パネルへ飛ぶ（スクロールだけで探させない）
 function buildPanelNav() {
   const bar = document.getElementById('panelnav');
   if (!bar) return;
