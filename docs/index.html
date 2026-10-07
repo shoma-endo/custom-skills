@@ -418,12 +418,6 @@ main { padding: 22px 30px 0; max-width: 1720px; }
   color: var(--layer-process);
   letter-spacing: 0;
 }
-.view-group .vg-sub {
-  font-weight: 400;
-  font-size: 0.76rem;
-  color: var(--muted);
-  margin-left: auto;
-}
 /* ビュー冒頭の「答える問い」1行（運用ホーム / 事業マップの役割分担） */
 .view-question { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
 .view-question b { color: var(--ink); font-weight: 600; }
@@ -494,7 +488,6 @@ details.panel:not([open]) > .panel-head { border-bottom: none; }
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: var(--ink-2);
 }
 .panel-head .ph-sub {
@@ -814,7 +807,6 @@ body.detail-collapsed #toggle-detail { right: 12px; }
   font-size: 0.72rem;
   letter-spacing: 0.22em;
   color: var(--muted);
-  text-transform: uppercase;
   padding: 26px 20px 12px;
   border-bottom: 1px solid var(--hairline);
 }
@@ -846,7 +838,6 @@ body.detail-collapsed #toggle-detail { right: 12px; }
   letter-spacing: 0.18em;
   color: var(--muted);
   margin: 10px 0 3px;
-  text-transform: uppercase;
 }
 #detail ol.pop-steps { margin: 2px 0 0 20px; font-size: 0.86rem; color: var(--ink-2); }
 #detail ol.pop-steps li { font-family: ui-monospace, "SF Mono", Menlo, monospace; padding: 1px 0; }
@@ -933,7 +924,6 @@ body.detail-collapsed #toggle-detail { right: 12px; }
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.72rem;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
   color: var(--muted);
 }
 .hz-title { font-weight: 700; font-size: 0.92rem; margin: 1px 0 0; }
@@ -973,7 +963,6 @@ body.detail-collapsed #toggle-detail { right: 12px; }
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--blue);
   font-weight: 700;
   margin-bottom: 8px;
@@ -1044,7 +1033,6 @@ details.il-flow:not([open]) > :not(summary) { display: none; }
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   border: 1px solid rgba(255,255,255,0.45);
   border-radius: 999px;
   padding: 0 7px;
@@ -1088,7 +1076,7 @@ details.il-flow:not([open]) > :not(summary) { display: none; }
 }
 table.hz-runs { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
 table.hz-runs th, table.hz-runs td { padding: 5px 10px; border-bottom: 1px solid var(--hairline); text-align: left; white-space: nowrap; }
-table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; }
 .hz-st { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 0.72rem; }
 .hz-st.completed { background: var(--st-good-tint); color: var(--st-good); }
 .hz-st.aborted, .hz-st.failed { background: var(--red-tint); color: var(--red); }
@@ -1223,7 +1211,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 .hz-bars .bar.prev { background: var(--hairline); }
 .hz-charts { display: flex; flex-wrap: wrap; gap: 26px; margin: 4px 0 14px; }
 .hz-chart-box { min-width: 220px; }
-.hz-chart-head { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.hz-chart-head { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
 /* ---- SVGチャート（recharts風・依存なし・ライト/ダーク両対応） ---- */
 .svchart { display: block; }
 .svchart .grid { stroke: var(--hairline); stroke-width: 1; shape-rendering: crispEdges; }
@@ -1251,7 +1239,7 @@ table.hz-runs th { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: up
 /* ROIビュー: 成果（分子）/ 投資（分母）/ 元取り度 の3タイル */
 .roi-grid { display: grid; grid-template-columns: repeat(3, minmax(240px, 1fr)); gap: 12px; }
 .roi-tile { background: var(--page); border: 1px solid var(--hairline); border-radius: 12px; padding: 14px 16px; }
-.roi-kicker { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.roi-kicker { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 2px; }
 .roi-num { font-size: 1.5rem; font-weight: 700; color: var(--ink); font-family: ui-monospace, "SF Mono", Menlo, monospace; line-height: 1.3; }
 .roi-num .unit { font-size: 0.78rem; font-weight: 400; color: var(--muted); font-family: inherit; }
 .roi-line { display: flex; justify-content: space-between; gap: 10px; font-size: 0.86rem; color: var(--ink-2); padding: 2px 0; border-bottom: 1px dashed var(--hairline); }
@@ -1393,7 +1381,7 @@ tr.hidden + .pf-flow-row { display: none !important; }
   <div id="detail-body"><div class="detail-empty">カードや launchd の行にマウスを乗せると、ここに全文説明・フルパス・ステップ等の詳細が表示されます。表示は固定されるので、ペイン内のテキストはそのままコピーできます。</div></div>
 </aside>
 <script>
-const DATA = {"generatedAt":"2026/10/6 18:45:05","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1789827172657.503,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-powerpoint","fmName":null,"desc":"デジタル庁デザインシステム（DADS）を用いた編集可能なPowerPointを作成・改稿する。DADS指定のスライドに使い、一般資料やWeb UIには使わない。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-powerpoint","real":"~/dev/custom-skills/skills/dads-powerpoint","link":"~/dev/custom-skills/skills/dads-powerpoint","broken":false,"mtimeMs":1789827172680.185,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-web","fmName":null,"desc":"DADS（デジタル庁デザインシステム）準拠のWeb・アプリUIを設計・実装・改稿する。公共向け画面やDADS指定時に使い、スライドは dads-powerpoint、汎用UIは別skillを使う。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-web","real":"~/dev/custom-skills/skills/dads-web","link":"~/dev/custom-skills/skills/dads-web","broken":false,"mtimeMs":1789827172682.4097,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1789827172690.681,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の工数・金額・スケジュールを見積もり、見積書または実績差分を作る。提案書全体、契約書レビュー、マーケ施策には使わない。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1790553807159.7822,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1789827172763.182,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1789827172789.7415,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1789827172793.647,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間離れたリポジトリを調査し、再開用のMD正本と閲覧用HTMLを生成する。コード修正、講義資料化、継続監視には使わない。","tools":14,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1789820361000,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1790553807159.899,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"直近1ヶ月の活動を収集・分析し、SES技術経歴書へ転記できる実績・技術・強みを提案する。シートへの書き込みや週次サマリーには使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1790975596800.735,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
+const DATA = {"generatedAt":"2026/10/7 18:45:06","command":"npm run agent-assets","uid":501,"staleDays":90,"diff":null,"redacted":true,"home":null,"scopes":[{"id":"global","label":"グローバル","root":"~","claudeDir":"~/.claude/skills","agentsDir":"~/.agents/skills","claudeTreeLink":null,"skills":[{"dir":"automation-scout","fmName":null,"desc":"コーディングエージェントの履歴から反復作業を抽出し、skill・workflow・定期ジョブ化の候補を提案する。自動化候補の探索に使い、実装や週次振り返りには使わない。","tools":3,"tree":"claude","path":"~/.claude/skills/automation-scout","real":"~/dev/custom-skills/skills/automation-scout","link":"~/dev/custom-skills/skills/automation-scout","broken":false,"mtimeMs":1789827172657.503,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-powerpoint","fmName":null,"desc":"デジタル庁デザインシステム（DADS）を用いた編集可能なPowerPointを作成・改稿する。DADS指定のスライドに使い、一般資料やWeb UIには使わない。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-powerpoint","real":"~/dev/custom-skills/skills/dads-powerpoint","link":"~/dev/custom-skills/skills/dads-powerpoint","broken":false,"mtimeMs":1789827172680.185,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"dads-web","fmName":null,"desc":"DADS（デジタル庁デザインシステム）準拠のWeb・アプリUIを設計・実装・改稿する。公共向け画面やDADS指定時に使い、スライドは dads-powerpoint、汎用UIは別skillを使う。","tools":null,"tree":"claude","path":"~/.claude/skills/dads-web","real":"~/dev/custom-skills/skills/dads-web","link":"~/dev/custom-skills/skills/dads-web","broken":false,"mtimeMs":1789827172682.4097,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"e2e-testcases","fmName":null,"desc":"プロジェクト解析から機能・非機能のE2Eテストケースを設計し、docs/TEST_CASES.mdを作る。テスト実行・実装、ユニットテスト、CI組み込みには使わない。","tools":10,"tree":"claude","path":"~/.claude/skills/e2e-testcases","real":"~/dev/custom-skills/skills/e2e-testcases","link":"~/dev/custom-skills/skills/e2e-testcases","broken":false,"mtimeMs":1789827172690.681,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"estimate","fmName":null,"desc":"開発案件の工数・金額・スケジュールを見積もり、見積書または実績差分を作る。提案書全体、契約書レビュー、マーケ施策には使わない。","tools":5,"tree":"claude","path":"~/.claude/skills/estimate","real":"~/dev/custom-skills/skills/estimate","link":"~/dev/custom-skills/skills/estimate","broken":false,"mtimeMs":1790553807159.7822,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"lark-translate","fmName":null,"desc":"Lark機械翻訳APIでテキスト翻訳、言語判定、用語集付き翻訳を行う。文書全体の取得は lark-doc、翻訳結果の送信は lark-im を使う。","tools":null,"tree":"claude","path":"~/.claude/skills/lark-translate","real":"~/dev/custom-skills/skills/lark-translate","link":"~/dev/custom-skills/skills/lark-translate","broken":false,"mtimeMs":1789827172763.182,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"meishi","fmName":null,"desc":"名刺のHTML正本を作成・改版し、検証済みの印刷用PNG/PDFとZIPを生成する。印刷発注やLP本体の変更には使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/meishi","real":"~/dev/custom-skills/skills/meishi","link":"~/dev/custom-skills/skills/meishi","broken":false,"mtimeMs":1789827172789.7415,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"minutes-to-visual","fmName":null,"desc":"Lark会議のminutes URLから文字起こしを取得し、図解画像・Larkスライド・Lark Docsへ視覚化する。Vault会議ノート化や単体資料編集には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/minutes-to-visual","real":"~/dev/custom-skills/skills/minutes-to-visual","link":"~/dev/custom-skills/skills/minutes-to-visual","broken":false,"mtimeMs":1789827172793.647,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"project-catchup","fmName":null,"desc":"数週間離れたリポジトリを調査し、再開用のMD正本と閲覧用HTMLを生成する。コード修正、講義資料化、継続監視には使わない。","tools":14,"tree":"claude","path":"~/.claude/skills/project-catchup","real":"~/dev/custom-skills/skills/project-catchup","link":"~/dev/custom-skills/skills/project-catchup","broken":false,"mtimeMs":1789820361000,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"readme-audit","fmName":null,"desc":"README・主要docsと実コードの整合を監査し、根拠付きの乖離を示して承認後に更新する。README新規作成や参画者向け全体像生成には使わない。","tools":8,"tree":"claude","path":"~/.claude/skills/readme-audit","real":"~/dev/custom-skills/skills/readme-audit","link":"~/dev/custom-skills/skills/readme-audit","broken":false,"mtimeMs":1790553807159.899,"dupSame":false,"dupCross":[],"dupCrossOk":false},{"dir":"skill-sheet-scout","fmName":null,"desc":"直近1ヶ月の活動を収集・分析し、SES技術経歴書へ転記できる実績・技術・強みを提案する。シートへの書き込みや週次サマリーには使わない。","tools":4,"tree":"claude","path":"~/.claude/skills/skill-sheet-scout","real":"~/dev/custom-skills/skills/skill-sheet-scout","link":"~/dev/custom-skills/skills/skill-sheet-scout","broken":false,"mtimeMs":1790975596800.735,"dupSame":false,"dupCross":[],"dupCrossOk":false}],"takt":null}],"launchd":[],"orcaAutomations":[],"plugins":[],"harness":null,"ops":null,"business":null,"bin":null,"skillFlows":null,"fileContents":{}};
 const LAYOUT_KEY = 'agent-assets-layout-v1';
 
 // ---- 左右ペイン開閉 ----
@@ -1651,9 +1639,9 @@ function renderAttentionPanel(scopes, stats) {
   if (DATA.harness) {
     var hFail = DATA.harness.runs.filter(function (r) { return r.status === 'failed' || r.status === 'aborted'; }).length;
     var hStuck = DATA.harness.runs.filter(function (r) { return r.stuck; }).length;
-    var hZombie = DATA.harness.runs.filter(function (r) { return r.zombie; }).length;
-    if (hFail + hStuck + hZombie > 0) {
-      add(hFail + hStuck > 0 ? 'red' : 'amber', 'ハーネス run: 失敗/中断 ' + hFail + ' / 滞留 ' + hStuck + ' / 放置 ' + hZombie, 'harness', null);
+    var hAbandoned = DATA.harness.runs.filter(function (r) { return r.abandoned; }).length;
+    if (hFail + hStuck + hAbandoned > 0) {
+      add(hFail + hStuck > 0 ? 'red' : 'amber', 'ハーネス run: 失敗/中断 ' + hFail + ' / 滞留 ' + hStuck + ' / 放置 ' + hAbandoned, 'harness', null);
     }
     var hvAttn = DATA.harness.variables;
     if (hvAttn && hvAttn.digestStale) {
@@ -1882,7 +1870,7 @@ var BIN_GROUP_LABEL = {
   cron: 'claude-cron', hooks: 'Claude hooks', raycast: 'Raycast', root: '直下',
 };
 var BIN_CALLER_KIND_CLS = {
-  launchd: 'b-link', hook: 'b-link', raycast: 'b-mute', script: 'b-mute', takt: 'b-link', manual: 'b-mute',
+  launchd: 'b-link', hook: 'b-link', orca: 'b-link', raycast: 'b-mute', script: 'b-mute', takt: 'b-link', manual: 'b-mute',
 };
 function binCallerBadges(b) {
   if (b.callers.length === 0) return '<span class="badge b-amber">⚠ 参照なし</span>';
@@ -1896,8 +1884,7 @@ function renderBinPanel() {
   if (list.length === 0) return '';
   const orphans = binOrphanList();
   const noDesc = binNoDescList();
-  const sub = '全 ' + list.length + ' 本　孤児 ' + orphans.length + '　説明なし ' + noDesc.length +
-    '　（ai-os private GitHub repository で管理）';
+  const sub = '全 ' + list.length + ' 本　孤児 ' + orphans.length + '　説明なし ' + noDesc.length;
 
   // 孤児を先頭、その後はグループ→パス順。異常を探しに行かなくても目に入るようにする
   const sorted = list.slice().sort(function (a, b) {
@@ -2218,7 +2205,6 @@ function renderIlWorkspace(takt) {
   }).join('');
   return '<div class="il-ws">' +
     '<div class="il-ws-head">takt workspace · 内ループ</div>' +
-    '<p class="il-callout">行＝start からの深さ。同じ深さの step は横並び。ループ（戻り辺）は左のガターを ↻ の破線で戻り、<code>COMPLETE</code>／<code>ABORT</code> は各 step の右へ出す。<code>loop_monitors</code> は枠下に全文。直線の Flow は畳む。名前で YAML、step で instruction を開く。</p>' +
     '<div class="il-flows">' + flows + '</div>' +
     renderIlShared(takt.workflows) +
     '</div>';
@@ -3450,7 +3436,7 @@ function renderSkillFlowView() {
       }) + '</div>';
   }).join('');
   return panel('スキル連携フロー（' + flows.length + '件）',
-    '他skill/他ファイルへの参照関係を1本ずつ図解。対象は複数ファイル・他skillを跨ぐ複雑なものだけ（単体で完結する軽量skillは対象外）。手書き宣言のため新規skillは都度追加が必要',
+    '他skill/他ファイルへの参照関係を1本ずつ図解。対象は複数ファイル・他skillを跨ぐ複雑なものだけ（単体で完結する軽量skillは対象外）',
     flows.length ? pfDefs() + body : '<div class="empty-note">対象skillなし</div>', '', 'sec-skillflow');
 }
 
@@ -3460,9 +3446,9 @@ function renderHarnessView() {
     var j = (DATA.launchd || []).filter(function (x) { return x.label === label; })[0];
     return j ? j.status : null;
   }
-  var wip = h.runs.filter(function (r) { return !HZ_TERMINAL[r.status] && !r.zombie; }).length;
+  var wip = h.runs.filter(function (r) { return !HZ_TERMINAL[r.status] && !r.abandoned; }).length;
   var stuckN = h.runs.filter(function (r) { return r.stuck; }).length;
-  var zombieN = h.runs.filter(function (r) { return r.zombie; }).length;
+  var abandonedN = h.runs.filter(function (r) { return r.abandoned; }).length;
   var failedN = h.runs.filter(function (r) { return r.status === 'failed' || r.status === 'aborted'; }).length;
   var doneN = h.runs.filter(function (r) { return HZ_TERMINAL[r.status]; }).length;
   var okN = h.runs.filter(function (r) { return r.status === 'completed'; }).length;
@@ -3476,7 +3462,7 @@ function renderHarnessView() {
   var layers = '';
   layers += hzLayer('l-mm', '人間ループ', '人間接点',
     '決定は朝夕2回に集約する。仕事が片付く環境だからこそ「問い」を準備する（認知負荷・タスク爆発対策）',
-    hzChip('朝刊ハーネス司令塔: ' + (h.wiring.morningBriefSection ? '配線済' : '未配線') + (mbStatus ? '・job=' + esc(mbStatus) : ''),
+    hzChip('朝刊のハーネス節: ' + (h.wiring.morningBriefSection ? '配線済' : '未配線') + (mbStatus ? '・job=' + esc(mbStatus) : ''),
       h.wiring.morningBriefSection ? 'ok' : 'miss', '~/bin/claude-cron/morning-brief.sh') +
     (qs && qs.items.length
       ? hzJump('問いストック: 未消化 ' + qs.count + ' 件 ↓', '#sec-hz-questions')
@@ -3485,9 +3471,9 @@ function renderHarnessView() {
       ? hzJump('成果変数: ' + hv.vars.length + ' 個 → 運用ホームの週次KPI', null, 'all')
       : hzChip('成果変数: 未設定', 'miss', null)) +
     hzChip('外部送信は承認ゲート／ドラフト行き', 'ok', null),
-    '人間接点 問い 朝刊 司令塔 承認ゲート 成果変数 macro',
+    '人間接点 問い 朝刊 ハーネス節 承認ゲート 成果変数 macro',
     { q: 'どのゲームを戦うか', judge: '<b>あなた</b>', cad: '月次〜四半期',
-      powers: hzPchip('👑 専権: 採否・閾値・取捨・問いの選択', 'wm-p-crown') + hzPchip('🛑 緊急停止 shinra-tensei — 発動・再装填は神のみ', 'wm-p-danger') });
+      powers: hzPchip('人間だけが決める: 採否・閾値・取捨・問いの選択', 'wm-p-crown') + hzPchip('🛑 緊急停止 shinra-tensei — 発動・再装填は人間のみ', 'wm-p-danger') });
   layers += hzFlow('委任 — 朝ゲート（今日のキュー確認・投入）', '報告 — 火曜カード（EMB週次＋答え合わせ）');
   var pmRows = h.personaModels.map(function (pm) {
     return '<tr data-search="' + esc((pm.persona + ' ' + pm.provider + ' ' + pm.model).toLowerCase()) + '"' + (pm.outerLoop ? ' style="background:var(--blue-tint)"' : '') + '>' +
@@ -3512,8 +3498,8 @@ function renderHarnessView() {
     'プロジェクトOS 接合部 digest 週次 再配分 knowledge fable macro micro persona model',
     { q: '正しい仕事を選んでいるか', cad: '週1・火曜',
       judge: brains.length ? brains.map(function (pm) { return esc(pm.persona) + ' = <b>' + esc(pm.model) + '</b>'; }).join('・') : '<b>emb</b>',
-      powers: hzPchip('量: digest') + hzPchip('質: 手戻り率・ゴム印検知・サンプル監査') + hzPchip('己: 答え合わせ') +
-        hzPchip('🔧 委譲: 機械的修理3種（モデル名差し替え・ゾンビrun abort・digest再生成）', 'wm-p-grant') });
+      powers: hzPchip('量: digest') + hzPchip('質: 手戻り率・形だけの承認の検知・サンプル監査') + hzPchip('振り返り: 答え合わせ') +
+        hzPchip('🔧 委譲: 機械的修理3種（モデル名差し替え・放置run abort・digest再生成）', 'wm-p-grant') });
   layers += hzFlow('割当 — タスク投入・機械的修理（workflow へ委譲）', '実績 — runs 集計（成功率・反復・所要）');
   layers += hzLayer('l-micro', '内ループ', 'takt workflow 群',
     'Fable 前提で薄く作る。停止条件（スコア・回数・時間）は保険であり、監視は強化しない',
@@ -3529,16 +3515,16 @@ function renderHarnessView() {
       return s.takt ? s.takt.workflows.map(function (w) { return w.name + ' ' + w.stepNames.join(' '); }).join(' ') : '';
     }).join(' '),
     { q: 'この仕事を正しくやれているか', judge: '<b>reviewer / supervisor</b>', cad: '分〜時間',
-      powers: hzPchip('🛡 結界: max_steps') + hzPchip('🛡 loop_monitors — 3周で強制判定') });
+      powers: hzPchip('上限: max_steps') + hzPchip('loop_monitors — 3周で強制判定') });
   layers += hzFlow('実行ログを書き残す', '');
   layers += hzLayer('l-data', 'DATA', 'データ地盤（runs）',
     '実行ログが再配分の燃料。データの発生源を自分で持つ',
     hzJump('直近' + h.days + '日: ' + h.runs.length + ' run ↓', '#sec-hz-runs'),
     'データ runs 実績 meta.json');
 
-  var html = '<div class="view-group"><span class="vg-num">①</span>構造 — 配線<span class="vg-sub">Structure</span></div>';
+  var html = '<div class="view-group"><span class="vg-num">①</span>構造 — 配線</div>';
   html += panel('ハーネス構造（三重ループ × 実配線）',
-    '実行→評価→修正の循環が入れ子で三重に回る。内が速く、外が偉い。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す。右の帰還レール＝内ループの結果で次の割り振りを変える。chips は実ファイル・実データから自動生成',
+    '実行→評価→修正の循環が入れ子で三重に回る。内ループの失敗を内ループ自身は直せない — 外から仕組みを直す。右の帰還レール＝内ループの結果で次の割り振りを変える。',
     '<div class="hz-loopwrap"><div class="hz-stack">' + layers + '</div>' +
     '<div class="hz-rail"><div class="bracket"></div>' +
     ['外ループ ↑', '再配分', '週次判断（火曜）', 'digest', 'runs 実績'].map(function (t, i) {
@@ -3548,7 +3534,8 @@ function renderHarnessView() {
     '', 'sec-hz-layers');
 
   html += panel('内ループの流れ（takt workflows）',
-    'Workspace → Flow → Step。分岐・並列・loop_monitors がある Flow だけ開く。直線は畳む。正本は各スコープの workflows YAML。実行基盤は takt のまま',
+    'Workspace → Flow → Step。分岐・並列・loop_monitors がある Flow だけ開く。直線は畳む。正本は各スコープの workflows YAML',
+    '<p class="il-callout">行＝start からの深さ。同じ深さの step は横並び。ループ（戻り辺）は左のガターを ↻ の破線で戻り、<code>COMPLETE</code>／<code>ABORT</code> は各 step の右へ出す。<code>loop_monitors</code> は枠下に全文。名前で YAML、step で instruction を開く。</p>' +
     renderAllIlWorkspaces(), '', 'sec-hz-inner-flows');
 
   // --- Vault ナレッジ参照マップ（層別） ---
@@ -3584,7 +3571,7 @@ function renderHarnessView() {
       vrGroups, 'layer-storage', 'sec-hz-vault');
   }
 
-  html += '<div class="view-group"><span class="vg-num">②</span>実績 — 内ループの結果<span class="vg-sub">Runs</span></div>';
+  html += '<div class="view-group"><span class="vg-num">②</span>実績 — 内ループの結果</div>';
 
   // --- runs 実績 ---
   var rows = h.runs.map(function (r) {
@@ -3592,7 +3579,7 @@ function renderHarnessView() {
     return '<tr data-search="' + esc((r.workflow + ' ' + r.status).toLowerCase()) + '"' + openAttr(r.dir) + '>' +
       '<td>' + esc(r.start) + '</td>' +
       '<td>' + esc(r.workflow) + '</td>' +
-      '<td><span class="hz-st ' + stCls + '">' + esc(r.status) + '</span>' + (r.zombie ? ' 💀放置' : r.stuck ? ' ⚠滞留' : '') + '</td>' +
+      '<td><span class="hz-st ' + stCls + '">' + esc(r.status) + '</span>' + (r.abandoned ? ' ⏸放置' : r.stuck ? ' ⚠滞留' : '') + '</td>' +
       '<td>' + r.iterations + '</td>' +
       '<td>' + hzDur(r.elapsedSec) + '</td></tr>';
   }).join('');
@@ -3601,7 +3588,7 @@ function renderHarnessView() {
     hzChip('失敗/中断: <b>' + failedN + '</b>', failedN > 0 ? 'warn' : '', null) +
     hzChip('WIP: <b>' + wip + '</b> 本' + (wip > 3 ? '（3本超・新規投入より完了を優先）' : ''), wip > 3 ? 'warn' : '', null) +
     hzChip('滞留: <b>' + stuckN + '</b>', stuckN > 0 ? 'warn' : '', null) +
-    hzChip('放置（ゾンビ疑い）: <b>' + zombieN + '</b>' + (zombieN > 0 ? '・meta.json 後始末推奨' : ''), zombieN > 0 ? 'warn' : '', null) +
+    hzChip('放置: <b>' + abandonedN + '</b>' + (abandonedN > 0 ? '・meta.json 後始末推奨' : ''), abandonedN > 0 ? 'warn' : '', null) +
     '</div>';
   var runCharts = h.runs.length
     ? '<div class="hz-charts">' +
@@ -3622,7 +3609,7 @@ function renderHarnessView() {
 
   // --- 未消化の問い ---
   if (qs && qs.items.length) {
-    html += '<div class="view-group"><span class="vg-num">③</span>問い — 人間ループへの入力<span class="vg-sub">Questions</span></div>';
+    html += '<div class="view-group"><span class="vg-num">③</span>問い — 人間ループへの入力</div>';
     html += panel('未消化の問い（先頭' + qs.items.length + '件 / 全' + qs.count + '件）', '朝刊が日替わりで1つ提示・週次ハーネスレビューが補充する',
       qs.items.map(function (q) { return '<div class="hz-q" data-search="' + esc(q.toLowerCase()) + '"' + openAttr(qs.path) + '>' + esc(q) + '</div>'; }).join(''),
       '', 'sec-hz-questions');
@@ -3658,9 +3645,9 @@ function renderWorldMapView() {
   var LAYERS = [
     { key: '③', amt: b.layerTotals.labor, name: '③ 労働', cls: 'l3', hint: '足場 — 時間の切り売り。圧縮して上の層へ転嫁する' },
     { key: '②', amt: b.layerTotals.light, name: '② 少労（顧問）', cls: 'l2', hint: '継続KPI — チャーン防止が仕事' },
-    { key: '①', amt: b.layerTotals.auto, name: '① 自動', cls: 'l1', hint: '偉い — 稼働≈0で積み上がる資産。ここを太らせる' },
+    { key: '①', amt: b.layerTotals.auto, name: '① 自動', cls: 'l1', hint: '優先 — 稼働≈0で積み上がる資産。ここを太らせる' },
   ];
-  var biz = god + '<div class="wm-note">月額合計 <b>' + yen(total) + '</b> ・ サブスクの偉い順: ① ← ② ← ③（③で稼ぎながら①を積む）</div>';
+  var biz = god + '<div class="wm-note">月額合計 <b>' + yen(total) + '</b> ・ サブスクの優先順: ① ← ② ← ③（③で稼ぎながら①を積む）</div>';
   LAYERS.forEach(function (L) {
     var pct = total ? Math.round((L.amt / total) * 100) : 0;
     biz += '<div class="wm-layer" data-search="' + esc(('事業 ' + L.name).toLowerCase()) + '">' +
@@ -3807,9 +3794,6 @@ function renderKpiSummaryCard() {
     if (days == null || days <= 0) return kind + ' ' + date + '（今日更新）';
     return kind + ' ' + date + '（' + days + '日前' + (kind === '母数' ? '・火曜週次。今日のライブではない' : '') + '）';
   }
-  var digestSub = hv.digestStale ? '⚠ 母数' + (hv.digestAgeDays != null ? hv.digestAgeDays + '日前' : '8日超') : (hv.digestDate ? '母数 ' + hv.digestDate + (hv.digestAgeDays ? '・' + hv.digestAgeDays + '日前' : '') : '母数未生成');
-  var verdictSub = hv.verdictStale ? '⚠ 判定8日超・EMB週次が止まっている' : (hv.verdictDate ? '判定 ' + hv.verdictDate + (hv.verdictAgeDays ? '・' + hv.verdictAgeDays + '日前' : '') : '判定未生成（EMB週次待ち）');
-  var sub = verdictSub + ' ・ ' + digestSub;
   var freshCls = (!hv.digestDate && !hv.verdictDate) ? 'miss' : ((hv.digestStale || hv.verdictStale) ? 'stale' : 'asof');
   var freshText = ageLabel(hv.digestAgeDays, hv.digestDate, hv.digestStale, '母数') +
     (hv.verdictDate ? ' ／ ' + ageLabel(hv.verdictAgeDays, hv.verdictDate, hv.verdictStale, '判定') : '');
@@ -3817,7 +3801,7 @@ function renderKpiSummaryCard() {
     '<div class="kpi-freshness ' + freshCls + '"' + openAttr(hv.digestDate ? '~/.takt/logs/variables-digest-latest.md' : null) + '>' + esc(freshText) + '</div>' +
     '<div class="kpi-verdict-grid">' + verdictCards + '</div>' +
     (tiles ? '<div class="kpi-tiles-label">参考: 自動集計した母数（判定材料の一部）</div><div class="kpi-tiles">' + tiles + '</div>' : '<div class="empty-note">自動集計した母数が未生成</div>');
-  return panel('📊 週次KPI（成果変数・自動集計母数）', sub, body, 'kpi-summary layer-command' + (hv.digestStale || hv.verdictStale ? ' kpi-stale' : ''), 'sec-kpi-summary');
+  return panel('📊 週次KPI（成果変数・自動集計母数）', '', body, 'kpi-summary layer-command' + (hv.digestStale || hv.verdictStale ? ' kpi-stale' : ''), 'sec-kpi-summary');
 }
 
 // ---- 判断待ちリスト（emb-weekly-review.md「あなたが決めること」を永続表示）----
@@ -3900,7 +3884,7 @@ function renderView(keepScroll) {
 
   if (activeView === 'harness' && DATA.harness) {
     document.getElementById('view-title').textContent = 'ハーネス構造';
-    document.getElementById('view-root').textContent = '三重ループハーネス v2 ・ 再生成で自動反映';
+    document.getElementById('view-root').textContent = '再生成で自動反映';
     html = renderViewQuestion('ハーネスは配線どおりで、内ループの実績はどうか（仕組み・週）', 'KPI と判断待ちは「運用ホーム」') +
       renderHarnessView();
     app.innerHTML = html;
@@ -3931,7 +3915,7 @@ function renderView(keepScroll) {
     html = renderSkillFlowView();
   } else if (activeView === 'bin') {
     document.getElementById('view-title').textContent = '~/bin スクリプト';
-    document.getElementById('view-root').textContent = '~/bin（ai-os private GitHub repository 管理・自動化スクリプトの実体）';
+    document.getElementById('view-root').textContent = '自動化スクリプトの実体（ai-os リポジトリで管理）';
     html = renderBinPanel() || '<div class="empty-note">~/bin スクリプトなし</div>';
   } else if (activeView === 'plugins') {
     document.getElementById('view-title').textContent = 'プラグイン';
@@ -3953,11 +3937,11 @@ function renderView(keepScroll) {
       // 実行基盤（launchd・Orca・~/bin・plugins）は専用ビューが持ち、異常は要注意から各ビューへ飛ぶ
       html =
         renderViewQuestion('今なにが壊れていて、何を直す・承認するか（運用・日〜週）', DATA.business ? '事業の判断は「事業マップ」' : '') +
-        '<div class="view-group"><span class="vg-num">①</span>指令 — 運用の異常・判断待ち・KPI<span class="vg-sub">Ops direction</span></div>' +
+        '<div class="view-group"><span class="vg-num">①</span>指令 — 運用の異常・判断待ち・KPI</div>' +
         renderAttentionPanel(scopes, stats) +
         renderPendingDecisionsCard() +
         renderKpiSummaryCard() +
-        '<div class="view-group"><span class="vg-num">②</span>保管 — スコープ横断カタログ<span class="vg-sub">Storage</span></div>' +
+        '<div class="view-group"><span class="vg-num">②</span>保管 — スコープ横断カタログ</div>' +
         renderDiffStrip() +
         // 畳んでおく。上の検索に当たると自動で開き、要注意の行からも開いて飛ぶ
         renderMatrixPanel(scopes, true) +
@@ -4063,10 +4047,10 @@ function renderNav() {
     if (DATA.harness.runs.some(function (r) { return r.status === 'failed' || r.status === 'aborted' || r.stuck; })) {
       hdots += '<span class="dot red" title="失敗・中断・滞留 run あり"></span>';
     }
-    if (DATA.harness.runs.some(function (r) { return r.zombie; })) {
-      hdots += '<span class="dot amber" title="放置（ゾンビ疑い）run あり"></span>';
+    if (DATA.harness.runs.some(function (r) { return r.abandoned; })) {
+      hdots += '<span class="dot amber" title="放置 run あり"></span>';
     }
-    const hwip = DATA.harness.runs.filter(function (r) { return !HZ_TERMINAL[r.status] && !r.zombie; }).length;
+    const hwip = DATA.harness.runs.filter(function (r) { return !HZ_TERMINAL[r.status] && !r.abandoned; }).length;
     if (hwip > 3) hdots += '<span class="dot amber" title="WIP が 3 本超"></span>';
     harnessHtml += '<button class="nav-item" data-view="harness"><span>ハーネス構造</span>' +
       '<span class="nav-right">' + hdots + '<span class="nav-cnt">' + DATA.harness.runs.length + '</span></span></button>';
