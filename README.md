@@ -15,6 +15,7 @@ Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 | [lark-translate](skills/lark-translate/) | Lark 機械翻訳 API によるテキスト翻訳（16言語＋glossary 対訳固定）と言語自動判定 |
 | [meishi](skills/meishi/) | 名刺の作成・改版・入稿データ生成。HTML正本→350dpi PNG/PDF→印刷基準検証（文字pt・マージン・線の視認性）→ZIP梱包。 |
 | [minutes-to-visual](skills/minutes-to-visual/) | Lark ビデオ会議の文字起こしを図解画像・スライド・ドキュメントに視覚化 |
+| [naming-ja](skills/naming-ja/) | 日本語のサービス名・屋号を比喩から決める。ブリーフ→比喩の領域→除外→空き確認（競合・J-PlatPat・.jp/.com）→採点。[glacierphonk/naming](https://github.com/glacierphonk/naming)（MIT）の日本語版 |
 | [project-catchup](skills/project-catchup/) | 久しぶりに戻るプロジェクトの全体像を「MD 正本＋ペライチ HTML」の二層で生成 |
 | [readme-audit](skills/readme-audit/) | README・主要 docs と実コードの整合を監査し、乖離を根拠付きで列挙してから更新 |
 | [skill-sheet-scout](skills/skill-sheet-scout/) | SES技術経歴書の月次更新支援。直近1ヶ月の全行動（git・Vault・Lark）を収集し、単価に効く追記候補を文面案付きで提案 |
