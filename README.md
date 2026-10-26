@@ -2,8 +2,6 @@
 
 Claude Code / Codex / Cursor で使える自作 Agent Skills 集。
 
-📍 **スキルカタログ（可視化マップ）**: https://shoma-endo.github.io/custom-skills/
-
 ## スキル一覧
 
 | スキル | 用途 |
